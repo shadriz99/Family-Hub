@@ -10,7 +10,7 @@
 4. Keputusan reviewer dicatat di logbook (`LOG-NNN`), lalu item di sini ditutup atau diubah menjadi pekerjaan tertunda di bagian B.
 5. Jangan menandai item selesai hanya karena kode sudah ada; sertakan bukti verifikasi atau keputusan eksplisit.
 
-**Status:** diperbarui terakhir pada LOG-034 (skema undangan kini sesuai §5.1 masterplan).
+**Status:** diperbarui terakhir pada LOG-035 (alur kerja pindah ke `main`).
 
 ## A. Butuh keputusan reviewer
 
@@ -29,7 +29,7 @@
 |---|---|---|---|
 | P-08 | Bootstrap konteks tenant untuk job/command | Ditunda karena belum ada job/command nyata (LOG-030). Job nanti wajib membawa household ID eksplisit dan memasang konteks sendiri | Bangun base/middleware job saat job pertama (CORE-09/CORE-10) dibuat |
 | P-09 | Bukti CI untuk `528adbd` | Menunggu laporan reviewer; repo privat tanpa GitHub CLI/API terautentikasi | Catat hasil SQLite/MariaDB, tutup item bila hijau |
-| P-10 | Branch `core-01-foundation` | Masih ada di `42bda38`, sudah menjadi ancestor `main`; tidak dihapus agar histori tetap dapat diakses | Putuskan hapus atau arsipkan setelah reviewer setuju |
+| P-10 | Branch lama `core-01-foundation` dan `core-03-support` | Sejak LOG-035 semua pekerjaan langsung di `main`; `core-03-support` tidak lagi disinkronkan dan tertinggal di `28ebeb2`, `core-01-foundation` tetap di `42bda38`. Keduanya sudah menjadi ancestor `main` | Putuskan hapus branch remote atau biarkan sebagai arsip |
 | P-11 | UI/route/rate limit undangan | Di luar slice backend LOG-032; butuh skill UI dan verifikasi 360px/1280px | Kerjakan setelah P-01/P-02 diputuskan |
 | P-12 | Modul Finance/Organizer/Asset | `config/modules.php` menonaktifkan ketiganya; belum ada izin reviewer untuk fitur modul | Tunggu keputusan reviewer atas task modul |
 | P-13 | Undangan ganda yang masih pending | `InviteHouseholdMember` tidak mencegah lebih dari satu undangan pending per household; token kedua otomatis gagal karena slot penuh | Putuskan bila perlu undangan tunggal atau pencabutan otomatis saat undangan baru dibuat |

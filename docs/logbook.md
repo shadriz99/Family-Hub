@@ -316,6 +316,14 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 - **Batas:** belum ada pengiriman email, ikatan email saat penerimaan, route registrasi, UI, rate limit, Alur A admin, atau undangan pending ganda (P-02/P-04/P-11/P-13). `expires_at` disimpan UTC; belum ada cleanup undangan kedaluwarsa.
 - Dokumen yang diselaraskan: logbook, `docs/development-plan.md`, `docs/00-MASTERPLAN.md` (§5.1 status implementasi), `docs/pending.md` (P-01 ditutup), `.github/copilot-instructions.md`, dan `AGENTS.md` root. ADR, runbook, UAT, dan spesifikasi modul tidak berubah karena keputusan stack, topologi, dan kontrak modul tetap.
 
+### LOG-035 - Alur kerja pindah ke main tanpa branch
+
+- Keputusan reviewer: karena dikembangkan sendiri, pekerjaan tidak lagi dipecah ke branch task; semua commit langsung ke `main`. Ini menggantikan aturan sebelumnya "satu task ID per branch/PR".
+- Pertimbangan yang dicatat: tanpa branch tidak ada review gate sebelum perubahan masuk `main`, sehingga verifikasi lokal (`composer lint`, `composer analyse`, `composer test`) wajib dijalankan sebelum setiap push dan kegagalan CI diperbaiki maju di `main`. Satu task ID per commit tetap dipertahankan agar riwayat dan logbook tetap dapat dilacak. Tidak ada branch protection yang dikonfigurasi dan tidak ada bukti kewenangan untuk mengubahnya dari mesin ini.
+- `core-03-support` berhenti disinkronkan dan tertinggal di `28ebeb2`; `core-01-foundation` tetap di `42bda38`. Keduanya sudah menjadi ancestor `main`. Penghapusan branch remote dicatat sebagai P-10 dan menunggu keputusan reviewer; tidak ada branch yang dihapus pada batch ini.
+- **Verifikasi:** hanya perubahan dokumentasi/instruksi. `git diff --check` lulus; test, Pint, Larastan, dan build tidak dijalankan ulang karena tidak ada perubahan kode. Kondisi kode terakhir tetap 176 test/1676 assertion pada `3851754`.
+- Dokumen yang diselaraskan: logbook, `docs/development-plan.md`, `docs/pending.md` (P-10 diperluas), `.github/copilot-instructions.md`, dan `AGENTS.md` root. Masterplan, ADR, runbook, UAT, dan spesifikasi modul tidak berubah karena keputusan ini soal alur kerja, bukan arsitektur atau kontrak.
+
 ### LOG-033 - Daftar tertunda dan aturan pencatatannya
 
 - Motivasi reviewer: hasil kerja CORE-04/CORE-05 menyisakan konflik dan keputusan yang sebelumnya hanya muncul di jawaban chat. Mulai batch ini semua hal tersebut dicatat permanen di repositori.

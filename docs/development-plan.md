@@ -5,6 +5,8 @@
 
 **CI kedua DB (LOG-029, LOG-031):** job SQLite dan MariaDB lulus untuk `6d6f7bc` (144 test PHP/1562 assertions) dan untuk `731fb45` (156 test PHP/1605 assertions), termasuk migrasi, test JS, Pint, Larastan, dan build. Perbaikan collation LOG-028 dan nama index LOG-027 terbukti pada run nyata. Tidak ada deployment atau UAT.
 
+**Alur kerja (LOG-035):** pengembangan solo berjalan langsung di `main` tanpa branch task; satu task ID per commit. Verifikasi lokal wajib sebelum push karena tidak ada review gate, dan kegagalan CI diperbaiki maju di `main`.
+
 **Publikasi dan merge (LOG-026):** `core-03-support` di-push (`2137b2b..bcbbe86`) dan `main` di-fast-forward ke SHA yang sama; kedua ref identik. Workflow SQLite/MariaDB berjalan pada push tersebut, tetapi statusnya belum dapat dipantau dari mesin ini (repo privat, tanpa GitHub CLI/API terautentikasi), jadi tidak ada klaim lulus untuk MariaDB maupun SQLite remote. CORE-04 tetap parsial: bootstrap household/history, middleware/job context, admission CORE-05, dan konkurensi belum selesai. Ini bukan acceptance UAT/produksi dan bukan izin deploy.
 
 **Perbaikan kompatibilitas MariaDB (LOG-027):** nama index unik gabungan pada `household_finance_period_settings` melebihi batas identifier 64 karakter MariaDB/MySQL (66 karakter) dan tidak dipotong Laravel; index kini bernama eksplisit `household_period_unique`. Test lokal tetap lulus; bukti MariaDB menunggu run CI berikutnya.
