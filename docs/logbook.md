@@ -274,6 +274,12 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 - Verifikasi lokal: `php artisan migrate --pretend --database=sqlite` menunjukkan DDL tanpa suffix pada SQLite dan index `household_period_unique`; 144 test PHP/1562 assertions, Pint, Larastan, dan `git diff --check` lulus. Bukti MariaDB menunggu run CI berikutnya; jangan menutup gap kompatibilitas sebelum hasilnya ada.
 - Dokumen yang diselaraskan: logbook dan `docs/development-plan.md`. Masterplan, ADR, runbook, UAT, dan instruksi tidak berubah karena kontrak/skema logis sama.
 
+### LOG-029 - CI SQLite dan MariaDB lulus
+
+- Reviewer melaporkan kedua job CI lulus untuk `6d6f7bc` setelah perbaikan collation. Ini menutup gate kompatibilitas MariaDB untuk skema CORE-03/04 dan membuktikan perbaikan `LOG-027`/`LOG-028` pada run nyata. Tautan run tidak dicatat karena tidak diberikan; bukti berasal dari laporan reviewer.
+- Cakupan bukti: migrasi seluruh tabel, 144 test PHP/1562 assertions, 4 test JS, Pint, Larastan, dan build pada matriks SQLite/MariaDB. Tidak ada deployment, migration DB aplikasi, atau UAT.
+- CORE-04 masih parsial pada sisi produk: bootstrap household + histori awal, inisialisasi konteks per request/job, admission lewat undangan CORE-05, dan uji konkurensi penerimaan slot belum selesai. Dokumen lain tidak berubah.
+
 ## Aturan pembaruan berikutnya
 
 1. Tambahkan entri baru dengan tanggal dan ID `LOG-NNN`; sertakan task ID resmi (`CORE-*`, `FIN-*`, `ORG-*`, `AST-*`) jika relevan.

@@ -183,6 +183,8 @@ Sebelum menandai CORE-01 selesai, wajib jalankan resolusi Composer penuh pada PH
 
 **Pembaruan LOG-026 (2026-10-26):** atas izin reviewer, `core-03-support` di-push dan `main` di-fast-forward ke `bcbbe86`; kedua ref identik. Main kini memuat checkpoint CORE-03A/03B/04 beserta skema household, tetapi hasil CI remote untuk tip itu belum terverifikasi. CORE-04 tetap parsial dan tidak ada izin deploy/UAT atau migration DB aplikasi.
 
+**Pembaruan LOG-029 (2026-10-26):** reviewer melaporkan job SQLite dan MariaDB lulus untuk `6d6f7bc` setelah perbaikan collation/index (LOG-027/LOG-028). Gate kompatibilitas MariaDB untuk skema ini terpenuhi; ini bukan bukti UAT, deploy, atau penyelesaian CORE-04 (bootstrap/context/admission/konkurensi masih terbuka).
+
 ## 4. Arsitektur — Modular Monolith
 
 ### 4.1 Struktur Folder

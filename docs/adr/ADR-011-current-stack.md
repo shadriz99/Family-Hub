@@ -12,9 +12,9 @@ The reviewer explicitly deferred MariaDB and selected SQLite first. CI now tests
 
 ### MariaDB CI restored (LOG-025, 2026-10-26)
 
-The reviewer declared CORE-03 complete and asked to include MariaDB in CI again, so the SQLite-only condition above no longer applies to the CI gate. `.github/workflows/ci.yml` again runs the SQLite and MariaDB 10.11 matrix, and the dual-database gate is active as a requirement. No new run exists yet: MariaDB compatibility for the CORE-03/04 changes remains unproven, the earlier `40286560448` MariaDB failure has no recorded cause, and no local MariaDB server is installed. Keep SQLite as the local default and do not claim a MariaDB result before the CI run reports one.
+The reviewer declared CORE-03 complete and asked to include MariaDB in CI again, so the SQLite-only condition above no longer applies to the CI gate. `.github/workflows/ci.yml` again runs the SQLite and MariaDB 10.11 matrix, and the dual-database gate is active as a requirement. At LOG-025 no new run existed yet: MariaDB compatibility for the CORE-03/04 changes remained unproven, the earlier `40286560448` MariaDB failure had no recorded cause, and no local MariaDB server was installed. Keep SQLite as the local default and do not claim a MariaDB result before the CI run reports one.
 
-LOG-026: with explicit reviewer approval, `core-03-support` was pushed and `main` fast-forwarded to `bcbbe86`, so the CORE-03/04 checkpoint is now on main. The push-triggered CI result is not observable from the development machine; no MariaDB evidence exists yet. The SQLite default and MariaDB compatibility floor in decision 5 are unchanged.
+LOG-026: with explicit reviewer approval, `core-03-support` was pushed and `main` fast-forwarded to `bcbbe86`, so the CORE-03/04 checkpoint is now on main. LOG-029 records the reviewer's report that both the SQLite and MariaDB jobs pass at `6d6f7bc`, after the collation and index-name portability fixes in LOG-027/LOG-028. No local MariaDB server is installed; CI is the MariaDB evidence. The SQLite default and MariaDB compatibility floor in decision 5 are unchanged.
 
 The project has not been scaffolded. PHP 8.5.12 and Node 24.22.1 are available locally. Upstream stable versions have advanced since the original PHP 8.3 / Laravel 12 / Livewire 3 / Pest 3 plan.
 

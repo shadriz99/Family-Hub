@@ -1,7 +1,9 @@
 # Development Setup dan Rencana - Family Hub
 
 **Baseline:** 2026-10-26
-**Status:** CORE-01 diterima untuk kelanjutan development (LOG-015). Reviewer menyatakan CORE-03 selesai (LOG-025) dan mengizinkan push lalu merge ke main (LOG-026); checkpoint CORE-03A/03B/04 kini ada di `main` pada `bcbbe86`, sedangkan CORE-04 masih parsial. Hasil CI remote untuk tip ini belum diketahui.
+**Status:** CORE-01 diterima untuk kelanjutan development (LOG-015). CORE-03 dinyatakan selesai reviewer (LOG-025); checkpoint CORE-03A/03B/04 ada di `main` (`6d6f7bc`), dan kedua job CI SQLite/MariaDB lulus (LOG-029). CORE-04 masih parsial di sisi bootstrap/context/admission.
+
+**CI kedua DB (LOG-029):** reviewer melaporkan job SQLite dan MariaDB lulus untuk `6d6f7bc`, termasuk migrasi, 144 test PHP/1562 assertions, 4 test JS, Pint, Larastan, dan build. Perbaikan collation LOG-028 dan nama index LOG-027 terbukti pada run nyata. Tidak ada deployment atau UAT.
 
 **Publikasi dan merge (LOG-026):** `core-03-support` di-push (`2137b2b..bcbbe86`) dan `main` di-fast-forward ke SHA yang sama; kedua ref identik. Workflow SQLite/MariaDB berjalan pada push tersebut, tetapi statusnya belum dapat dipantau dari mesin ini (repo privat, tanpa GitHub CLI/API terautentikasi), jadi tidak ada klaim lulus untuk MariaDB maupun SQLite remote. CORE-04 tetap parsial: bootstrap household/history, middleware/job context, admission CORE-05, dan konkurensi belum selesai. Ini bukan acceptance UAT/produksi dan bukan izin deploy.
 
@@ -56,7 +58,7 @@ Open `/login` for the Indonesian Livewire/Blade form, styled with Tailwind and b
 
 Core/Modules placeholder directories and `config/modules.php` exist, with all unreleased modules disabled. Non-production Eloquent lazy-loading prevention is enabled. Permanent Pint PSR-12 and Larastan level 6 configurations and Composer `lint`/`analyse` scripts are available. CI is defined in `.github/workflows/ci.yml` for PHP 8.5 with SQLite and MariaDB 10.11.
 
-**Bukti CI terbaru (LOG-014):** [Run 40268711517](https://github.com/shadri-zulkurniadi/Net/actions/runs/40268711517) pada `ffe4afe` lulus untuk kedua job SQLite/MariaDB, termasuk dependency install, Composer validate/platform, build, Pint, Larastan, dan test. Tidak ada server MariaDB lokal yang dipasang. Matriks kedua DB sempat dinonaktifkan pada LOG-023 dan dipulihkan pada LOG-025; run untuk tip `bcbbe86` terpicu saat push LOG-026 tetapi statusnya belum terverifikasi dari mesin ini.
+**Bukti CI terbaru (LOG-029):** run fondasi [40268711517](https://github.com/shadri-zulkurniadi/Net/actions/runs/40268711517) pada `ffe4afe` lulus kedua job (LOG-014). Untuk tip `6d6f7bc`, reviewer melaporkan job SQLite dan MariaDB lulus setelah perbaikan collation/index; tautan run tidak dicatat. Tidak ada server MariaDB lokal yang dipasang.
 
 ApexCharts is deferred until the reporting module needs it and its license is reviewed. Alpine comes from Livewire; no separate Alpine npm dependency is installed. No Flux, Volt, Sail, Docker, or global Laravel installer is needed.
 

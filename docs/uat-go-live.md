@@ -11,6 +11,8 @@ LOG-025: reviewer menyatakan CORE-03 selesai dan MariaDB dikembalikan ke CI. Mat
 
 LOG-026: checkpoint CORE-03/04 kini ada di `main` (`bcbbe86`) setelah push dan merge yang disetujui reviewer. Hasil CI remote belum terverifikasi dan tidak ada skenario UAT yang dijalankan; status UAT/produksi tidak berubah.
 
+LOG-029: job SQLite dan MariaDB lulus untuk `6d6f7bc` (laporan reviewer). Status UAT/produksi tetap tidak berubah; belum ada deployment atau data nyata.
+
 | Item | Nilai |
 |---|---|
 | Versi/commit yang diuji | |
