@@ -181,6 +181,8 @@ Sebelum menandai CORE-01 selesai, wajib jalankan resolusi Composer penuh pada PH
 
 **Pembaruan LOG-025 (2026-10-26):** reviewer menyatakan CORE-03 selesai dan mengizinkan MariaDB kembali ke CI. Workflow `.github/workflows/ci.yml` dipulihkan ke matriks SQLite/MariaDB 10.11 dengan service database dan `pdo_mysql`; step SQLite tetap in-memory. Penundaan LOG-023 berakhir hanya untuk gate CI, bukan bukti kompatibilitas: run baru pada `core-03-support` belum ada, kegagalan MariaDB `40286560448` belum didiagnosis, dan CORE-04/bootstrap/konkurensi tetap parsial. Tidak ada merge ke main, migration/seed aplikasi, atau izin deploy.
 
+**Pembaruan LOG-026 (2026-10-26):** atas izin reviewer, `core-03-support` di-push dan `main` di-fast-forward ke `bcbbe86`; kedua ref identik. Main kini memuat checkpoint CORE-03A/03B/04 beserta skema household, tetapi hasil CI remote untuk tip itu belum terverifikasi. CORE-04 tetap parsial dan tidak ada izin deploy/UAT atau migration DB aplikasi.
+
 ## 4. Arsitektur — Modular Monolith
 
 ### 4.1 Struktur Folder

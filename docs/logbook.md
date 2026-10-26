@@ -1,7 +1,7 @@
 # Logbook Development - Family Hub
 
 **Diperbarui:** 2026-10-26
-**Status:** CORE-01 diterima untuk kelanjutan development; CORE-03/04 masih parsial. Tenant support + adapter household PeriodResolver (CORE-03B) tersedia di branch support, belum dipublikasikan. Belum ada rilis aplikasi.
+**Status:** CORE-01 diterima untuk kelanjutan development; CORE-03 dinyatakan selesai oleh reviewer, CORE-04 masih parsial. Checkpoint CORE-03/04 dipublikasikan ke `main` (`bcbbe86`), tetapi hasil CI remote belum terverifikasi. Belum ada rilis aplikasi.
 
 Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan selesai. [Rencana development](development-plan.md) menentukan langkah berikutnya; spesifikasi dan acceptance criteria tetap mengikuti [Masterplan](00-MASTERPLAN.md) dan dokumen modul.
 
@@ -9,12 +9,12 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 
 | Area | Status aktual | Bukti / tindak lanjut |
 |---|---|---|
-| Repository | Fondasi dipublikasikan di branch `core-01-foundation`; support terintegrasi lokal dengan main | LOG-014: commit `ffe4afe` sudah di-push dengan izin reviewer; LOG-024: `main` di-merge lokal ke `core-03-support`, belum di-push |
+| Repository | `main` dan `core-03-support` berada di `bcbbe86` (checkpoint CORE-03/04) | LOG-014: fondasi `ffe4afe`; LOG-026: push `2137b2b..bcbbe86` dan fast-forward main dengan izin reviewer; CI remote belum terverifikasi |
 | Environment lokal | Git, PHP, Composer, Node/npm dapat dijalankan | Rincian dan batas setup di [setup dan rencana development](development-plan.md) |
 | Dependency PHP/npm | Terpasang, lockfile tersedia | Composer solve, platform check, audit, dan smoke check lulus pada waktu setup |
 | CORE-01 | **Diterima untuk kelanjutan development** | LOG-011/013/014: fondasi, auth, Boost, CI kedua DB; LOG-015: reviewer meminta lanjut; bukan UAT/produksi |
 | Boost | Terminal stdio disetujui sebagai transport | LOG-013: initialize, daftar 10 tool, dan dokumentasi lulus; UI Copilot belum terhubung tetapi bukan blocker |
-| CORE-02 sampai CORE-16 | CORE-03 dan CORE-04 parsial; CORE-03B lokal | LOG-015–018: utilitas/komponen; LOG-019: urutan disetujui; LOG-020–021: policy/action; LOG-024: tenant scope, konteks household, `PeriodResolver::for`. Middleware/job context, bootstrap histori, admission, dan konkurensi belum selesai |
+| CORE-02 sampai CORE-16 | CORE-03 dinyatakan selesai reviewer; CORE-04 parsial | LOG-015–018: utilitas/komponen; LOG-019: urutan disetujui; LOG-020–021: policy/action; LOG-024: tenant scope, konteks household, `PeriodResolver::for`; LOG-025–026: MariaDB CI dipulihkan dan checkpoint di-merge ke main. Middleware/job context, bootstrap histori, admission, dan konkurensi belum selesai |
 | Finance / Organizer / Asset | Belum dimulai | Mockup adalah prototype yang sudah ada saat clone, bukan implementasi modul |
 | Produksi / UAT | Belum dijalankan | Tidak ada bukti deploy, restore, atau penerimaan pengguna |
 
@@ -251,6 +251,13 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 - **Belum terbukti:** tidak ada Docker/MariaDB lokal, sehingga suite tidak dijalankan pada MariaDB di mesin ini dan tidak ada klaim kompatibilitas untuk perubahan CORE-03/04. Penyebab kegagalan MariaDB pada `40286560448` juga belum diketahui; log run lama tidak dapat diakses (GitHub CLI tidak terpasang, API run mengembalikan 404).
 - **Verifikasi lokal (perubahan workflow + dokumen):** 144 test PHP/1562 assertion, 4 test JS, `composer lint`, `composer analyse`, `npm run build`, `composer validate`, dan `git diff --check` lulus pada SQLite in-memory. Tidak ada migration/seed DB aplikasi, akun, dependency baru, atau perubahan kode domain. Push dan hasil run CI baru menunggu tindakan reviewer.
 - **Dokumen yang diselaraskan:** logbook, `docs/development-plan.md`, `docs/00-MASTERPLAN.md` (catatan checkpoint CI), `docs/adr/ADR-011-current-stack.md`, `.github/copilot-instructions.md`, `docs/runbook/deploy.md`, `docs/uat-go-live.md`, dan `AGENTS.md` root. Spesifikasi modul Finance/Organizer/Asset, runbook backup-restore, dan checklist lain tidak berubah karena kontrak domain, topologi deploy, dan skema tidak berubah.
+
+### LOG-026 - Publikasi support dan merge ke main
+
+- Reviewer memberi izin eksplisit untuk push lalu merge ke main. `core-03-support` di-push ke `origin` (`2137b2b..bcbbe86`), lalu `main` di-fast-forward `a729dfe..bcbbe86` tanpa merge commit tambahan. `git ls-remote` mengonfirmasi `main` dan `core-03-support` sama-sama berada di `bcbbe86f82d90b6be2964d8f92a9079d50a89c1b`. Tidak ada tag atau rilis.
+- Push memicu workflow pada kedua branch. Status run **belum diketahui**: repository privat, GitHub CLI tidak terpasang, dan REST API mengembalikan 404 tanpa autentikasi. Karena itu hasil MariaDB (dan SQLite remote untuk tip ini) tidak diklaim lulus; pemeriksaan hanya tersedia dari output GitHub Actions milik reviewer.
+- **Verifikasi lokal sebelum push/merge:** 144 test PHP/1562 assertion, 4 test JS, Pint, Larastan, Vite build, `composer validate`, dan `git diff --check` lulus pada SQLite in-memory. Tidak menjalankan migration/seed DB aplikasi, membuat akun, atau mengubah dependency.
+- **Batas:** CORE-04 tetap parsial (bootstrap household/history, middleware/job context, admission CORE-05, konkurensi). Main kini memuat checkpoint CORE-03A/03B/04 beserta skemanya; ini bukan acceptance UAT/produksi, bukan bukti kompatibilitas MariaDB, dan bukan izin deploy. Dokumen yang diselaraskan pada batch ini: logbook, `docs/development-plan.md`, `AGENTS.md` root; dokumen lain tidak berubah karena tidak ada perubahan perilaku/kontrak baru.
 
 ## Aturan pembaruan berikutnya
 

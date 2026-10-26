@@ -14,6 +14,8 @@ The reviewer explicitly deferred MariaDB and selected SQLite first. CI now tests
 
 The reviewer declared CORE-03 complete and asked to include MariaDB in CI again, so the SQLite-only condition above no longer applies to the CI gate. `.github/workflows/ci.yml` again runs the SQLite and MariaDB 10.11 matrix, and the dual-database gate is active as a requirement. No new run exists yet: MariaDB compatibility for the CORE-03/04 changes remains unproven, the earlier `40286560448` MariaDB failure has no recorded cause, and no local MariaDB server is installed. Keep SQLite as the local default and do not claim a MariaDB result before the CI run reports one.
 
+LOG-026: with explicit reviewer approval, `core-03-support` was pushed and `main` fast-forwarded to `bcbbe86`, so the CORE-03/04 checkpoint is now on main. The push-triggered CI result is not observable from the development machine; no MariaDB evidence exists yet. The SQLite default and MariaDB compatibility floor in decision 5 are unchanged.
+
 The project has not been scaffolded. PHP 8.5.12 and Node 24.22.1 are available locally. Upstream stable versions have advanced since the original PHP 8.3 / Laravel 12 / Livewire 3 / Pest 3 plan.
 
 Breeze 2.4.2 accepts Laravel 13 at the package level but its Livewire installer requests Livewire 3, Volt 1, and Tailwind 3. It cannot scaffold the approved latest-major combination unchanged. The complete official Livewire starter kit also introduces dependencies outside the approved list, so copying that kit wholesale is not the chosen solution.

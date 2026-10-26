@@ -1,13 +1,15 @@
 # Development Setup dan Rencana - Family Hub
 
 **Baseline:** 2026-10-26
-**Status:** CORE-01 diterima untuk kelanjutan development (LOG-015). Reviewer menyatakan CORE-03 selesai dan mengizinkan MariaDB kembali ke CI (LOG-025); checkpoint CORE-03A/03B/04 tersedia pada `core-03-support`, sedangkan CORE-04 masih parsial dan belum dipublikasikan ulang.
+**Status:** CORE-01 diterima untuk kelanjutan development (LOG-015). Reviewer menyatakan CORE-03 selesai (LOG-025) dan mengizinkan push lalu merge ke main (LOG-026); checkpoint CORE-03A/03B/04 kini ada di `main` pada `bcbbe86`, sedangkan CORE-04 masih parsial. Hasil CI remote untuk tip ini belum diketahui.
 
-**Keputusan aktif LOG-025:** reviewer menyatakan CORE-03 selesai dan meminta MariaDB dimasukkan kembali ke CI. Matriks SQLite/MariaDB dipulihkan di `.github/workflows/ci.yml`; hasil run baru belum ada dan kompatibilitas MariaDB untuk perubahan CORE-03/04 belum boleh diklaim. Penundaan LOG-023 berakhir untuk gate CI, tetapi kegagalan lama `40286560448` tetap tidak terdokumentasi penyebabnya. Tidak ada push, merge ke main, migration/seed aplikasi, atau provisioning akun.
+**Publikasi dan merge (LOG-026):** `core-03-support` di-push (`2137b2b..bcbbe86`) dan `main` di-fast-forward ke SHA yang sama; kedua ref identik. Workflow SQLite/MariaDB berjalan pada push tersebut, tetapi statusnya belum dapat dipantau dari mesin ini (repo privat, tanpa GitHub CLI/API terautentikasi), jadi tidak ada klaim lulus untuk MariaDB maupun SQLite remote. CORE-04 tetap parsial: bootstrap household/history, middleware/job context, admission CORE-05, dan konkurensi belum selesai. Ini bukan acceptance UAT/produksi dan bukan izin deploy.
+
+**Keputusan sebelumnya (LOG-025):** reviewer menyatakan CORE-03 selesai dan meminta MariaDB dimasukkan kembali ke CI. Matriks SQLite/MariaDB dipulihkan di `.github/workflows/ci.yml`; penundaan LOG-023 berakhir hanya untuk gate CI, sementara kegagalan lama `40286560448` tetap tidak terdokumentasi penyebabnya.
 
 **Keputusan sebelumnya (LOG-023, historis):** reviewer menunda MariaDB dan menjadikan SQLite satu-satunya target CI aktif. `core-01-foundation` sudah di-fast-forward ke main tanpa membawa `core-03-support`. Branch support harus mengintegrasikan main dan lulus pemeriksaan baru sebelum evaluasi merge; kegagalan MariaDB lama tidak boleh disebut lulus.
 
-**Integrasi support (LOG-024):** `main` di-merge ke `core-03-support` secara lokal (merge commit `1cd85ae`); konflik dokumen diselesaikan dengan mempertahankan histori LOG-015 sampai LOG-023 dan keputusan SQLite terbaru. CI branch support saat itu diselaraskan ke SQLite-only plus `npm test`; matriks kedua DB dipulihkan pada LOG-025. Setelah merge 139 test/1546 assertion lulus; hasil CORE-03B dicatat pada paragraf checkpoint di bawah. Merge/push ke main tetap menunggu reviewer.
+**Integrasi support (LOG-024):** `main` di-merge ke `core-03-support` secara lokal (merge commit `1cd85ae`); konflik dokumen diselesaikan dengan mempertahankan histori LOG-015 sampai LOG-023 dan keputusan SQLite terbaru. CI branch support saat itu diselaraskan ke SQLite-only plus `npm test`; matriks kedua DB dipulihkan pada LOG-025. Setelah merge 139 test/1546 assertion lulus; hasil CORE-03B dicatat pada paragraf checkpoint di bawah.
 
 **Arahan terbaru (LOG-014):** SQLite dipilih untuk development; tidak memasang MariaDB lokal atau menghapus matriks kompatibilitas CI. Reviewer memilih menuntaskan CI CORE-01 sebelum CORE-03 dan mengizinkan branch khusus, commit, serta push fondasi ke repository miliknya (bukan ke main). Hasil remote harus dicatat setelah run selesai, bukan diasumsikan dari test lokal.
 
@@ -50,7 +52,7 @@ Open `/login` for the Indonesian Livewire/Blade form, styled with Tailwind and b
 
 Core/Modules placeholder directories and `config/modules.php` exist, with all unreleased modules disabled. Non-production Eloquent lazy-loading prevention is enabled. Permanent Pint PSR-12 and Larastan level 6 configurations and Composer `lint`/`analyse` scripts are available. CI is defined in `.github/workflows/ci.yml` for PHP 8.5 with SQLite and MariaDB 10.11.
 
-**Bukti CI terbaru (LOG-014):** [Run 40268711517](https://github.com/shadri-zulkurniadi/Net/actions/runs/40268711517) pada `ffe4afe` lulus untuk kedua job SQLite/MariaDB, termasuk dependency install, Composer validate/platform, build, Pint, Larastan, dan test. Tidak ada server MariaDB lokal yang dipasang. Matriks kedua DB sempat dinonaktifkan pada LOG-023 dan dipulihkan pada LOG-025; belum ada run baru untuk tip `core-03-support`.
+**Bukti CI terbaru (LOG-014):** [Run 40268711517](https://github.com/shadri-zulkurniadi/Net/actions/runs/40268711517) pada `ffe4afe` lulus untuk kedua job SQLite/MariaDB, termasuk dependency install, Composer validate/platform, build, Pint, Larastan, dan test. Tidak ada server MariaDB lokal yang dipasang. Matriks kedua DB sempat dinonaktifkan pada LOG-023 dan dipulihkan pada LOG-025; run untuk tip `bcbbe86` terpicu saat push LOG-026 tetapi statusnya belum terverifikasi dari mesin ini.
 
 ApexCharts is deferred until the reporting module needs it and its license is reviewed. Alpine comes from Livewire; no separate Alpine npm dependency is installed. No Flux, Volt, Sail, Docker, or global Laravel installer is needed.
 
@@ -84,7 +86,7 @@ Use the repository lockfiles. Do not run `composer update` or `npm update` just 
 
 The local PHP installation is managed by WinGet. Its `php.ini` is in the same directory as `php.exe`; find it with `php --ini`. Enabled DLL extensions: curl, openssl, mbstring, intl, fileinfo, exif, gd, zip, pdo_sqlite, sqlite3, pdo_mysql, and sodium. PHP also supplies built-in XML, DOM, bcmath, and other required modules. This is a development configuration with error display enabled, not a production PHP configuration. Recheck the INI after a WinGet upgrade.
 
-Composer is installed in `%LOCALAPPDATA%\Programs\Composer` with a `composer.cmd` launcher on the user PATH. `vendor` and `node_modules` are ignored by Git; lockfiles and the reviewed foundation were committed/pushed on the approved `core-01-foundation` branch at `ffe4afe` (LOG-014), not merged into main. No credentials belong in the manifests or source control.
+Composer is installed in `%LOCALAPPDATA%\Programs\Composer` with a `composer.cmd` launcher on the user PATH. `vendor` and `node_modules` are ignored by Git; lockfiles and the reviewed foundation were committed/pushed on the approved `core-01-foundation` branch at `ffe4afe` (LOG-014), and the foundation plus the CORE-03/04 checkpoint are now on `main` at `bcbbe86` (LOG-023/LOG-026). No credentials belong in the manifests or source control.
 
 ### Checks completed
 

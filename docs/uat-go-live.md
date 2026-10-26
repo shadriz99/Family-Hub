@@ -9,6 +9,8 @@ LOG-023: SQLite menjadi target aktif sementara; MariaDB ditunda dan belum boleh 
 
 LOG-025: reviewer menyatakan CORE-03 selesai dan MariaDB dikembalikan ke CI. Matriks SQLite/MariaDB dipulihkan pada branch support, tetapi belum ada run baru, belum ada bukti UAT, dan CORE-04/bootstrap household masih parsial. Checkpoint ini tidak mengubah status rilis.
 
+LOG-026: checkpoint CORE-03/04 kini ada di `main` (`bcbbe86`) setelah push dan merge yang disetujui reviewer. Hasil CI remote belum terverifikasi dan tidak ada skenario UAT yang dijalankan; status UAT/produksi tidak berubah.
+
 | Item | Nilai |
 |---|---|
 | Versi/commit yang diuji | |
