@@ -108,6 +108,8 @@ Pengelompokan dana **Tabungan & Investasi** serta pencatatan setoran/transfer ma
 - **Setiap modul WAJIB punya test isolasi**: user household A mendapat 404 saat mengakses resource household B (by ID langsung, via Livewire action, dan via ekspor).
 - Job queue, scheduler, dan command yang memproses data household WAJIB membawa household ID secara eksplisit dan menginisialisasi konteks tenant untuk setiap pekerjaan. Jangan mengandalkan konteks request atau global scope sebagai satu-satunya batas isolasi; konteks yang hilang harus gagal tertutup.
 
+**Status implementasi (LOG-024):** `App\Core\Support\HouseholdContext` (singleton, `use`/`forget`/`current`, gagal tertutup), helper `currentHousehold()`, `BelongsToHousehold` + `HouseholdScope`, dan auto-fill/validasi `household_id` tersedia. Trait baru diterapkan pada `HouseholdFinancePeriodSetting`; `HouseholdMember` masih di-scope eksplisit oleh policy/action, dan `Activity` tidak memiliki kolom `household_id`. Middleware/job yang menginisialisasi konteks serta test isolasi lintas modul belum ada.
+
 ---
 
 ## 3. Tech Stack (Approved List)
@@ -410,7 +412,9 @@ $p->previous($period); $p->next($period);
 ```
 - **Semua** fitur Finance yang bicara "bulan ini" WAJIB memakai PeriodResolver.
 
-**Checkpoint CORE-03 (LOG-016):** mesin perhitungan tersedia melalui `new PeriodResolver($history, $timezone)` dengan history berurutan berbentuk `list<array{effective_on: string, start_day: int}>`. History kosong, tanggal tidak valid, hari di luar 1-28, duplikasi/urutan terbalik, dan perubahan di luar batas periode lama ditolak eksplisit. Baris pertama berlaku juga untuk tanggal sebelum pembuatannya; baris perubahan berikutnya menciptakan batas transisi, lalu mengikuti hari baru berikutnya. `Period` memakai CarbonImmutable dalam timezone household, awal hari dan akhir hari inklusif; key tanggal lokal. Factory `for($household)` dan pengambilan history dari DB tetap menunggu model/relasi CORE-04, bukan diganti model dummy. API lain (`current/fromKey/forDate/previous/next`) sudah diuji mandiri; penyimpanan, preview perubahan, dan pemindahan budget belum diimplementasikan.
+**Checkpoint CORE-03 (LOG-016):** mesin perhitungan tersedia melalui `new PeriodResolver($history, $timezone)` dengan history berurutan berbentuk `list<array{effective_on: string, start_day: int}>`. History kosong, tanggal tidak valid, hari di luar 1-28, duplikasi/urutan terbalik, dan perubahan di luar batas periode lama ditolak eksplisit. Baris pertama berlaku juga untuk tanggal sebelum pembuatannya; baris perubahan berikutnya menciptakan batas transisi, lalu mengikuti hari baru berikutnya. `Period` memakai CarbonImmutable dalam timezone household, awal hari dan akhir hari inklusif; key tanggal lokal. API lain (`current/fromKey/forDate/previous/next`) sudah diuji mandiri.
+
+**Checkpoint tenant (LOG-024):** `PeriodResolver::for($household)` membaca histori dari `household_finance_period_settings` dan timezone household; household parameter adalah batas tenant sehingga factory tidak bergantung pada konteks ambient dan aman dipakai job. Histori kosong tetap ditolak. Tenant context/scope tersedia untuk model domain; penerapan ke seluruh model modul, bootstrap histori saat household dibuat, preview perubahan setting, dan pemindahan budget belum diimplementasikan.
 
 ### 7.3 Calendar Contract
 ```php

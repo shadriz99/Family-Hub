@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Core\Enums\MemberRole;
 use App\Core\Models\Household;
 use App\Core\Models\HouseholdMember;
+use App\Core\Support\HouseholdContext;
 use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -16,6 +17,7 @@ uses(RefreshDatabase::class);
 beforeEach(function (): void {
     $this->user = User::create(['name' => 'Owner', 'email' => 'owner@example.test', 'password' => 'test-password']);
     $this->household = Household::create(['name' => 'Synthetic household']);
+    app(HouseholdContext::class)->use($this->household);
 });
 
 it('uses ULIDs and exposes real household relationships and period history', function (): void {

@@ -1,11 +1,11 @@
 # Development Setup dan Rencana - Family Hub
 
 **Baseline:** 2026-10-26
-**Status:** CORE-01 diterima untuk kelanjutan development (LOG-015). Checkpoint CORE-03A dan CORE-04 tersedia pada `core-03-support`; CORE-03/04 masih parsial.
+**Status:** CORE-01 diterima untuk kelanjutan development (LOG-015). Checkpoint CORE-03A, CORE-04, dan CORE-03B tersedia pada `core-03-support`; CORE-03/04 masih parsial dan belum dipublikasikan ulang.
 
 **Keputusan aktif LOG-023:** reviewer menunda MariaDB dan menjadikan SQLite satu-satunya target CI aktif. `core-01-foundation` sudah di-fast-forward ke main tanpa membawa `core-03-support`. Branch support harus mengintegrasikan main dan lulus pemeriksaan baru sebelum evaluasi merge; kegagalan MariaDB lama tidak boleh disebut lulus. Tidak ada migration/seed aplikasi atau provisioning akun.
 
-**Integrasi support (batch ini):** `main` di-merge ke `core-03-support` secara lokal; konflik dokumen diselesaikan dengan mempertahankan histori LOG-015 sampai LOG-023 dan keputusan SQLite terbaru. CI branch support diselaraskan ke SQLite-only. Hasil verifikasi dicatat pada entri logbook batch ini; merge/push ke main tetap menunggu reviewer.
+**Integrasi support (LOG-024):** `main` di-merge ke `core-03-support` secara lokal (merge commit `1cd85ae`); konflik dokumen diselesaikan dengan mempertahankan histori LOG-015 sampai LOG-023 dan keputusan SQLite terbaru. CI branch support diselaraskan ke SQLite-only plus `npm test`. Setelah merge 139 test/1546 assertion lulus; hasil CORE-03B dicatat pada paragraf checkpoint di bawah. Merge/push ke main tetap menunggu reviewer.
 
 **Arahan terbaru (LOG-014):** SQLite dipilih untuk development; tidak memasang MariaDB lokal atau menghapus matriks kompatibilitas CI. Reviewer memilih menuntaskan CI CORE-01 sebelum CORE-03 dan mengizinkan branch khusus, commit, serta push fondasi ke repository miliknya (bukan ke main). Hasil remote harus dicatat setelah run selesai, bukan diasumsikan dari test lokal.
 
@@ -28,6 +28,8 @@ Dokumen ini menggabungkan setup environment aktual dan rencana implementasi. Riw
 **Checkpoint policy (LOG-020):** HouseholdPolicy didaftarkan eksplisit ke Laravel Gate. Owner/partner mengikuti matriks Masterplan untuk view/update/invite/cancel/remove/transfer/delete/leave; outsider, guest, dan admin tanpa membership ditolak. Query membership terbaru menghindari akses dari role/relasi stale dan household terhapus. 19 test policy/46 assertion serta regression total 120 test/1467 assertion, Pint/Larastan lulus lokal. Policy tidak menjalankan aksi, memilih slot, memverifikasi token undangan, atau memberi akses admin domain. CORE-04 tetap parsial: berikutnya action/transaksi membership, bootstrap histori, rollback dan konkurensi kedua DB; integrasi 03B menyusul. Tidak ada route baru atau migration DB aplikasi.
 
 **Checkpoint action (LOG-021):** `RemoveHouseholdMember` menangani partner keluar atau owner mengeluarkan partner; `TransferHouseholdOwnership` menukar role tanpa mengubah slot, warna, atau joined_at. Kedua action mengunci household aktif, memanggil Gate dan membaca membership terkini di dalam transaksi. Audit Spatie ditulis sinkron dalam transaksi yang sama, memakai ULID untuk log dan morph reference; kegagalan audit membatalkan mutasi. Test baru 19 kasus/79 assertion; total 139 test PHP/1546 assertion, Pint/Larastan lulus. Migrate/rollback/re-migrate semua tabel lulus pada SQLite in-memory, bukan DB aplikasi. Ini fondasi backend membership CORE-04 untuk caller CORE-14 nanti, bukan penyelesaian UI/pengaturan CORE-14. Berikutnya admission/slot melalui undangan CORE-05, bootstrap household/history dan bukti konkurensi SQLite/MariaDB; CORE-04 tetap parsial dan 03B belum selesai. Tidak ada route/action publik untuk bergabung atau provisioning bebas.
+
+**Checkpoint tenant dan resolver (LOG-024):** `HouseholdContext`, helper `currentHousehold()`, trait `BelongsToHousehold` + `HouseholdScope`, dan `PeriodResolver::for($household)` tersedia. Scope dan auto-fill/validasi `household_id` gagal tertutup bila konteks tidak ada; resolver membaca histori/timezone household tanpa bergantung konteks ambient. 5 test tenant baru/16 assertion; total 144 test PHP/1562 assertion, 4 test JS, Pint/Larastan/build lulus. Trait baru diterapkan pada `HouseholdFinancePeriodSetting`; `HouseholdMember` masih scoped eksplisit via policy/action dan `Activity` tidak memiliki `household_id`. Belum ada middleware/job context, bootstrap histori household, admission CORE-05, atau bukti konkurensi; CORE-03/04 tetap parsial.
 
 ### Installed baseline
 
@@ -94,7 +96,7 @@ Composer is installed in `%LOCALAPPDATA%\Programs\Composer` with a `composer.cmd
 - `npm audit`: no vulnerabilities reported, including optional dependencies.
 - PHP dependency autoload and an in-memory SQLite query succeed without generating an application database.
 - Scaffold package discovery and `php artisan --version` succeed (Laravel Framework 13.38.0).
-- `composer test`: current CORE-03 local regression passes 94 tests/1407 assertions; foundation/auth, Money, PeriodResolver, static components, and money-input/range validation. Auth tests use synthetic users and SQLite in-memory. Published CORE-01 CI evidence remains at `ffe4afe`; newer local tests are not claimed as remote CI coverage.
+- `composer test`: current CORE-03 local regression passes 144 tests/1562 assertions; foundation/auth, Money, PeriodResolver, tenant isolation, static components, and money-input/range validation. Auth tests use synthetic users and SQLite in-memory. Published CORE-01 CI evidence remains at `ffe4afe`; newer local tests are not claimed as remote CI coverage.
 - `npm test`: 4 Node tests pass for safe integer parsing, invalid/range input, stale-value clearing, cursor placement and incremental typing/backspace. No additional test dependency.
 - PSR-12 Pint check passes on scaffold PHP source.
 - `npm run build` succeeds; live welcome, `/up`, and referenced local built assets return HTTP 200 on the loopback server.
@@ -126,7 +128,7 @@ Composer is installed in `%LOCALAPPDATA%\Programs\Composer` with a `composer.cmd
 | A. Repository, discovery, keputusan stack | Selesai untuk persiapan | [LOG-001 sampai LOG-003](logbook.md#log-001---repository-dan-tooling-dasar); keputusan open questions berikutnya tetap diperlukan |
 | B. Dependency dan dokumentasi | Selesai untuk persiapan | [LOG-004](logbook.md#log-004---manifest-dan-instalasi-dependency-tanpa-coding-aplikasi), [LOG-005](logbook.md#log-005---konsolidasi-dokumentasi), [LOG-006](logbook.md#log-006---logbook-dan-rencana-development), [LOG-007](logbook.md#log-007---penggabungan-setup-dan-rencana), [LOG-008](logbook.md#log-008---skill-sinkronisasi-dokumentasi) |
 | C. CORE-01 | Diterima untuk kelanjutan development | [LOG-011](logbook.md#log-011---checkpoint-auth-core-01), [LOG-013](logbook.md#log-013---boost-melalui-terminal-perantara), [LOG-014](logbook.md#log-014---publikasi-fondasi-untuk-ci-core-01); arahan lanjut reviewer LOG-015; bukan acceptance produksi |
-| D. Core lainnya | CORE-03/04 parsial | LOG-019: urutan 03A → 04 → 03B disetujui; skema/model household dan ULID tersedia; policy/aksi/konkurensi/tenant serta gap pointer/keyboard belum selesai |
+| D. Core lainnya | CORE-03/04 parsial; CORE-03B lokal | LOG-019: urutan 03A → 04 → 03B disetujui; LOG-024: tenant scope/konteks dan `PeriodResolver::for` tersedia, trait terbatas pada period settings; middleware/job context, bootstrap histori, admission, dan konkurensi belum selesai |
 | E. Finance | Belum dimulai | FIN-01 sampai FIN-16 |
 | F. Organizer | Belum dimulai | ORG-01 sampai ORG-13 |
 | G. Asset | Belum dimulai | AST-01 sampai AST-12 |
@@ -154,7 +156,7 @@ Urutan berikut memenuhi dependensi utama; pekerjaan yang independen tetap dapat 
 
 | Urutan | Task | Implementasi / bukti yang diharapkan |
 |---|---|---|
-| 1 | CORE-03 | Money, PeriodResolver, tenant support, komponen uang/tanggal; uji parser, perubahan periode, tahun kabisat, dan histori |
+| 1 | CORE-03 | Money, PeriodResolver, tenant support, komponen uang/tanggal; uji parser, perubahan periode, tahun kabisat, dan histori. Status LOG-024: Money/komponen/tenant+resolver lokal selesai; middleware/job context belum |
 | 2 | CORE-04 | Household/member, role/policy, slot atomik maksimal dua anggota; uji isolasi dan konkurensi SQLite/MariaDB |
 | 3 | CORE-05 | Invite-only, hash token, expiry/reuse/revoke, alur login/reset; uji registrasi tanpa undangan ditolak |
 | 4 | CORE-06 | Onboarding household, timezone, periode, undang partner opsional |

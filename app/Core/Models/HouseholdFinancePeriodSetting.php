@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace App\Core\Models;
 
+use App\Core\Support\BelongsToHousehold;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $start_day
+ * @property \Carbon\CarbonImmutable $effective_on
+ */
 class HouseholdFinancePeriodSetting extends Model
 {
+    use BelongsToHousehold;
     use HasUlids;
 
     protected $fillable = ['start_day', 'effective_on'];
@@ -17,11 +22,5 @@ class HouseholdFinancePeriodSetting extends Model
     protected function casts(): array
     {
         return ['start_day' => 'integer', 'effective_on' => 'immutable_date'];
-    }
-
-    /** @return BelongsTo<Household, $this> */
-    public function household(): BelongsTo
-    {
-        return $this->belongsTo(Household::class);
     }
 }

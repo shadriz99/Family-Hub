@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Core\Support;
 
+use App\Core\Models\Household;
+use App\Core\Models\HouseholdFinancePeriodSetting;
 use Carbon\CarbonImmutable;
 use DateTimeInterface;
 use DateTimeZone;
@@ -45,6 +47,26 @@ final class PeriodResolver
     public function current(): Period
     {
         return $this->forDate(CarbonImmutable::now($this->timezone));
+    }
+
+    /**
+     * Builds a resolver from the household's persisted period history and timezone.
+     * The explicit household is the tenant boundary, so this also works in jobs
+     * without an ambient household context.
+     */
+    public static function for(Household $household): self
+    {
+        $history = $household->financePeriodSettings()
+            ->withoutGlobalScope(HouseholdScope::class)
+            ->get()
+            ->map(static fn (HouseholdFinancePeriodSetting $setting): array => [
+                'effective_on' => $setting->effective_on->toDateString(),
+                'start_day' => $setting->start_day,
+            ])
+            ->values()
+            ->all();
+
+        return new self($history, $household->timezone);
     }
 
     public function fromKey(string $key): Period

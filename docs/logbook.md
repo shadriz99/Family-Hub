@@ -1,7 +1,7 @@
 # Logbook Development - Family Hub
 
 **Diperbarui:** 2026-10-26
-**Status:** Kelanjutan sesuai development plan diizinkan; checkpoint fondasi CORE-01 lulus lokal, task masih parsial. Belum ada rilis aplikasi.
+**Status:** CORE-01 diterima untuk kelanjutan development; CORE-03/04 masih parsial. Tenant support + adapter household PeriodResolver (CORE-03B) tersedia di branch support, belum dipublikasikan. Belum ada rilis aplikasi.
 
 Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan selesai. [Rencana development](development-plan.md) menentukan langkah berikutnya; spesifikasi dan acceptance criteria tetap mengikuti [Masterplan](00-MASTERPLAN.md) dan dokumen modul.
 
@@ -9,12 +9,12 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 
 | Area | Status aktual | Bukti / tindak lanjut |
 |---|---|---|
-| Repository | Fondasi dipublikasikan di branch `core-01-foundation` | LOG-014: commit `ffe4afe` sudah di-push dengan izin reviewer; main tidak diubah |
+| Repository | Fondasi dipublikasikan di branch `core-01-foundation`; support terintegrasi lokal dengan main | LOG-014: commit `ffe4afe` sudah di-push dengan izin reviewer; LOG-024: `main` di-merge lokal ke `core-03-support`, belum di-push |
 | Environment lokal | Git, PHP, Composer, Node/npm dapat dijalankan | Rincian dan batas setup di [setup dan rencana development](development-plan.md) |
 | Dependency PHP/npm | Terpasang, lockfile tersedia | Composer solve, platform check, audit, dan smoke check lulus pada waktu setup |
 | CORE-01 | **Diterima untuk kelanjutan development** | LOG-011/013/014: fondasi, auth, Boost, CI kedua DB; LOG-015: reviewer meminta lanjut; bukan UAT/produksi |
 | Boost | Terminal stdio disetujui sebagai transport | LOG-013: initialize, daftar 10 tool, dan dokumentasi lulus; UI Copilot belum terhubung tetapi bukan blocker |
-| CORE-02 sampai CORE-16 | CORE-03 dan CORE-04 parsial | LOG-015–018: utilitas/komponen; LOG-019: urutan disetujui dan skema/model household/ULID; tenant/otorisasi/konkurensi belum selesai |
+| CORE-02 sampai CORE-16 | CORE-03 dan CORE-04 parsial; CORE-03B lokal | LOG-015–018: utilitas/komponen; LOG-019: urutan disetujui; LOG-020–021: policy/action; LOG-024: tenant scope, konteks household, `PeriodResolver::for`. Middleware/job context, bootstrap histori, admission, dan konkurensi belum selesai |
 | Finance / Organizer / Asset | Belum dimulai | Mockup adalah prototype yang sudah ada saat clone, bukan implementasi modul |
 | Produksi / UAT | Belum dijalankan | Tidak ada bukti deploy, restore, atau penerimaan pengguna |
 
@@ -235,6 +235,14 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 - Dokumen Masterplan, ADR, plan/log, instruksi dan runbook/UAT diselaraskan dengan keputusan sementara. Spesifikasi ketiga modul dan backup tidak memerlukan perubahan kontrak; schema/arsitektur runtime tetap sama. Branch support harus mengintegrasikan main dan lulus CI baru sebelum evaluasi merge.
 - Merge lokal berhasil fast-forward; validasi/push dan CI terbaru dicatat berdasarkan hasil aktual berikutnya. Tidak menjalankan migration/seed DB aplikasi, membuat akun atau menyatakan produksi siap.
 - **Validasi lokal setelah merge:** 18 test fondasi/66 assertion, Pint, Larastan dan diff whitespace lulus. Tidak mengklaim 139 test branch support tersedia pada main. Build/browser tidak diulang karena tidak ada perubahan UI/aset. Publikasi main dan run CI diperiksa setelah commit keputusan SQLite.
+
+### LOG-024 - Integrasi main dan tenant support CORE-03B
+
+- `main` (`a729dfe`, keputusan SQLite-only) di-merge ke `core-03-support` secara lokal; konflik `docs/logbook.md` dan `docs/development-plan.md` diselesaikan dengan mempertahankan seluruh histori LOG-015 sampai LOG-023 dan keputusan terbaru. CI branch menjadi satu job SQLite plus `npm test`. Merge commit lokal `1cd85ae`; tidak ada push atau merge ke main.
+- CORE-03B: `HouseholdContext` singleton (`use`/`forget`/`current`, gagal tertutup), helper global `currentHousehold()`, trait `BelongsToHousehold` dengan `HouseholdScope` (global scope `household_id`) dan auto-fill/validasi `household_id` saat creating. Trait diterapkan pada `HouseholdFinancePeriodSetting`; `Household` mendapat default atribut timezone `Asia/Jakarta`, start day 1, dan integrasi aktif agar model baru sesuai default skema. `PeriodResolver::for(Household)` membaca histori dan timezone household; global scope dilewati secara eksplisit karena household parameter adalah batas tenant, sehingga aman dipakai job tanpa konteks ambient.
+- Test baru `HouseholdTenantTest` (5 kasus/16 assertion): auto-fill dan isolasi baca dua household, gagal tertutup tanpa konteks (query, helper, create), penolakan tulis untuk household lain, resolver dari histori DB tanpa konteks ambient, timezone household, dan histori kosong. `HouseholdSchemaTest` menetapkan konteks household pada fixture.
+- **Verifikasi:** setelah merge 139 test PHP/1546 assertion; setelah CORE-03B 144 test PHP/1562 assertion, 4 test JS (`npm test`), `composer lint`, `composer analyse`, `npm run build`, dan `git diff --check` lulus pada SQLite in-memory. Tidak ada UI/browser, migration/seed DB aplikasi, akun, dependency baru, push, atau CI baru.
+- **Batas:** trait belum diterapkan pada `HouseholdMember` (akses via policy dan eksplisit per household) atau `Activity` (tabel tanpa kolom `household_id`), dan belum ada model modul. Middleware/command/job yang menginisialisasi konteks belum dibangun. Bootstrap household + histori periode, admission lewat undangan CORE-05, dan bukti konkurensi tetap pekerjaan CORE-04. Publikasi/push dan evaluasi merge ke main menunggu reviewer.
 
 ## Aturan pembaruan berikutnya
 
