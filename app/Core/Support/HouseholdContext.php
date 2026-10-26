@@ -25,6 +25,11 @@ final class HouseholdContext
         $this->household = null;
     }
 
+    public function currentOrNull(): ?Household
+    {
+        return $this->household;
+    }
+
     public function current(): Household
     {
         return $this->household ?? throw new LogicException('No household context is active.');

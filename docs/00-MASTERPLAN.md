@@ -108,7 +108,7 @@ Pengelompokan dana **Tabungan & Investasi** serta pencatatan setoran/transfer ma
 - **Setiap modul WAJIB punya test isolasi**: user household A mendapat 404 saat mengakses resource household B (by ID langsung, via Livewire action, dan via ekspor).
 - Job queue, scheduler, dan command yang memproses data household WAJIB membawa household ID secara eksplisit dan menginisialisasi konteks tenant untuk setiap pekerjaan. Jangan mengandalkan konteks request atau global scope sebagai satu-satunya batas isolasi; konteks yang hilang harus gagal tertutup.
 
-**Status implementasi (LOG-024):** `App\Core\Support\HouseholdContext` (singleton, `use`/`forget`/`current`, gagal tertutup), helper `currentHousehold()`, `BelongsToHousehold` + `HouseholdScope`, dan auto-fill/validasi `household_id` tersedia. Trait baru diterapkan pada `HouseholdFinancePeriodSetting`; `HouseholdMember` masih di-scope eksplisit oleh policy/action, dan `Activity` tidak memiliki kolom `household_id`. Middleware/job yang menginisialisasi konteks serta test isolasi lintas modul belum ada.
+**Status implementasi (LOG-024, diperbarui LOG-030):** `App\Core\Support\HouseholdContext` (singleton, `use`/`forget`/`current`/`currentOrNull`, gagal tertutup), helper `currentHousehold()`, `BelongsToHousehold` + `HouseholdScope`, dan auto-fill/validasi `household_id` tersedia. Trait baru diterapkan pada `HouseholdFinancePeriodSetting`; `HouseholdMember` masih di-scope eksplisit oleh policy/action, dan `Activity` tidak memiliki kolom `household_id`. Middleware `UseHouseholdContext` memasang konteks untuk request `web` dari membership user terautentikasi, tetapi job/command belum punya bootstrap konteks dan test isolasi lintas modul belum ada.
 
 ---
 
