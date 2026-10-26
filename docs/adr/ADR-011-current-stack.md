@@ -6,6 +6,10 @@
 
 ## Context
 
+### Temporary SQLite-only gate (LOG-023, 2026-10-26)
+
+The reviewer explicitly deferred MariaDB and selected SQLite first. CI now tests SQLite only; the dual-database acceptance gate below is temporarily deferred, not satisfied for new changes. Restore and verify MariaDB before claiming its compatibility. This does not change domain contracts or authorize deployment. Only the tested CORE-01 foundation is merged to main; CORE-03/04 remain on their separate support branch.
+
 The project has not been scaffolded. PHP 8.5.12 and Node 24.22.1 are available locally. Upstream stable versions have advanced since the original PHP 8.3 / Laravel 12 / Livewire 3 / Pest 3 plan.
 
 Breeze 2.4.2 accepts Laravel 13 at the package level but its Livewire installer requests Livewire 3, Volt 1, and Tailwind 3. It cannot scaffold the approved latest-major combination unchanged. The complete official Livewire starter kit also introduces dependencies outside the approved list, so copying that kit wholesale is not the chosen solution.

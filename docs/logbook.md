@@ -228,6 +228,13 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 - Ini catatan persiapan, bukan bukti push atau CI baru. SHA hasil commit, konfirmasi remote dan CI dicatat setelah tersedia. CORE-03/04 tetap parsial; concurrency SQLite/MariaDB, bootstrap/invitation, tenant/resolver dan gap browser tetap mengikuti LOG-021/sebelumnya. Tidak menjalankan migration/seed aplikasi atau membuat akun.
 - **Hasil setelah publikasi:** commit `bcf6e4d` (CORE-03A), `bc3ea37` (CORE-04), dan `a08a5ae` (docs checkpoint) berhasil di-push ke `origin/core-03-support`; `git ls-remote` mengonfirmasi tip `a08a5ae7a2172576e381ba9dc889d4640adc0d26`. Remote main tetap `750a946ec4b0967a590f50ffbe81deb8938f1e16`, tidak ada PR/merge. Working tree bersih setelah push. [CI run 40286560448](https://github.com/shadri-zulkurniadi/Net/actions/runs/40286560448) untuk tip itu terpantau `in_progress`, bukan bukti kelulusan. Hasil push dicatat dalam follow-up docs-only `[skip ci]` agar tidak menggandakan CI kode identik.
 - Dokumen plan/log diperbarui untuk otorisasi publikasi; tidak ada perubahan struktur/fitur pada batch Git ini. Dokumen lain tetap mengikuti checkpoint implementasi LOG-021.
+### LOG-023 - Merge fondasi aman dan fokus SQLite
+
+- Reviewer meminta menunda MariaDB, menggunakan SQLite dahulu dan merge branch yang aman. Berdasarkan rekomendasi sebelumnya, `core-01-foundation` (`42bda38`) di-fast-forward ke main; `core-03-support` tidak di-merge. LOG-015 sampai LOG-022 tetap berada pada branch support yang belum digabung; ID LOG-023 dipakai agar tidak berbenturan saat integrasi berikutnya.
+- CI main diubah menjadi satu job SQLite in-memory, tanpa service/matrix MariaDB dan tanpa pdo_mysql pada setup CI. Build, Pint, Larastan dan test tetap wajib. Ini penundaan target kompatibilitas, bukan perbaikan kegagalan MariaDB pada support run `40286560448` (SQLite success, MariaDB failure).
+- Dokumen Masterplan, ADR, plan/log, instruksi dan runbook/UAT diselaraskan dengan keputusan sementara. Spesifikasi ketiga modul dan backup tidak memerlukan perubahan kontrak; schema/arsitektur runtime tetap sama. Branch support harus mengintegrasikan main dan lulus CI baru sebelum evaluasi merge.
+- Merge lokal berhasil fast-forward; validasi/push dan CI terbaru dicatat berdasarkan hasil aktual berikutnya. Tidak menjalankan migration/seed DB aplikasi, membuat akun atau menyatakan produksi siap.
+- **Validasi lokal setelah merge:** 18 test fondasi/66 assertion, Pint, Larastan dan diff whitespace lulus. Tidak mengklaim 139 test branch support tersedia pada main. Build/browser tidak diulang karena tidak ada perubahan UI/aset. Publikasi main dan run CI diperiksa setelah commit keputusan SQLite.
 
 ## Aturan pembaruan berikutnya
 

@@ -1,11 +1,11 @@
 # Development Setup dan Rencana - Family Hub
 
 **Baseline:** 2026-10-26
-**Status:** CORE-01 diterima untuk kelanjutan development setelah CI lulus; CORE-03 sedang berjalan, belum selesai.
+**Status:** CORE-01 diterima untuk kelanjutan development (LOG-015). Checkpoint CORE-03A dan CORE-04 tersedia pada `core-03-support`; CORE-03/04 masih parsial.
 
-**Otorisasi publikasi (LOG-022):** reviewer meminta commit/push checkpoint lokal LOG-015 sampai LOG-021. Publikasi disiapkan pada `core-03-support`, bukan main; implementasi CORE-03A dan CORE-04 dipisahkan dalam commit, dokumentasi checkpoint disertakan pada batch publikasi yang sama. Preflight ulang lulus: 139 test PHP/1546 assertion, 4 test JS, build Vite, Pint/Larastan dan diff whitespace. Scan marker secret pada inventaris file yang akan dipublikasikan tidak menemukan kecocokan; file env/runtime DB/dependency/build tetap di-ignore. Hasil push/CI harus diverifikasi terpisah; tidak mengubah status parsial CORE-03/04 atau menyatakan MariaDB lulus sebelum run baru selesai.
+**Keputusan aktif LOG-023:** reviewer menunda MariaDB dan menjadikan SQLite satu-satunya target CI aktif. `core-01-foundation` sudah di-fast-forward ke main tanpa membawa `core-03-support`. Branch support harus mengintegrasikan main dan lulus pemeriksaan baru sebelum evaluasi merge; kegagalan MariaDB lama tidak boleh disebut lulus. Tidak ada migration/seed aplikasi atau provisioning akun.
 
-**Hasil publikasi LOG-022:** push branch berhasil dan remote ref dikonfirmasi pada `a08a5ae` (commit kode `bcf6e4d` CORE-03A dan `bc3ea37` CORE-04). Remote main tetap `750a946`; tidak ada PR/merge. [CI run 40286560448](https://github.com/shadri-zulkurniadi/Net/actions/runs/40286560448) terpicu untuk SHA tersebut dan masih `in_progress` saat diperiksa. Catatan hasil publikasi ini dipublikasikan lewat commit docs-only `[skip ci]`; hasil CI tidak boleh diasumsikan.
+**Integrasi support (batch ini):** `main` di-merge ke `core-03-support` secara lokal; konflik dokumen diselesaikan dengan mempertahankan histori LOG-015 sampai LOG-023 dan keputusan SQLite terbaru. CI branch support diselaraskan ke SQLite-only. Hasil verifikasi dicatat pada entri logbook batch ini; merge/push ke main tetap menunggu reviewer.
 
 **Arahan terbaru (LOG-014):** SQLite dipilih untuk development; tidak memasang MariaDB lokal atau menghapus matriks kompatibilitas CI. Reviewer memilih menuntaskan CI CORE-01 sebelum CORE-03 dan mengizinkan branch khusus, commit, serta push fondasi ke repository miliknya (bukan ke main). Hasil remote harus dicatat setelah run selesai, bukan diasumsikan dari test lokal.
 
