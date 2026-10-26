@@ -112,7 +112,7 @@ Composer is installed in `%LOCALAPPDATA%\Programs\Composer` with a `composer.cmd
 - `npm audit`: no vulnerabilities reported, including optional dependencies.
 - PHP dependency autoload and an in-memory SQLite query succeed without generating an application database.
 - Scaffold package discovery and `php artisan --version` succeed (Laravel Framework 13.38.0).
-- `composer test`: current local regression passes 193 tests/1767 assertions; foundation/auth, password reset, invitation acceptance, Money, PeriodResolver, tenant isolation, static components, and money-input/range validation. Auth tests use synthetic users and SQLite in-memory. Published CI evidence remains at `731fb45`; newer local tests are not claimed as remote CI coverage.
+- `composer test`: current local regression passes 196 tests/1778 assertions; foundation/auth, password reset, invitation acceptance and slot-race backstop, Money, PeriodResolver, tenant isolation, static components, and money-input/range validation. Auth tests use synthetic users and SQLite in-memory. Published CI evidence remains at `731fb45`; newer local tests are not claimed as remote CI coverage.
 - `npm test`: 4 Node tests pass for safe integer parsing, invalid/range input, stale-value clearing, cursor placement and incremental typing/backspace. No additional test dependency.
 - PSR-12 Pint check passes on scaffold PHP source.
 - `npm run build` succeeds; live welcome, `/up`, and referenced local built assets return HTTP 200 on the loopback server.
@@ -144,7 +144,7 @@ Composer is installed in `%LOCALAPPDATA%\Programs\Composer` with a `composer.cmd
 | A. Repository, discovery, keputusan stack | Selesai untuk persiapan | [LOG-001 sampai LOG-003](logbook.md#log-001---repository-dan-tooling-dasar); keputusan open questions berikutnya tetap diperlukan |
 | B. Dependency dan dokumentasi | Selesai untuk persiapan | [LOG-004](logbook.md#log-004---manifest-dan-instalasi-dependency-tanpa-coding-aplikasi), [LOG-005](logbook.md#log-005---konsolidasi-dokumentasi), [LOG-006](logbook.md#log-006---logbook-dan-rencana-development), [LOG-007](logbook.md#log-007---penggabungan-setup-dan-rencana), [LOG-008](logbook.md#log-008---skill-sinkronisasi-dokumentasi) |
 | C. CORE-01 | Diterima untuk kelanjutan development | [LOG-011](logbook.md#log-011---checkpoint-auth-core-01), [LOG-013](logbook.md#log-013---boost-melalui-terminal-perantara), [LOG-014](logbook.md#log-014---publikasi-fondasi-untuk-ci-core-01); arahan lanjut reviewer LOG-015; bukan acceptance produksi |
-| D. Core lainnya | CORE-03/04 parsial; CORE-05 backend + email/UI partner | LOG-019: urutan 03A → 04 → 03B disetujui; LOG-024: tenant scope/konteks dan `PeriodResolver::for` tersedia, trait terbatas pada period settings; LOG-030: bootstrap household dan middleware konteks request; LOG-032/LOG-034: undangan partner dengan skema §5.1 (email, type, revoked_at); LOG-036: email undangan, halaman penerimaan partner, reset kata sandi. Konteks job, backfill histori, konkurensi, Alur A admin, dan rate limit undangan belum |
+| D. Core lainnya | CORE-03/04 parsial; CORE-05 backend + email/UI partner | LOG-019: urutan 03A → 04 → 03B disetujui; LOG-024: tenant scope/konteks dan `PeriodResolver::for` tersedia, trait terbatas pada period settings; LOG-030: bootstrap household dan middleware konteks request; LOG-032/LOG-034: undangan partner dengan skema §5.1 (email, type, revoked_at); LOG-036: email undangan, halaman penerimaan partner, reset kata sandi; LOG-039: konkurensi slot partner terbukti. Konteks job, backfill histori, pengecualian trait, Alur A admin, dan rate limit undangan belum |
 | E. Finance | Belum dimulai | FIN-01 sampai FIN-16 |
 | F. Organizer | Belum dimulai | ORG-01 sampai ORG-13 |
 | G. Asset | Belum dimulai | AST-01 sampai AST-12 |
@@ -152,7 +152,7 @@ Composer is installed in `%LOCALAPPDATA%\Programs\Composer` with a `composer.cmd
 
 ## 3. Langkah berikutnya: selesaikan CORE-01
 
-Scaffold standar/server selesai pada LOG-009; tambahan tooling dan fondasi pada LOG-010; auth/frontend dasar pada LOG-011. Langkah 2-6 telah diimplementasikan dan diverifikasi lokal. Gate Boost langkah 7 dipenuhi lewat terminal per LOG-013; langkah 8 lulus di GitHub pada LOG-014. Branch baseline telah dipublikasikan dengan izin reviewer. Langkah berikutnya adalah acceptance reviewer CORE-01, bukan mengulang scaffold atau langsung memulai CORE-03:
+Scaffold standar/server selesai pada LOG-009; tambahan tooling dan fondasi pada LOG-010; auth/frontend dasar pada LOG-011. Langkah 2-6 telah diimplementasikan dan diverifikasi lokal. Gate Boost langkah 7 dipenuhi lewat terminal per LOG-013; langkah 8 lulus di GitHub pada LOG-014. Branch baseline telah dipublikasikan dengan izin reviewer. **Bagian ini kini historis:** reviewer menerima CORE-01 pada LOG-015, sehingga "langkah berikutnya" bukan lagi acceptance CORE-01 melainkan task Core pada §4. Langkah di bawah dipertahankan sebagai catatan cara fondasi dibangun, bukan instruksi aktif.
 
 1. Tinjau working tree persiapan bersama reviewer; pertahankan manifest, lockfile, mockup, dan dokumentasi yang ada. Tentukan baseline branch/commit tanpa menimpa pekerjaan yang belum di-commit.
 2. Tambahkan scaffold Laravel 13 secara terkontrol ke root repository; jangan menjalankan generator yang menimpa repository atau mengganti lockfile tanpa peninjauan.
@@ -173,8 +173,8 @@ Urutan berikut memenuhi dependensi utama; pekerjaan yang independen tetap dapat 
 | Urutan | Task | Implementasi / bukti yang diharapkan |
 |---|---|---|
 | 1 | CORE-03 | Money, PeriodResolver, tenant support, komponen uang/tanggal; uji parser, perubahan periode, tahun kabisat, dan histori. Status LOG-024: Money/komponen/tenant+resolver lokal selesai; LOG-030 menambahkan middleware konteks request, konteks job belum |
-| 2 | CORE-04 | Household/member, role/policy, slot atomik maksimal dua anggota; uji isolasi dan konkurensi SQLite/MariaDB |
-| 3 | CORE-05 | Invite-only, hash token, expiry/reuse/revoke, alur login/reset; uji registrasi tanpa undangan ditolak. Status LOG-032/LOG-034: backend undangan partner sesuai §5.1 (hash, 7 hari, sekali pakai, revoke bertanda) selesai; LOG-036: email undangan, halaman penerimaan partner (akun baru atau akun lama yang masuk), dan reset kata sandi selesai. Alur A admin, antrean mail, dan rate limit undangan belum |
+| 2 | CORE-04 | Household/member, role/policy, slot atomik maksimal dua anggota; uji isolasi dan konkurensi SQLite/MariaDB. Status LOG-039: konkurensi dibuktikan deterministik (unique `(household_id, slot)` menolak anggota ketiga tanpa guard, race yang kalah gagal tertutup dengan pesan domain, slot unik per household) dan berjalan di kedua engine lewat CI; tidak ada test proses paralel OS-level. Sisa CORE-04: pengecualian trait tenant (P-06) |
+| 3 | CORE-05 | Invite-only, hash token, expiry/reuse/revoke, alur login/reset; uji registrasi tanpa undangan ditolak. Status LOG-032/LOG-034: backend undangan partner sesuai §5.1 (hash, 7 hari, sekali pakai, revoke bertanda) selesai; LOG-036: email undangan, halaman penerimaan partner (akun baru atau akun lama yang masuk), dan reset kata sandi selesai. Sisa: Alur A admin (butuh P-04 dan P-17), rate limit undangan (P-14), antrean mail (CORE-10), dan kebijakan undangan ganda (P-13) |
 | 4 | CORE-06 | Onboarding household, timezone, periode, undang partner opsional |
 | 5 | CORE-07 | Layout/navigasi/FAB, komponen bersama, light/dark; uji mobile 360px dan keyboard |
 | 6 | CORE-08 | Recurrence wrapper/preset/humanize; uji akhir bulan dan batas recurrence |
@@ -184,7 +184,7 @@ Urutan berikut memenuhi dependensi utama; pekerjaan yang independen tetap dapat 
 | 10 | CORE-12 | Dashboard kerangka dari layout dan aggregator; widget modul nonaktif tidak ditampilkan |
 | 11 | CORE-13 | PWA install/offline read-only, update, clear cache pada perubahan auth; uji tidak ada kebocoran cache |
 | 12 | CORE-14 | Profil, household/member, activity log, keamanan; **putuskan Q-M12 sebelum implementasi OTP** |
-| 13 | CORE-15 | Admin household/invite tanpa akses data domain household lain; uji batas akses |
+| 13 | CORE-15 | Panel admin sesuai §5.2 poin 5 dan uji batas akses (AC: admin tidak dapat membuka route data domain household lain). Pembuatan invite household baru oleh admin tetap milik CORE-05 sesuai lingkup masterplan, bukan CORE-15 |
 | 14 | CORE-02 | Siapkan dan uji host Linux bare-metal, Nginx/PHP-FPM, worker/scheduler, zrok, restart service, dan prosedur deploy |
 | 15 | CORE-16 | Backup terenkripsi, ekspor household, alert kegagalan, restore terisolasi; finalisasi bukti operasional |
 

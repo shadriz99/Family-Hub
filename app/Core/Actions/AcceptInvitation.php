@@ -10,6 +10,7 @@ use App\Core\Models\Household;
 use App\Core\Models\HouseholdInvitation;
 use App\Core\Models\HouseholdMember;
 use App\Models\User;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -79,7 +80,15 @@ final class AcceptInvitation
                 'joined_at' => now(),
             ]);
             $member->user()->associate($user);
-            $household->members()->save($member);
+
+            try {
+                $household->members()->save($member);
+            } catch (UniqueConstraintViolationException) {
+                // Another acceptance took the last slot (or the same account) after the
+                // checks above. The unique (household_id, slot) index is the real guard,
+                // so a lost race must fail closed instead of surfacing a 500.
+                throw $this->reject('household.invite_full');
+            }
 
             $invitation->accepted_at = now()->toImmutable();
             $invitation->save();

@@ -1,7 +1,7 @@
 # Logbook Development - Family Hub
 
 **Diperbarui:** 2026-10-26
-**Status:** CORE-01 diterima untuk kelanjutan development; CORE-03 dinyatakan selesai oleh reviewer, CORE-04 masih parsial. LOG-036 menambahkan email undangan, halaman penerimaan partner, dan alur reset kata sandi; CI remote untuk perubahan ini belum terverifikasi. Belum ada rilis aplikasi.
+**Status:** CORE-01 diterima untuk kelanjutan development; CORE-03 dinyatakan selesai oleh reviewer, CORE-04 masih parsial. LOG-036 menambahkan email undangan, halaman penerimaan partner, dan alur reset kata sandi; LOG-039 membuktikan konkurensi slot partner. CI remote untuk perubahan ini belum terverifikasi. Belum ada rilis aplikasi.
 
 Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan selesai. [Rencana development](development-plan.md) menentukan langkah berikutnya; spesifikasi dan acceptance criteria tetap mengikuti [Masterplan](00-MASTERPLAN.md) dan dokumen modul.
 
@@ -360,6 +360,18 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 - Koreksi atas LOG-037: larangan pemasangan Playwright ternyata tidak berada di skill personal (`%USERPROFILE%\.copilot\skills` hanya berisi `ponytail` dan `premium-frontend-ui`), melainkan di skill repo `.github/skills/webapp-testing/SKILL.md` baris 12 ("do not install Playwright automatically") dan baris 14 (pemakaian Playwright hanya lewat MCP atau instalasi lokal). Aturan lama di `.github/copilot-instructions.md` sudah diganti pada LOG-037.
 - Perbaikan: skill `webapp-testing` kini meminta Playwright lebih dulu lewat `playwright-core` di direktori sementara dan Chrome sistem, memakai MCP bila tersedia, fallback Chrome/CDP bila gagal (beserta batas buktinya), dan promosi ke devDependency/CI hanya dengan persetujuan reviewer + ADR. Skill `web-design-reviewer` sudah merujuk Playwright MCP sehingga tidak berubah. `docs/pending.md` P-16 tidak lagi menyebut skill personal dan tinggal menyisakan satu keputusan: permanen temp-only atau promosi ke dependency/CI.
 - Verifikasi: `git diff --check` bersih; `composer lint`, `composer analyse`, dan `composer test` (193 test/1767 assertion) lulus sebelum push. Tidak ada perubahan kode aplikasi, dependency, skema, atau perilaku.
+
+### LOG-039 - Bukti konkurensi slot partner (CORE-04, menutup P-07)
+
+- P-07 ditutup atas keputusan reviewer (2026-10-26) untuk mengerjakan item yang tidak butuh keputusan produk lebih dulu. Masterplan CORE-04 memang sudah mencantumkan "unique household/slot menolak penerimaan undangan bersamaan" dan "test konkurensi SQLite/MariaDB" sebagai AC, jadi ini pekerjaan yang sudah disetujui, bukan keputusan baru.
+- Perilaku: `AcceptInvitation` kini menangkap `Illuminate\Database\UniqueConstraintViolationException` pada penyisipan anggota dan melemparkan `household.invite_full`. Sebelumnya, permintaan yang kalah balapan menghasilkan error 500; sekarang gagal tertutup dengan pesan domain yang sama seperti jalur pra-cek, dan transaksi rollback sehingga undangan tetap pending.
+- Test baru `tests/Feature/InvitationConcurrencyTest.php` (3 kasus/11 assertion):
+  1. Interleaving deterministik lewat event `HouseholdMember::creating`: baris pesaing mengambil slot 2 setelah daftar slot dibaca tetapi sebelum insert, lalu penerimaan harus gagal dengan `household.invite_full`, household tetap 1 anggota (rollback), undangan belum diterima, dan tidak ada audit `partner_joined`.
+  2. Tanpa guard aplikasi, insert mentah anggota ketiga pada slot yang sama ditolak `UniqueConstraintViolationException` dan household tetap 2 anggota — ini backstop yang sebenarnya, dan test berjalan di SQLite maupun MariaDB lewat CI.
+  3. `(household_id, slot)` unik per household, bukan global: slot 2 di household lain tetap boleh.
+- Batas yang dicatat jujur: tidak ada test proses paralel OS-level (dua worker sungguhan). Test membuktikan constraint database dan penanganan jalur kalah-balapan secara deterministik; bukti paralelisme nyata hanya bisa didapat dari MariaDB CI dan tidak diklaim di sini.
+- Verifikasi lokal: `composer lint` dan `composer analyse` bersih, `composer test` **196 test/1778 assertion** lulus (sebelumnya 193/1767).
+- Dokumen diselaraskan: logbook (entri ini + tabel status), `docs/development-plan.md` (§4 CORE-04/CORE-05/CORE-15, tabel posisi, jumlah test, §3 ditandai historis), dan `docs/pending.md` (P-07 pindah ke riwayat penutupan; P-09/P-10/P-13/P-15/P-16 dipindah ke bagian A sesuai aturan file; P-17 baru untuk provisioning system admin pertama). CI untuk commit ini belum terverifikasi (P-09).
 
 ## Aturan pembaruan berikutnya
 
