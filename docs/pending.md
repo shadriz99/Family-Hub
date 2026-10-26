@@ -26,7 +26,7 @@
 | ID | Topik | Status / alasan ditunda | Langkah berikutnya |
 |---|---|---|---|
 | P-08 | Bootstrap konteks tenant untuk job/command | Ditunda karena belum ada job/command nyata (LOG-030). Job nanti wajib membawa household ID eksplisit dan memasang konteks sendiri | Bangun base/middleware job saat job pertama (CORE-09/CORE-10) dibuat |
-| P-09 | Bukti CI untuk `528adbd` | Menunggu laporan reviewer; repo privat tanpa GitHub CLI/API terautentikasi | Catat hasil SQLite/MariaDB, tutup item bila hijau |
+| P-09 | Bukti CI untuk commit setelah `731fb45` | Menunggu laporan reviewer; repo privat tanpa GitHub CLI/API terautentikasi. `d077170` (LOG-036) sudah di-push dan workflow akan berjalan otomatis, tetapi hasilnya belum bisa dibaca dari mesin ini | Catat hasil SQLite/MariaDB, tutup item bila hijau; jangan sebut LOG-036 lulus CI sebelum ada laporan |
 | P-10 | Branch lama `core-01-foundation` dan `core-03-support` | Sejak LOG-035 semua pekerjaan langsung di `main`; `core-03-support` tidak lagi disinkronkan dan tertinggal di `28ebeb2`, `core-01-foundation` tetap di `42bda38`. Keduanya sudah menjadi ancestor `main` | Putuskan hapus branch remote atau biarkan sebagai arsip |
 | P-12 | Modul Finance/Organizer/Asset | `config/modules.php` menonaktifkan ketiganya; belum ada izin reviewer untuk fitur modul | Tunggu keputusan reviewer atas task modul |
 | P-13 | Undangan ganda yang masih pending | `InviteHouseholdMember` tidak mencegah lebih dari satu undangan pending per household; token kedua otomatis gagal karena slot penuh | Putuskan bila perlu undangan tunggal atau pencabutan otomatis saat undangan baru dibuat |
