@@ -171,6 +171,8 @@ Sebelum menandai CORE-01 selesai, wajib jalankan resolusi Composer penuh pada PH
 
 ---
 
+**Keputusan sementara LOG-023 (2026-10-26):** reviewer memilih SQLite dahulu dan menunda MariaDB. CI aktif hanya menjalankan SQLite; kewajiban matriks SQLite/MariaDB dalam task/DoD dokumen ini ditunda sampai MariaDB diaktifkan kembali dan diverifikasi. Jangan menyatakan kompatibilitas perubahan baru dengan MariaDB atau menyembunyikan run gagal sebagai kelulusan. Branch fondasi aman di-merge ke main; checkpoint CORE-03/04 pada `core-03-support` belum di-merge. Tidak ada perubahan kontrak domain atau izin deployment.
+
 ## 4. Arsitektur — Modular Monolith
 
 ### 4.1 Struktur Folder

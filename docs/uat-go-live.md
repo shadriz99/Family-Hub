@@ -5,6 +5,8 @@
 
 ## 1. Informasi UAT
 
+LOG-023: SQLite menjadi target aktif sementara; MariaDB ditunda dan belum boleh dinyatakan kompatibel untuk perubahan baru. Main mengintegrasikan fondasi CORE-01 saja, bukan branch support CORE-03/04. Bukti CI fondasi tidak mencentang UAT/produksi; gate kedua DB lama ditunda sesuai keputusan reviewer.
+
 | Item | Nilai |
 |---|---|
 | Versi/commit yang diuji | |

@@ -151,6 +151,14 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 - **Review struktural/status:** instruksi, plan/log, Masterplan, ADR-011, dan catatan UAT diselaraskan dengan publikasi/CI. Ketiga spesifikasi modul, kedua runbook, serta skills tetap berlaku; tidak ada kontrak domain atau deploy berubah. CORE-01 memenuhi gate teknis dan menunggu acceptance reviewer, bukan dianggap sudah diterima hanya karena CI hijau.
 - Pembaruan bukti setelah CI dipublikasikan sebagai commit dokumentasi terpisah dengan `[skip ci]` agar tidak mengulang job identik hanya untuk mencatat hasil. Bukti runtime/CI tetap merujuk `ffe4afe`; tidak ada kode aplikasi/workflow berubah pada follow-up tersebut. Tautan lokal dan whitespace dokumentasi diperiksa.
 
+### LOG-023 - Merge fondasi aman dan fokus SQLite
+
+- Reviewer meminta menunda MariaDB, menggunakan SQLite dahulu dan merge branch yang aman. Berdasarkan rekomendasi sebelumnya, `core-01-foundation` (`42bda38`) di-fast-forward ke main; `core-03-support` tidak di-merge. LOG-015 sampai LOG-022 tetap berada pada branch support yang belum digabung; ID LOG-023 dipakai agar tidak berbenturan saat integrasi berikutnya.
+- CI main diubah menjadi satu job SQLite in-memory, tanpa service/matrix MariaDB dan tanpa pdo_mysql pada setup CI. Build, Pint, Larastan dan test tetap wajib. Ini penundaan target kompatibilitas, bukan perbaikan kegagalan MariaDB pada support run `40286560448` (SQLite success, MariaDB failure).
+- Dokumen Masterplan, ADR, plan/log, instruksi dan runbook/UAT diselaraskan dengan keputusan sementara. Spesifikasi ketiga modul dan backup tidak memerlukan perubahan kontrak; schema/arsitektur runtime tetap sama. Branch support harus mengintegrasikan main dan lulus CI baru sebelum evaluasi merge.
+- Merge lokal berhasil fast-forward; validasi/push dan CI terbaru dicatat berdasarkan hasil aktual berikutnya. Tidak menjalankan migration/seed DB aplikasi, membuat akun atau menyatakan produksi siap.
+- **Validasi lokal setelah merge:** 18 test fondasi/66 assertion, Pint, Larastan dan diff whitespace lulus. Tidak mengklaim 139 test branch support tersedia pada main. Build/browser tidak diulang karena tidak ada perubahan UI/aset. Publikasi main dan run CI diperiksa setelah commit keputusan SQLite.
+
 ## Aturan pembaruan berikutnya
 
 1. Tambahkan entri baru dengan tanggal dan ID `LOG-NNN`; sertakan task ID resmi (`CORE-*`, `FIN-*`, `ORG-*`, `AST-*`) jika relevan.

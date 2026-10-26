@@ -1,6 +1,8 @@
 # Development Setup dan Rencana - Family Hub
 
 **Baseline:** 2026-10-26
+
+**Keputusan aktif LOG-023:** reviewer mengizinkan merge branch aman `core-01-foundation` ke main dan menunda MariaDB; SQLite menjadi satu-satunya target CI aktif sementara. Fondasi `42bda38` di-fast-forward ke main tanpa membawa `core-03-support`. Branch support tetap menyimpan checkpoint CORE-03/04 dan CI `40286560448` yang SQLite lulus/MariaDB gagal; kegagalan tersebut belum diperbaiki dan tidak boleh disebut lulus. Sebelum merge support berikutnya, integrasikan keputusan SQLite ini dan jalankan CI ulang. Ketentuan lama matriks kedua DB di dokumen ini ditunda oleh keputusan ini, bukan bukti kompatibilitas MariaDB. Main hanya memuat fondasi, bukan fitur household/support lanjutan. Tidak ada migration/seed aplikasi atau provisioning akun.
 **Status:** Reviewer mengizinkan kelanjutan sesuai plan dengan perhatian pada credit Copilot; checkpoint fondasi CORE-01 berjalan, task belum selesai.
 
 **Arahan terbaru (LOG-014):** SQLite dipilih untuk development; tidak memasang MariaDB lokal atau menghapus matriks kompatibilitas CI. Reviewer memilih menuntaskan CI CORE-01 sebelum CORE-03 dan mengizinkan branch khusus, commit, serta push fondasi ke repository miliknya (bukan ke main). Hasil remote harus dicatat setelah run selesai, bukan diasumsikan dari test lokal.
