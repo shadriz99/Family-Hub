@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Laravel\Fortify\Features;
+
 return [
     'guard' => 'web',
     'middleware' => ['web'],
@@ -15,5 +17,5 @@ return [
     'domain' => null,
     'lowercase_usernames' => true,
     'limiters' => ['login' => 'login'],
-    'features' => [],
+    'features' => [Features::resetPasswords()],
 ];

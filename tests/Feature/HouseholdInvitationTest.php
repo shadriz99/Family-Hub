@@ -131,12 +131,24 @@ it('rejects an invitation once the household is full', function (): void {
     $spare = app(InviteHouseholdMember::class)->handle($this->owner, $this->household, 'spare@example.test')->token;
     app(AcceptInvitation::class)->handle($this->guestUser, $issued->token);
 
-    $other = User::create(['name' => 'Other', 'email' => 'other@example.test', 'password' => 'test-password']);
+    $other = User::create(['name' => 'Other', 'email' => 'spare@example.test', 'password' => 'test-password']);
 
     expect(fn () => app(AcceptInvitation::class)->handle($other, $spare))
         ->toThrow(ValidationException::class);
 
     expect($this->household->members()->count())->toBe(2);
+});
+
+it('rejects a token presented by a different email address', function (): void {
+    $issued = app(InviteHouseholdMember::class)->handle($this->owner, $this->household, 'invited@example.test');
+    $stranger = User::create(['name' => 'Stranger', 'email' => 'stranger@example.test', 'password' => 'test-password']);
+
+    expect(fn () => app(AcceptInvitation::class)->handle($stranger, $issued->token))
+        ->toThrow(ValidationException::class, __('household.invitation_email_mismatch'));
+
+    expect($stranger->householdMembership()->exists())->toBeFalse()
+        ->and($this->household->members()->count())->toBe(1)
+        ->and(HouseholdInvitation::query()->sole()->accepted_at)->toBeNull();
 });
 
 it('rejects a user who already belongs to another household', function (): void {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
+use Laravel\Fortify\Features;
 
 uses(RefreshDatabase::class);
 
@@ -88,7 +89,9 @@ it('limits login attempts to five per minute per normalized email and IP', funct
 });
 
 it('keeps registration, passkeys, and TOTP disabled', function (): void {
-    expect(config('fortify.features'))->toBe([]);
+    expect(Features::enabled(Features::registration()))->toBeFalse()
+        ->and(Features::enabled(Features::passkeys()))->toBeFalse()
+        ->and(Features::enabled(Features::twoFactorAuthentication()))->toBeFalse();
 
     foreach (['register', 'passkeys/login', 'two-factor-challenge'] as $path) {
         $this->get('/'.$path)->assertNotFound();
@@ -136,7 +139,10 @@ it('rejects structured credentials without an exception', function (): void {
     $this->assertGuest();
 });
 
-it('does not register password reset or profile feature routes yet', function (): void {
-    expect(Route::has('password.request'))->toBeFalse()
+it('exposes the password reset routes but not profile features', function (): void {
+    expect(Route::has('password.request'))->toBeTrue()
+        ->and(Route::has('password.email'))->toBeTrue()
+        ->and(Route::has('password.reset'))->toBeTrue()
+        ->and(Route::has('password.update'))->toBeTrue()
         ->and(Route::has('user-profile-information.update'))->toBeFalse();
 });

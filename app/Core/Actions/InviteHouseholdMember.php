@@ -8,9 +8,11 @@ use App\Core\Enums\InvitationType;
 use App\Core\Models\Household;
 use App\Core\Models\HouseholdInvitation;
 use App\Core\Support\IssuedInvitation;
+use App\Mail\HouseholdInvitationMail;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 final class InviteHouseholdMember
@@ -29,7 +31,7 @@ final class InviteHouseholdMember
             throw ValidationException::withMessages(['email' => __('household.email_invalid')]);
         }
 
-        return DB::transaction(function () use ($actor, $household, $email): IssuedInvitation {
+        $issued = DB::transaction(function () use ($actor, $household, $email): IssuedInvitation {
             $household = Household::query()->lockForUpdate()->findOrFail($household->getKey());
             Gate::forUser($actor)->authorize('invitePartner', $household);
 
@@ -55,5 +57,10 @@ final class InviteHouseholdMember
 
             return new IssuedInvitation($invitation, $token);
         });
+
+        // Sent synchronously so a mail failure surfaces to the caller; queue it with CORE-10.
+        Mail::to($issued->invitation->email)->send(new HouseholdInvitationMail($issued));
+
+        return $issued;
     }
 }

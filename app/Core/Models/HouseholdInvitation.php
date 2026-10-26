@@ -51,4 +51,9 @@ class HouseholdInvitation extends Model
     {
         return $this->belongsTo(User::class, 'invited_by');
     }
+
+    public static function findByToken(string $token): ?self
+    {
+        return static::query()->where('token_hash', hash('sha256', $token))->first();
+    }
 }

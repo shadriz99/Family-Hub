@@ -15,7 +15,7 @@ LOG-026: atas izin reviewer, checkpoint CORE-03/04 di-push dan di-merge ke `main
 
 LOG-029: job SQLite dan MariaDB lulus untuk `6d6f7bc` (laporan reviewer), menutup gate kompatibilitas skema pada CI. Ini tetap bukan bukti deploy/UAT; migration DB aplikasi dan provisioning masih tidak diizinkan.
 
-Login/logout dan konfirmasi kata sandi dasar tersedia (LOG-011), tetapi belum ada alur provisioning admin/undangan atau skema household. Tidak ada akun persisten yang disediakan oleh setup ini. Jangan membuka akses publik atau menjalankan migrasi placeholder untuk membuat akun pertama; tunggu implementasi Core dan gate rilis.
+Login/logout dan konfirmasi kata sandi dasar tersedia (LOG-011); LOG-030 dan LOG-036 menambahkan skema household, konteks tenant per request, alur undangan partner lewat email, penerimaan yang membuat akun, dan reset kata sandi. Yang belum ada: alur admin/provisioning `/admin`, rate limit undangan, antrean email, serta verifikasi email. Tidak ada akun persisten yang disediakan oleh setup ini. Jangan membuka akses publik atau menjalankan migrasi placeholder untuk membuat akun pertama; tunggu implementasi Core dan gate rilis.
 
 **Pembaruan lokal LOG-019:** skema/model household dan ULID User/sessions kini tersedia untuk test SQLite in-memory, tetapi alur provisioning/policy/aksi membership belum selesai. Perubahan migrasi awal belum memiliki jalur upgrade data integer yang sudah ada. Jangan menerapkannya pada DB berisi data atau menganggap skema lokal ini siap produksi; verifikasi rilis, migration path, backup, dan gate Core terlebih dahulu.
 

@@ -12,5 +12,6 @@ return [
     'invitation_invalid' => 'The invitation was not found or has been revoked.',
     'invitation_used' => 'This invitation has already been used.',
     'invitation_expired' => 'This invitation has expired. Ask the household owner for a new one.',
+    'invitation_email_mismatch' => 'This invitation was issued to a different email address.',
     'email_invalid' => 'The invitation email address is not valid.',
 ];

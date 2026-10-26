@@ -41,6 +41,12 @@ final class AcceptInvitation
                 throw $this->reject('household.invitation_invalid');
             }
 
+            // The token only admits the address the owner invited, so a forwarded link
+            // cannot be claimed by a different account.
+            if (strcasecmp((string) $user->email, $invitation->email) !== 0) {
+                throw $this->reject('household.invitation_email_mismatch');
+            }
+
             $household = Household::query()->lockForUpdate()->find($invitation->household_id);
 
             if ($household === null) {
