@@ -16,7 +16,7 @@
 
 Gunakan household uji dan data sintetis untuk skenario negatif. Jangan mengunggah dokumen/rahasia nyata ke lingkungan non-produksi.
 
-Checkpoint CORE-01 (LOG-011) baru membuktikan auth dasar melalui test SQLite in-memory dan browser lokal. Belum ada akun persisten, household/undangan, CI remote, atau kandidat rilis; bukti ini tidak mencentang skenario UAT di bawah.
+Checkpoint CORE-01 membuktikan auth dasar melalui test SQLite in-memory dan browser lokal (LOG-011), kemudian CI remote SQLite/MariaDB lulus pada `ffe4afe` (LOG-014). Belum ada akun persisten, household/undangan, atau kandidat rilis; bukti fondasi ini tidak mencentang skenario UAT di bawah.
 
 ## 2. Syarat mulai UAT
 

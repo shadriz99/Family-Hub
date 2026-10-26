@@ -165,6 +165,8 @@ Pilih GitHub Copilot pada installer, tinjau diff konfigurasi MCP/guidelines/skil
 
 **Keputusan transport terbaru (LOG-013):** reviewer mengizinkan client stdio terminal sebagai pengganti koneksi UI Copilot yang belum dapat diaktifkan. Inisialisasi, daftar tool, dan `search-docs` kembali lulus; gate koneksi Boost dipenuhi lewat jalur ini, tanpa mengklaim koneksi native UI. Jalankan saat diperlukan dan hentikan child setelah selesai. Keputusan ini menggantikan kewajiban koneksi UI pada CORE-01, bukan kewajiban CI kedua DB atau acceptance reviewer; lihat addendum ADR-011.
 
+**Checkpoint CI (LOG-014):** SQLite dipilih untuk development lokal; MariaDB tetap target kompatibilitas CI. Fondasi dipublikasikan dengan izin reviewer pada branch `core-01-foundation` (`ffe4afe`), bukan main. [GitHub CI run 40268711517](https://github.com/shadri-zulkurniadi/Net/actions/runs/40268711517) lulus kedua job beserta install/platform/build/test/Pint/Larastan. Gate teknis CORE-01 terpenuhi; acceptance reviewer masih diperlukan sebelum CORE-03. Ini bukan bukti skema household, produksi, atau UAT.
+
 Sebelum menandai CORE-01 selesai, wajib jalankan resolusi Composer penuh pada PHP 8.5 beserta ekstensi yang dibutuhkan, `composer check-platform-reqs`, build Vite, test SQLite/MariaDB, Pint, Larastan, dan smoke test integrasi Boost. Bila ada constraint transitif yang gagal, laporkan dan selesaikan secara eksplisit; jangan memakai `--ignore-platform-reqs`. Sumber dan keputusan lengkap: [ADR-011](adr/ADR-011-current-stack.md).
 
 ---

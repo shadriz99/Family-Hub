@@ -24,7 +24,9 @@ A local ignored `.env` and app key exist. Session/cache use files so the welcome
 
 Open `/login` for the Indonesian Livewire/Blade form, styled with Tailwind and bundled Alpine. `.env.example` and the existing local `.env` use `APP_LOCALE=id`; English auth labels are also available. Native POST forms delegate authentication to Fortify, including lowercase email, session rotation, and a five-per-minute limiter keyed by normalized email and IP. Success returns to the default `/` welcome page, not a household dashboard. There is no persistent account or authorized account-creation workflow yet; do not invent demo credentials or migrate/seed the placeholder schema just to try login manually. Invitation/account provisioning belongs to later Core tasks.
 
-Core/Modules placeholder directories and `config/modules.php` exist, with all unreleased modules disabled. Non-production Eloquent lazy-loading prevention is enabled. Permanent Pint PSR-12 and Larastan level 6 configurations and Composer `lint`/`analyse` scripts are available. CI is defined in `.github/workflows/ci.yml` for PHP 8.5 with SQLite and MariaDB 10.11; it has not been run remotely.
+Core/Modules placeholder directories and `config/modules.php` exist, with all unreleased modules disabled. Non-production Eloquent lazy-loading prevention is enabled. Permanent Pint PSR-12 and Larastan level 6 configurations and Composer `lint`/`analyse` scripts are available. CI is defined in `.github/workflows/ci.yml` for PHP 8.5 with SQLite and MariaDB 10.11.
+
+**Bukti CI terbaru (LOG-014):** [Run 40268711517](https://github.com/shadri-zulkurniadi/Net/actions/runs/40268711517) pada `ffe4afe` lulus untuk kedua job SQLite/MariaDB, termasuk dependency install, Composer validate/platform, build, Pint, Larastan, dan test. Tidak ada server MariaDB lokal yang dipasang.
 
 ApexCharts is deferred until the reporting module needs it and its license is reviewed. Alpine comes from Livewire; no separate Alpine npm dependency is installed. No Flux, Volt, Sail, Docker, or global Laravel installer is needed.
 
@@ -57,7 +59,7 @@ Use the repository lockfiles. Do not run `composer update` or `npm update` just 
 
 The local PHP installation is managed by WinGet. Its `php.ini` is in the same directory as `php.exe`; find it with `php --ini`. Enabled DLL extensions: curl, openssl, mbstring, intl, fileinfo, exif, gd, zip, pdo_sqlite, sqlite3, pdo_mysql, and sodium. PHP also supplies built-in XML, DOM, bcmath, and other required modules. This is a development configuration with error display enabled, not a production PHP configuration. Recheck the INI after a WinGet upgrade.
 
-Composer is installed in `%LOCALAPPDATA%\Programs\Composer` with a `composer.cmd` launcher on the user PATH. `vendor` and `node_modules` are ignored by Git; lockfiles are intended for source control but have not yet been committed by the agent. No credentials belong in the manifests or source control.
+Composer is installed in `%LOCALAPPDATA%\Programs\Composer` with a `composer.cmd` launcher on the user PATH. `vendor` and `node_modules` are ignored by Git; lockfiles and the reviewed foundation were committed/pushed on the approved `core-01-foundation` branch at `ffe4afe` (LOG-014), not merged into main. No credentials belong in the manifests or source control.
 
 ### Checks completed
 
@@ -83,8 +85,8 @@ Composer is installed in `%LOCALAPPDATA%\Programs\Composer` with a `composer.cmd
 
 - Basic auth/frontend integration is implemented; invitation, reset, household schema, admin, and domain features/tests do not exist. Placeholder module directories do not implement modules.
 - Boost stdio smoke test is not evidence of a native Copilot UI connection. Per LOG-013, the terminal path is approved instead; UI activation is optional, not a blocker. Guidelines/skills generation was deliberately skipped to preserve repository guidance.
-- No MariaDB server, SMTP, queue worker, scheduler, production host, or backup service has been provisioned. PDO MySQL is enabled, but MariaDB connectivity and integration tests are pending. Browser smoke checks were run through the integrated browser; no persistent browser-test suite was added.
-- CORE-01 is not complete. Remaining gates are actual CI results on both databases and reviewer acceptance. The approved terminal path satisfies the Boost gate. Continue one task/checkpoint at a time; no delegated agents are needed for the current foundation work.
+- No local MariaDB server, SMTP, queue worker, scheduler, production host, or backup service has been provisioned. MariaDB tests now pass in GitHub CI, not on a local server. Browser smoke checks were run through the integrated browser; no persistent browser-test suite was added.
+- CORE-01 technical gates pass, including remote CI on both databases (LOG-014); final reviewer acceptance remains pending. The approved terminal path satisfies the Boost gate. Do not start CORE-03 until acceptance; no delegated agents are needed for this checkpoint.
 
 ## 1. Cara menggunakan rencana
 
@@ -101,7 +103,7 @@ Composer is installed in `%LOCALAPPDATA%\Programs\Composer` with a `composer.cmd
 |---|---|---|
 | A. Repository, discovery, keputusan stack | Selesai untuk persiapan | [LOG-001 sampai LOG-003](logbook.md#log-001---repository-dan-tooling-dasar); keputusan open questions berikutnya tetap diperlukan |
 | B. Dependency dan dokumentasi | Selesai untuk persiapan | [LOG-004](logbook.md#log-004---manifest-dan-instalasi-dependency-tanpa-coding-aplikasi), [LOG-005](logbook.md#log-005---konsolidasi-dokumentasi), [LOG-006](logbook.md#log-006---logbook-dan-rencana-development), [LOG-007](logbook.md#log-007---penggabungan-setup-dan-rencana), [LOG-008](logbook.md#log-008---skill-sinkronisasi-dokumentasi) |
-| C. CORE-01 | Parsial; fondasi dan auth dasar lulus lokal | [LOG-011](logbook.md#log-011---checkpoint-auth-core-01): 18 test/66 assertion, Pint, Larastan, build, browser auth; [LOG-013](logbook.md#log-013---boost-melalui-terminal-perantara): transport Boost terminal disetujui dan lulus; CI remote dan acceptance reviewer masih tertunda |
+| C. CORE-01 | Teknis/CI lulus; menunggu acceptance reviewer | [LOG-011](logbook.md#log-011---checkpoint-auth-core-01): 18 test/66 assertion lokal dan browser auth; [LOG-013](logbook.md#log-013---boost-melalui-terminal-perantara): Boost terminal; [LOG-014](logbook.md#log-014---publikasi-fondasi-untuk-ci-core-01): GitHub CI SQLite/MariaDB lulus pada `ffe4afe` |
 | D. Core lainnya | Belum dimulai | CORE-02 sampai CORE-16 belum selesai; runbook masih draft |
 | E. Finance | Belum dimulai | FIN-01 sampai FIN-16 |
 | F. Organizer | Belum dimulai | ORG-01 sampai ORG-13 |
@@ -110,7 +112,7 @@ Composer is installed in `%LOCALAPPDATA%\Programs\Composer` with a `composer.cmd
 
 ## 3. Langkah berikutnya: selesaikan CORE-01
 
-Scaffold standar/server selesai pada LOG-009; tambahan tooling dan fondasi pada LOG-010; auth/frontend dasar pada LOG-011. Langkah 2-6 telah diimplementasikan dan diverifikasi lokal. Gate Boost langkah 7 dipenuhi lewat terminal per LOG-013; langkah 8 masih memerlukan bukti CI remote. Reviewer telah mengizinkan kelanjutan sesuai plan. Kerjakan sisa checklist CORE-01 berikut tanpa mengulang bagian yang sudah terbukti:
+Scaffold standar/server selesai pada LOG-009; tambahan tooling dan fondasi pada LOG-010; auth/frontend dasar pada LOG-011. Langkah 2-6 telah diimplementasikan dan diverifikasi lokal. Gate Boost langkah 7 dipenuhi lewat terminal per LOG-013; langkah 8 lulus di GitHub pada LOG-014. Branch baseline telah dipublikasikan dengan izin reviewer. Langkah berikutnya adalah acceptance reviewer CORE-01, bukan mengulang scaffold atau langsung memulai CORE-03:
 
 1. Tinjau working tree persiapan bersama reviewer; pertahankan manifest, lockfile, mockup, dan dokumentasi yang ada. Tentukan baseline branch/commit tanpa menimpa pekerjaan yang belum di-commit.
 2. Tambahkan scaffold Laravel 13 secara terkontrol ke root repository; jangan menjalankan generator yang menimpa repository atau mengganti lockfile tanpa peninjauan.
@@ -210,7 +212,7 @@ Tidak perlu menunggu Phase 4 untuk menguji keamanan, aksesibilitas, backup, atau
 
 | Hal | Batas waktu | Status awal |
 |---|---|---|
-| Kelanjutan CORE-01 | Sebelum menutup task | Diizinkan; auth/frontend dan Boost terminal lulus lokal; gate CI remote/acceptance reviewer belum terpenuhi |
+| Kelanjutan CORE-01 | Sebelum menutup task | Teknis/CI kedua DB lulus; menunggu acceptance reviewer sebelum CORE-03 |
 | Lisensi proyek | Sebelum deklarasi metadata/distribusi | Belum diputuskan; warning Composer diketahui |
 | Host Linux, akses admin, SMTP (Q-M2/Q-M3) | Sebelum uji deploy/email terkait | Detail aktual belum diverifikasi |
 | Retry reminder (Q-M9) | Sebelum CORE-09 | Open |

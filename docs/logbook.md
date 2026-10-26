@@ -9,10 +9,10 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 
 | Area | Status aktual | Bukti / tindak lanjut |
 |---|---|---|
-| Repository | Clone berhasil; pull terakhir saat pengambilan repository up-to-date pada `750a946` | Perubahan persiapan setelahnya masih di working tree; belum di-commit/push oleh agent |
+| Repository | Fondasi dipublikasikan di branch `core-01-foundation` | LOG-014: commit `ffe4afe` sudah di-push dengan izin reviewer; main tidak diubah |
 | Environment lokal | Git, PHP, Composer, Node/npm dapat dijalankan | Rincian dan batas setup di [setup dan rencana development](development-plan.md) |
 | Dependency PHP/npm | Terpasang, lockfile tersedia | Composer solve, platform check, audit, dan smoke check lulus pada waktu setup |
-| CORE-01 | **Parsial**, belum selesai | LOG-011: auth/frontend dasar, 18 test/66 assertion, Pint/Larastan/build/browser lokal lulus; LOG-013: Boost terminal disetujui dan lulus; remote CI/acceptance reviewer tertunda |
+| CORE-01 | **Teknis/CI lulus**, menunggu acceptance reviewer | LOG-011: 18 test/66 assertion lokal dan browser; LOG-013: Boost terminal; LOG-014: GitHub CI kedua DB lulus pada `ffe4afe`; CORE-03 belum dimulai |
 | Boost | Terminal stdio disetujui sebagai transport | LOG-013: initialize, daftar 10 tool, dan dokumentasi lulus; UI Copilot belum terhubung tetapi bukan blocker |
 | CORE-02 sampai CORE-16 | Belum dimulai | Runbook yang sudah ada masih draft, bukan bukti deploy |
 | Finance / Organizer / Asset | Belum dimulai | Mockup adalah prototype yang sudah ada saat clone, bukan implementasi modul |
@@ -146,7 +146,10 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 - Reviewer mengizinkan branch khusus, commit dan push fondasi/dokumentasi yang disiapkan sejak clone ke repository miliknya, bukan langsung ke main. Identitas penulis Git dikonfirmasi reviewer; hanya disetel lokal repository.
 - Sebelum publikasi: workflow GitHub belum tersedia (0 workflow), remote main masih `750a946`. Meninjau inventaris file, ignore, manifest, config test, workflow, dan marker secret pada perubahan yang akan dipublikasikan. `.env`, vendor/node_modules, build, database/cache/log runtime tidak disertakan; tidak ditemukan pola private key, token GitHub/AWS, atau APP_KEY terisi.
 - **Lulus lokal:** 18 test/66 assertion pada SQLite in-memory, Pint, Larastan, build Vite, dan Composer validate (warning lisensi proyek masih ada). Skrip inspeksi secret pertama gagal parsing PowerShell sebelum berjalan, lalu diperbaiki dan dijalankan berhasil.
-- **Status saat persiapan commit:** branch tujuan `core-01-foundation`; hasil push dan CI remote belum tersedia. Belum membuat PR, merge, atau memulai CORE-03. Bukti remote berikutnya akan ditambahkan pada entry ini setelah tersedia.
+- **Publikasi:** branch `core-01-foundation`, commit `ffe4afea86556414ed2f8e38f9429f523779acc6` berhasil di-push; SHA remote cocok. Pemeriksaan staged menemukan whitespace bawaan scaffold/Markdown yang sebelumnya tidak tercakup diff tracked; whitespace dibersihkan tanpa perubahan perilaku. `.env` dan runtime artifacts tidak masuk commit.
+- **CI lulus:** [run pertama 40268711517](https://github.com/shadri-zulkurniadi/Net/actions/runs/40268711517) pada `ffe4afe`; kedua job `checks (sqlite)` dan `checks (mariadb)` berstatus success. Step install Composer/npm, manifest/platform, Vite build, Pint, Larastan, dan test database masing-masing semuanya success (step database lain skipped sesuai matriks). Main tidak diubah; belum membuat PR, merge, atau memulai CORE-03.
+- **Review struktural/status:** instruksi, plan/log, Masterplan, ADR-011, dan catatan UAT diselaraskan dengan publikasi/CI. Ketiga spesifikasi modul, kedua runbook, serta skills tetap berlaku; tidak ada kontrak domain atau deploy berubah. CORE-01 memenuhi gate teknis dan menunggu acceptance reviewer, bukan dianggap sudah diterima hanya karena CI hijau.
+- Pembaruan bukti setelah CI dipublikasikan sebagai commit dokumentasi terpisah dengan `[skip ci]` agar tidak mengulang job identik hanya untuk mencatat hasil. Bukti runtime/CI tetap merujuk `ffe4afe`; tidak ada kode aplikasi/workflow berubah pada follow-up tersebut. Tautan lokal dan whitespace dokumentasi diperiksa.
 
 ## Aturan pembaruan berikutnya
 

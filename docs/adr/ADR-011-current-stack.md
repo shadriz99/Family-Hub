@@ -46,6 +46,8 @@ Subsequent evidence (2026-10-26): LOG-004 in the [logbook](../logbook.md) record
 
 LOG-010 subsequently verifies Boost MCP initialization and its documentation tool through a temporary stdio client, plus local foundation tests/lint/Larastan/build. Copilot MCP configuration and a SQLite/MariaDB CI workflow now exist, but the actual Copilot UI connection and remote CI run remain unverified. MCP-only installation was chosen to preserve existing agent guidance; the original architecture decision is unchanged.
 
+LOG-014 adds remote CI evidence: [run 40268711517](https://github.com/shadri-zulkurniadi/Net/actions/runs/40268711517) at `ffe4afe` passes both SQLite/MariaDB jobs, including install, platform requirements, build, tests, Pint, and Larastan. This supersedes the earlier remote-CI limitation only; native UI remains unverified and the approved terminal transport below applies. Local development uses SQLite; Linux deployment/backup and domain schema remain future work.
+
 ## Consequences and verification
 
 ### Boost transport addendum (reviewer approved 2026-10-26, LOG-013)
