@@ -86,3 +86,15 @@ it('bootstraps without an ambient tenant context and leaves it unset', function 
 
     expect(fn () => currentHousehold())->toThrow(LogicException::class);
 });
+
+it('never makes a system admin the owner of a household', function (): void {
+    $admin = User::create(['name' => 'Admin', 'email' => 'admin@example.test', 'password' => 'test-password']);
+    $admin->is_system_admin = true;
+    $admin->save();
+
+    expect(fn () => app(CreateHousehold::class)->handle($admin, 'Keluarga Admin'))
+        ->toThrow(ValidationException::class, __('household.admin_not_member'));
+
+    expect(Household::count())->toBe(0)
+        ->and(HouseholdMember::count())->toBe(0);
+});

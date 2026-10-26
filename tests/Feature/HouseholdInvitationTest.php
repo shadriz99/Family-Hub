@@ -162,15 +162,25 @@ it('rejects unknown and tampered tokens', function (): void {
 
 it('rejects an invitation once the household is full', function (): void {
     $issued = app(InviteHouseholdMember::class)->handle($this->owner, $this->household, 'guest@example.test');
-    $spare = app(InviteHouseholdMember::class)->handle($this->owner, $this->household, 'spare@example.test')->token;
-    app(AcceptInvitation::class)->handle($this->guestUser, $issued->token);
+    $spare = User::create(['name' => 'Spare', 'email' => 'spare@example.test', 'password' => 'test-password']);
 
-    $other = User::create(['name' => 'Other', 'email' => 'spare@example.test', 'password' => 'test-password']);
+    // Only one invitation may be active (P-13), so the second slot is filled directly
+    // instead of through another invite.
+    $member = new HouseholdMember([
+        'role' => MemberRole::Partner,
+        'color' => MemberRole::Partner->color(),
+        'slot' => 2,
+        'joined_at' => now(),
+    ]);
+    $member->user()->associate($spare);
+    $this->household->members()->save($member);
 
-    expect(fn () => app(AcceptInvitation::class)->handle($other, $spare))
-        ->toThrow(ValidationException::class);
+    expect(fn () => app(AcceptInvitation::class)->handle($this->guestUser, $issued->token))
+        ->toThrow(ValidationException::class, __('household.invite_full'));
 
-    expect($this->household->members()->count())->toBe(2);
+    expect($this->household->members()->count())->toBe(2)
+        ->and($this->guestUser->householdMembership()->exists())->toBeFalse()
+        ->and(HouseholdInvitation::query()->sole()->accepted_at)->toBeNull();
 });
 
 it('rejects a token presented by a different email address', function (): void {
@@ -181,6 +191,21 @@ it('rejects a token presented by a different email address', function (): void {
         ->toThrow(ValidationException::class, __('household.invitation_email_mismatch'));
 
     expect($stranger->householdMembership()->exists())->toBeFalse()
+        ->and($this->household->members()->count())->toBe(1)
+        ->and(HouseholdInvitation::query()->sole()->accepted_at)->toBeNull();
+});
+
+it('rejects a system admin accepting a partner invitation', function (): void {
+    $admin = User::create(['name' => 'Admin', 'email' => 'admin@example.test', 'password' => 'test-password']);
+    $admin->is_system_admin = true;
+    $admin->save();
+
+    $issued = app(InviteHouseholdMember::class)->handle($this->owner, $this->household, 'admin@example.test');
+
+    expect(fn () => app(AcceptInvitation::class)->handle($admin, $issued->token))
+        ->toThrow(ValidationException::class, __('household.admin_not_member'));
+
+    expect($admin->householdMembership()->exists())->toBeFalse()
         ->and($this->household->members()->count())->toBe(1)
         ->and(HouseholdInvitation::query()->sole()->accepted_at)->toBeNull();
 });
@@ -269,6 +294,24 @@ it('refuses to revoke an already accepted invitation', function (): void {
 
     expect(HouseholdInvitation::query()->sole()->revoked_at)->toBeNull()
         ->and($this->household->members()->count())->toBe(2);
+});
+
+it('retires the previous pending invite when the owner issues a new one', function (): void {
+    $first = app(InviteHouseholdMember::class)->handle($this->owner, $this->household, 'guest@example.test');
+    $second = app(InviteHouseholdMember::class)->handle($this->owner, $this->household, 'guest@example.test');
+
+    $active = HouseholdInvitation::query()->whereNull('accepted_at')->whereNull('revoked_at')->get();
+
+    expect($active)->toHaveCount(1)
+        ->and($active->sole()->is($second->invitation))->toBeTrue()
+        ->and($first->invitation->fresh()?->revoked_at)->not->toBeNull();
+
+    expect(fn () => app(AcceptInvitation::class)->handle($this->guestUser, $first->token))
+        ->toThrow(ValidationException::class, __('household.invitation_invalid'));
+
+    app(AcceptInvitation::class)->handle($this->guestUser, $second->token);
+
+    expect($this->household->members()->count())->toBe(2);
 });
 
 it('rejects a new-household invitation through the partner path', function (): void {

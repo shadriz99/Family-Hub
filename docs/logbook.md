@@ -1,7 +1,7 @@
 # Logbook Development - Family Hub
 
 **Diperbarui:** 2026-10-26
-**Status:** CORE-01 diterima untuk kelanjutan development; CORE-03 dinyatakan selesai oleh reviewer, CORE-04 masih parsial. LOG-036 menambahkan email undangan, halaman penerimaan partner, dan alur reset kata sandi; LOG-039 membuktikan konkurensi slot partner; LOG-040 membatasi pembuatan undangan 10/jam. CI remote untuk perubahan ini belum terverifikasi. Belum ada rilis aplikasi.
+**Status:** CORE-01 diterima untuk kelanjutan development; CORE-03 dinyatakan selesai oleh reviewer, CORE-04 masih parsial. LOG-036 menambahkan email undangan, halaman penerimaan partner, dan alur reset kata sandi; LOG-039 membuktikan konkurensi slot partner; LOG-040 membatasi pembuatan undangan 10/jam; LOG-041 menetapkan satu undangan aktif per household dan melarang admin menjadi anggota household. CI remote untuk perubahan ini belum terverifikasi. Belum ada rilis aplikasi.
 
 Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan selesai. [Rencana development](development-plan.md) menentukan langkah berikutnya; spesifikasi dan acceptance criteria tetap mengikuti [Masterplan](00-MASTERPLAN.md) dan dokumen modul.
 
@@ -9,12 +9,12 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 
 | Area | Status aktual | Bukti / tindak lanjut |
 |---|---|---|
-| Repository | `main` tanpa branch; batch terakhir LOG-040 | LOG-014: fondasi `ffe4afe`; LOG-026: checkpoint CORE-03/04 di-merge; LOG-031: CI hijau `731fb45`; LOG-035: kerja langsung di `main`; LOG-036: push `efae4f2..d077170`; LOG-039: push `2900d9f..fcaf25b`; LOG-040: limiter undangan. Branch `core-01-foundation`/`core-03-support` tertinggal (P-10) |
+| Repository | `main` tanpa branch; batch terakhir LOG-041 | LOG-014: fondasi `ffe4afe`; LOG-026: checkpoint CORE-03/04 di-merge; LOG-031: CI hijau `731fb45`; LOG-035: kerja langsung di `main`; LOG-036: push `efae4f2..d077170`; LOG-039: push `2900d9f..fcaf25b`; LOG-040: limiter undangan; LOG-041: branch `core-01-foundation`/`core-03-support` dihapus |
 | Environment lokal | Git, PHP, Composer, Node/npm dapat dijalankan | Rincian dan batas setup di [setup dan rencana development](development-plan.md) |
 | Dependency PHP/npm | Terpasang, lockfile tersedia | Composer solve, platform check, audit, dan smoke check lulus pada waktu setup |
 | CORE-01 | **Diterima untuk kelanjutan development** | LOG-011/013/014: fondasi, auth, Boost, CI kedua DB; LOG-015: reviewer meminta lanjut; bukan UAT/produksi |
 | Boost | Terminal stdio disetujui sebagai transport | LOG-013: initialize, daftar 10 tool, dan dokumentasi lulus; UI Copilot belum terhubung tetapi bukan blocker |
-| CORE-02 sampai CORE-16 | CORE-03 dinyatakan selesai reviewer; CORE-04 parsial; CORE-05 punya backend + email/UI partner + limiter undangan | LOG-015–018: utilitas/komponen; LOG-019: urutan disetujui; LOG-020–021: policy/action; LOG-024: tenant scope, konteks household, `PeriodResolver::for`; LOG-025–026: MariaDB CI dipulihkan dan checkpoint di-merge ke main; LOG-030: bootstrap + middleware konteks; LOG-032/034: backend undangan A5.1; LOG-036: email undangan, penerimaan partner, reset kata sandi; LOG-039: konkurensi slot; LOG-040: limiter 10 undangan/jam. Konteks job, backfill histori, pengecualian trait, Alur A admin, dan antrean mail belum selesai |
+| CORE-02 sampai CORE-16 | CORE-03 dinyatakan selesai reviewer; CORE-04 parsial; CORE-05 punya backend + email/UI partner + limiter undangan + satu undangan aktif | LOG-015–018: utilitas/komponen; LOG-019: urutan disetujui; LOG-020–021: policy/action; LOG-024: tenant scope, konteks household, `PeriodResolver::for`; LOG-025–026: MariaDB CI dipulihkan dan checkpoint di-merge ke main; LOG-030: bootstrap + middleware konteks; LOG-032/034: backend undangan A5.1; LOG-036: email undangan, penerimaan partner, reset kata sandi; LOG-039: konkurensi slot; LOG-040: limiter 10 undangan/jam; LOG-041: satu undangan aktif, admin bukan anggota household. Konteks job, backfill histori, pengecualian trait, Alur A admin, dan antrean mail belum selesai |
 | Finance / Organizer / Asset | Belum dimulai | Mockup adalah prototype yang sudah ada saat clone, bukan implementasi modul |
 | Produksi / UAT | Belum dijalankan | Tidak ada bukti deploy, restore, atau penerimaan pengguna |
 
@@ -382,6 +382,16 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 - Batas: pengiriman email tetap sinkron setelah commit; kegagalan mail masih meninggalkan undangan pending tanpa email sampai CORE-10. Sisa itu tetap dilacak sebagai P-14 (bagian B).
 - Verifikasi lokal: `composer lint` dan `composer analyse` bersih, `composer test` **199 test/1807 assertion** lulus (sebelumnya 196/1778).
 - Dokumen diselaraskan: logbook (entri ini + tabel status), `docs/development-plan.md` (status, checkpoint undangan, jumlah test, tabel posisi, baris CORE-05), `docs/pending.md` (status + P-14 menyisakan antrean mail), `docs/00-MASTERPLAN.md` (status implementasi §5.1 dan checkpoint auth), `AGENTS.md`, dan `.github/copilot-instructions.md`. CI untuk commit ini belum terverifikasi (P-09).
+
+### LOG-041 - Satu undangan aktif, admin bukan anggota household, branch lama dihapus
+
+- Keputusan reviewer (2026-10-26): (a) akun system admin hanya dipakai sebagai user manajemen dan tidak boleh ikut household; (b) branch lama dihapus; (c) hanya satu undangan yang boleh aktif. Batch dokumentasi tidak perlu commit sendiri, jadi kode + dokumen masuk bersama.
+- P-13 — satu undangan aktif: `InviteHouseholdMember` mencabut undangan pending lain di household yang sama (stempel `revoked_at`, baris tetap ada) di dalam transaksi yang sudah mengunci baris household, jadi dua undangan bersamaan tetap berurutan dan hanya satu yang aktif. Test baru: undangan kedua menyisakan tepat satu undangan aktif, token lama ditolak, token baru tetap bisa diterima.
+- P-04 — admin murni manajemen: `CreateHousehold` dan `AcceptInvitation` menolak akun `is_system_admin` dengan pesan `household.admin_not_member` (id/en). Ini menegakkan keputusan reviewer, bukan sekadar catatan; admin tetap boleh membuat invite household baru untuk orang lain. Konflik dokumen tercatat: masterplan §2.1 sebelumnya berbunyi "admin juga bisa menjadi member household-nya sendiri", sehingga kalimat itu diganti dan keputusan reviewer dicatat sebagai pemenang sesuai aturan P-01/LOG-034. Dua test baru menutup jalur ini.
+- P-10 — branch: `core-01-foundation` (`42bda38`) dan `core-03-support` (`28ebeb2`) dihapus dari remote dan lokal; remote hanya menyisakan `main`.
+- Penyesuaian test lama: karena satu household kini hanya punya satu undangan aktif, test "household penuh" mengisi slot kedua secara langsung, dan test status undangan (kedaluwarsa/terpakai/dicabut) memakai household terpisah per status. Tidak ada perilaku yang dilonggarkan.
+- Verifikasi lokal: `composer lint` dan `composer analyse` bersih, `composer test` **202 test/1825 assertion** lulus (sebelumnya 199/1807).
+- Dokumen diselaraskan: logbook (entri ini + tabel status), `docs/00-MASTERPLAN.md` (§2.1 peran admin, §5.1 status implementasi, §5.2 poin 5), `docs/development-plan.md` (status, checkpoint undangan, jumlah test, tabel posisi, baris CORE-05), `docs/pending.md` (P-04/P-10/P-13 pindah ke riwayat penutupan), `AGENTS.md`, dan `.github/copilot-instructions.md`. CI untuk commit ini belum terverifikasi (P-09).
 
 ## Aturan pembaruan berikutnya
 

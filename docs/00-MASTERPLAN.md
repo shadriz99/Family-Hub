@@ -68,7 +68,7 @@ Pengelompokan dana **Tabungan & Investasi** serta pencatatan setoran/transfer ma
 ## 2. Model Pengguna & Tenancy
 
 ### 2.1 Entitas
-- **System Admin** — pemilik server (Shadri). Mengelola household & undangan via halaman `/admin`. **JANGAN** bisa melihat data finansial/catatan household lain (privasi). Admin juga bisa menjadi member household-nya sendiri.
+- **System Admin** — pemilik server (Shadri). Mengelola household & undangan via halaman `/admin`. **JANGAN** bisa melihat data finansial/catatan household lain (privasi). **Keputusan reviewer LOG-041:** akun ini murni akun manajemen dan **tidak boleh menjadi anggota household mana pun** (termasuk household sendiri); keputusan ini menggantikan kalimat lama "admin juga bisa menjadi member household-nya sendiri".
 - **Household** — satu rumah tangga. Batas: **maksimal 2 member**.
 - **Member** — user dalam household, peran:
   - `owner` — pembuat household.
@@ -314,7 +314,7 @@ Aturan: slot dipilih saat `AcceptInvitation` dalam transaksi. Unique constraint 
 |---|---|
 | id, household_id (nullable untuk invite household baru), email, type (`new_household`,`partner`), token_hash, invited_by, expires_at, accepted_at, revoked_at, timestamps |
 
-**Status implementasi (LOG-034, diperbarui LOG-040):** `App\Core\Models\HouseholdInvitation` dan migrasinya mengikuti kolom di atas: `household_id` nullable, `email`, `type` enum `InvitationType`, `token_hash` SHA-256 unik, `invited_by`, `expires_at`, `accepted_at`, dan `revoked_at` (revoke menandai baris, tidak menghapus). Alur B (partner) kini mencakup pengiriman email bertautan `invitation.show`, halaman penerimaan yang membuat akun atau meminta akun lama masuk, dan penolakan token bila email akun tidak cocok dengan email undangan. Pembuatan undangan dibatasi 10 per jam per aktor sesuai SEC-3 (LOG-040). Alur A (admin membuat household baru) belum punya aksi/route dan `AcceptInvitation` menolak undangan `new_household`; antrean mail juga belum ada.
+**Status implementasi (LOG-034, diperbarui LOG-040):** `App\Core\Models\HouseholdInvitation` dan migrasinya mengikuti kolom di atas: `household_id` nullable, `email`, `type` enum `InvitationType`, `token_hash` SHA-256 unik, `invited_by`, `expires_at`, `accepted_at`, dan `revoked_at` (revoke menandai baris, tidak menghapus). Alur B (partner) kini mencakup pengiriman email bertautan `invitation.show`, halaman penerimaan yang membuat akun atau meminta akun lama masuk, dan penolakan token bila email akun tidak cocok dengan email undangan. Pembuatan undangan dibatasi 10 per jam per aktor sesuai SEC-3 (LOG-040), dan hanya satu undangan boleh aktif per household: undangan baru mencabut undangan pending sebelumnya (LOG-041). Alur A (admin membuat household baru) belum punya aksi/route dan `AcceptInvitation` menolak undangan `new_household`, tetapi akun admin sistem kini ditolak saat menerima undangan maupun membuat household (LOG-041); antrean mail juga belum ada.
 
 **`reminders`** (dipakai semua modul)
 | Kolom | Tipe | Aturan |
@@ -360,7 +360,7 @@ Tabel lain: `notifications` (Laravel), `push_subscriptions` (paket webpush), `ac
 2. Onboarding household: nama household, zona waktu, hari mulai periode keuangan, undang partner.
 3. Halaman **Beranda (Dashboard)**: lihat §9.3.
 4. **Pengaturan**: profil, notifikasi (push/email/quiet hours/digest), household, member.
-5. **Admin** (`is_system_admin`): daftar household (nama, jumlah member, tanggal dibuat, ukuran storage), buat invite household baru, nonaktifkan user. Tanpa akses data domain.
+5. **Admin** (`is_system_admin`): daftar household (nama, jumlah member, tanggal dibuat, ukuran storage), buat invite household baru, nonaktifkan user. Tanpa akses data domain, dan bukan anggota household mana pun (LOG-041).
 6. **Notification center** (ikon lonceng): daftar notifikasi in-app, tandai dibaca.
 7. **Reminder engine** & **Calendar/Alert aggregator** (kontrak, belum ada UI kalender — UI di Organizer).
 8. PWA shell (manifest, service worker, install prompt, offline page).

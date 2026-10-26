@@ -48,6 +48,12 @@ final class AcceptInvitation
                 throw $this->reject('household.invitation_email_mismatch');
             }
 
+            // Reviewer decision (LOG-041): the system admin account manages households and
+            // must never hold a membership, or it could read that household's data.
+            if ($user->is_system_admin) {
+                throw $this->reject('household.admin_not_member');
+            }
+
             $household = Household::query()->lockForUpdate()->find($invitation->household_id);
 
             if ($household === null) {

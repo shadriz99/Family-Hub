@@ -10,18 +10,15 @@
 4. Keputusan reviewer dicatat di logbook (`LOG-NNN`), lalu item di sini ditutup atau diubah menjadi pekerjaan tertunda di bagian B.
 5. Jangan menandai item selesai hanya karena kode sudah ada; sertakan bukti verifikasi atau keputusan eksplisit.
 
-**Status:** diperbarui terakhir pada LOG-040 (rate limit pembuatan undangan).
+**Status:** diperbarui terakhir pada LOG-041 (satu undangan aktif, admin bukan anggota household, branch lama dihapus).
 
 ## A. Butuh keputusan reviewer
 
 | ID | Topik | Keputusan yang dibutuhkan | Dampak bila ditunda |
 |---|---|---|---|
-| P-04 | Invite household baru oleh admin | `users.is_system_admin` sudah ada, tetapi belum ada policy, route, action, atau halaman `/admin`. Tentukan target kartu (CORE-05 atau CORE-15) dan apakah admin boleh membuat household tanpa menjadi anggota | Alur A pada §5.1 (admin membuat invite household baru) belum bisa diimplementasikan |
 | P-05 | Backfill histori periode keuangan | `CreateHousehold` hanya membuat satu baris periode berlaku hari ini. Tentukan apakah perlu periode lampau saat bootstrap dan sejauh mana | `PeriodResolver` aman untuk data baru, tetapi belum ada data historis household lama |
 | P-06 | `Activity` tanpa `household_id` dan `HouseholdMember` tanpa trait tenant | §2.4 masterplan menyebut setiap tabel domain punya `household_id`. Konfirmasi pengecualian permanen (audit global; membership di-scope eksplisit) atau setujui kolom/trait tambahan | Ketidakpastian pada uji isolasi lintas modul dan ekspor data |
 | P-09 | Bukti CI untuk commit setelah `731fb45` | Menunggu laporan reviewer; repo privat tanpa GitHub CLI/API terautentikasi. `d077170` (LOG-036) dan commit sesudahnya sudah di-push dan workflow berjalan otomatis, tetapi hasilnya belum bisa dibaca dari mesin ini | Laporkan hasil SQLite/MariaDB per commit, lalu tutup item bila hijau; jangan sebut commit mana pun lulus CI sebelum ada laporan |
-| P-10 | Branch lama `core-01-foundation` dan `core-03-support` | Sejak LOG-035 semua pekerjaan langsung di `main`; `core-03-support` tertinggal di `28ebeb2`, `core-01-foundation` di `42bda38`. Keduanya sudah menjadi ancestor `main` | Putuskan hapus branch remote atau biarkan sebagai arsip |
-| P-13 | Undangan ganda yang masih pending | `InviteHouseholdMember` tidak mencegah lebih dari satu undangan pending per household; token kedua otomatis gagal karena slot penuh (kegagalan itu kini tertangani rapi, LOG-039) | Putuskan bila perlu undangan tunggal atau pencabutan otomatis saat undangan baru dibuat |
 | P-15 | Throttle dan timing permintaan reset kata sandi | Pesan sudah seragam untuk email terdaftar maupun tidak, tetapi form forgot-password belum punya limiter per IP dan email terdaftar merespons lebih lambat karena pengiriman mail | Putuskan batas throttle dan target timing, lalu catat pada review keamanan CORE-14 |
 | P-16 | Status Playwright sebagai alat verifikasi | Keputusan LOG-037: Playwright dipakai lebih dulu, tetapi `playwright-core` hanya dipasang di direktori sementara dan memakai Chrome sistem, jadi tidak ada dependency repo, lockfile, atau job CI | Tentukan apakah ini permanen atau Playwright dipromosikan menjadi devDependency + langkah CI browser |
 | P-17 | Pembuatan system admin pertama | `users.is_system_admin` ada, tetapi tidak ada jalur resmi untuk membuat admin pertama (seeder stok tidak disetujui, belum ada command/route). Alur A CORE-05 tidak bisa diuji end-to-end tanpa ini | Putuskan jalurnya (mis. command artisan sekali pakai atau langkah manual terdokumentasi) sebelum Alur A dikerjakan |
@@ -43,3 +40,6 @@
 | P-03 | LOG-036 | Reviewer memutuskan reset kata sandi masuk CORE-05: `Features::resetPasswords()` aktif dengan view proyek sendiri dan jawaban seragam untuk email tak dikenal |
 | P-11 | LOG-036 | Route `invitation.show`, halaman penerimaan Livewire, email undangan, dan copy Indonesia tersedia serta diuji pada 360px/1280px light/dark; rate limit undangan dipisah ke P-14 |
 | P-07 | LOG-039 | AC konkurensi CORE-04 diuji deterministik: unique `(household_id, slot)` menolak anggota ketiga tanpa guard aplikasi, race yang kalah gagal tertutup dengan pesan `household.invite_full` (bukan 500), dan slot unik per household. Tidak ada test proses paralel OS-level; batas itu dicatat di logbook |
+| P-04 | LOG-041 | Reviewer memutuskan akun system admin murni akun manajemen: boleh membuat invite household baru tanpa menjadi anggota, dan pembuatan invite admin tetap milik CORE-05 sesuai lingkup masterplan (CORE-15 hanya panel + uji batas akses). Penerimaan undangan dan pembuatan household oleh akun admin kini ditolak. Alur A belum dibangun; jalur admin pertama tetap P-17 |
+| P-10 | LOG-041 | Branch remote `core-01-foundation` (`42bda38`) dan `core-03-support` (`28ebeb2`) dihapus, begitu juga salinan lokalnya. Hanya `main` yang tersisa di remote |
+| P-13 | LOG-041 | Hanya satu undangan aktif per household: `InviteHouseholdMember` mencabut undangan pending sebelumnya di dalam transaksi yang sama, sehingga token lama tidak bisa dipakai lagi |

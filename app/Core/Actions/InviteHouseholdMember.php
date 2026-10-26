@@ -51,6 +51,18 @@ final class InviteHouseholdMember
                 throw ValidationException::withMessages(['invitation' => __('household.invite_full')]);
             }
 
+            // Only one invitation may be active per household (P-13), so issuing a new one
+            // retires the previous pending token instead of leaving two usable links.
+            $household->invitations()
+                ->whereNull('accepted_at')
+                ->whereNull('revoked_at')
+                ->lockForUpdate()
+                ->get()
+                ->each(function (HouseholdInvitation $previous): void {
+                    $previous->revoked_at = now()->toImmutable();
+                    $previous->save();
+                });
+
             $token = bin2hex(random_bytes(32));
 
             $invitation = new HouseholdInvitation([

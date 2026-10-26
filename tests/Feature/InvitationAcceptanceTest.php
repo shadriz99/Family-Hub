@@ -92,11 +92,18 @@ it('rejects invalid registration input without creating an account', function ()
 });
 
 it('reports expired, used, and revoked invitations without showing the form', function (): void {
+    // One active invitation per household (P-13), so each state gets its own household.
     $expired = app(InviteHouseholdMember::class)->handle($this->owner, $this->household, 'expired@example.test');
-    $used = app(InviteHouseholdMember::class)->handle($this->owner, $this->household, 'used@example.test');
-    $revoked = app(InviteHouseholdMember::class)->handle($this->owner, $this->household, 'revoked@example.test');
 
-    app(RevokeHouseholdInvitation::class)->handle($this->owner, $this->household, $revoked->invitation);
+    $usedOwner = User::create(['name' => 'Used owner', 'email' => 'used-owner@example.test', 'password' => 'test-password']);
+    $usedHousehold = app(CreateHousehold::class)->handle($usedOwner, 'Keluarga Terpakai');
+    $used = app(InviteHouseholdMember::class)->handle($usedOwner, $usedHousehold, 'used@example.test');
+
+    $revokedOwner = User::create(['name' => 'Revoked owner', 'email' => 'revoked-owner@example.test', 'password' => 'test-password']);
+    $revokedHousehold = app(CreateHousehold::class)->handle($revokedOwner, 'Keluarga Dicabut');
+    $revoked = app(InviteHouseholdMember::class)->handle($revokedOwner, $revokedHousehold, 'revoked@example.test');
+
+    app(RevokeHouseholdInvitation::class)->handle($revokedOwner, $revokedHousehold, $revoked->invitation);
 
     $guest = User::create(['name' => 'Guest', 'email' => 'used@example.test', 'password' => 'test-password']);
     app(AcceptInvitation::class)->handle($guest, $used->token);

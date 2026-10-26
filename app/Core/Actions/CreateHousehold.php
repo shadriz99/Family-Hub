@@ -34,6 +34,12 @@ final class CreateHousehold
             throw ValidationException::withMessages(['timezone' => __('household.timezone_invalid')]);
         }
 
+        // Reviewer decision (LOG-041): a system admin is a management account and never
+        // becomes a household member, so it cannot own a household either.
+        if ($owner->is_system_admin) {
+            throw ValidationException::withMessages(['owner' => __('household.admin_not_member')]);
+        }
+
         return DB::transaction(function () use ($owner, $name, $startDay, $timezone): Household {
             $existing = HouseholdMember::query()
                 ->where('user_id', $owner->getKey())

@@ -8,6 +8,7 @@ return [
     'start_day_invalid' => 'Hari mulai periode keuangan harus antara 1 dan 28.',
     'timezone_invalid' => 'Zona waktu household tidak valid.',
     'already_member' => 'Pengguna ini sudah menjadi anggota household lain.',
+    'admin_not_member' => 'Akun admin sistem mengelola household dan tidak boleh menjadi anggotanya.',
     'invite_full' => 'Household ini sudah memiliki dua anggota.',
     'invitation_invalid' => 'Undangan tidak ditemukan atau sudah dibatalkan.',
     'invitation_used' => 'Undangan ini sudah digunakan.',
