@@ -89,6 +89,10 @@ Pengelompokan dana **Tabungan & Investasi** serta pencatatan setoran/transfer ma
 
 > Tidak menggunakan `spatie/laravel-permission` (overkill). Gunakan **Laravel Policy** + enum `MemberRole`.
 
+**Implementasi parsial LOG-020:** `App\Core\Policies\HouseholdPolicy` terdaftar eksplisit pada Gate untuk ability `view`, `update`, `invitePartner`, `cancelInvitation`, `removePartner`, `transferOwnership`, `delete`, dan `leave`. Memakai membership terbaru dan household aktif, tanpa bypass system admin. Policy tidak mengeksekusi mutasi; action berikutnya wajib memanggil Gate serta memvalidasi target partner, token/kapasitas, dan transaksi sesuai use-case. Belum ada route/aksi admin atau domain yang dibuka.
+
+**Fondasi action LOG-021:** `RemoveHouseholdMember::handle($actor, $household, $target)` mengotorisasi `leave` jika actor adalah target, atau `removePartner` jika berbeda, dan hanya menghapus membership partner pada household tersebut. `TransferHouseholdOwnership::handle(...)` mengotorisasi owner dan hanya menerima partner aktif pada household yang sama; menukar role tanpa mengubah identitas slot/warna/joined_at. Household aktif dikunci sebelum Gate dan query membership dalam transaksi; audit wajib ikut transaksi. Tidak menghapus akun atau data domain. Belum ada caller UI/route; CORE-14 tetap tertunda. Lock transaksi ini bukan bukti konkurensi kedua DB.
+
 ### 2.3 Registrasi
 - Registrasi publik **dimatikan** (`REGISTRATION_MODE=invite`).
 - Alur A (household baru): System Admin membuat **invite code household baru** → penerima daftar → menjadi `owner` household baru.
@@ -247,6 +251,8 @@ Saat integrasi dinonaktifkan, batalkan lebih dulu seluruh PlannedItem Finance ya
 
 ## 5. Core Module — Spesifikasi
 
+**Urutan implementasi disetujui reviewer (LOG-019):** pecah CORE-03 menjadi 03A (utilitas/perhitungan/komponen), CORE-04 (skema/model household), lalu 03B (integrasi tenant dan factory resolver household). Ini mengatasi dependensi melingkar antara support tenant dan model household; 03A bukan klaim seluruh CORE-03 atau gap browser selesai. CORE-04 parsial: User/sessions kini memakai ULID, model Household/HouseholdMember/history dan enum MemberRole tersedia. Migrasi awal User boleh disesuaikan karena belum ada database aplikasi lokal/produksi yang dimigrasikan; jangan menerapkan perubahan ini sebagai upgrade in-place database integer yang sudah berisi data. Skema baru hanya diuji pada SQLite in-memory; policy, action membership/slot, konkurensi kedua DB dan bootstrap histori masih tertunda. Tidak ada akun baru atau undangan.
+
 ### 5.1 Tabel Core
 
 **`users`**
@@ -331,6 +337,8 @@ Jika `recipient_user_id` pada reminder null, buat delivery untuk tiap member hou
 
 Tabel lain: `notifications` (Laravel), `push_subscriptions` (paket webpush), `activity_log`, `media`, `jobs`, `failed_jobs`, `cache`, `sessions`.
 
+**Audit backend LOG-021:** `activity_log` mengikuti schema Spatie Activitylog 5 dengan PK ULID serta `subject`/`causer` nullable ULID morphs, log_name, description, event, attribute_changes/properties JSON dan timestamps. Model `App\Core\Models\Activity` memakai HasUlids; buffering dimatikan agar audit action tersimpan bersama transaksi, bukan setelah response. Event membership menyimpan household sebagai subject, actor sebagai causer, dan ID target/pemilik lama-baru dalam properties, bukan password/email. Belum ada layar/query audit publik; caller audit CORE-14 nanti wajib mengotorisasi dan membatasi subject household.
+
 **`household_finance_period_settings`** menyimpan riwayat perubahan hari mulai periode: `id`, `household_id`, `start_day` (1–28), `effective_on` (tanggal lokal awal periode saat perubahan berlaku), `created_by`, timestamps; unique (`household_id`,`effective_on`). Buat baris awal saat household dibuat; untuk tanggal yang lebih lama dari baris awal, gunakan setting awal tersebut. Perubahan efektif pada batas periode berikutnya menurut pengaturan aktif; bila masih ada perubahan yang menunggu berlaku, preview ulang lalu ganti jadwal pending tersebut, bukan menambah jadwal bertumpuk. Periode transisi dari batas tersebut sampai kemunculan berikutnya hari baru dapat lebih pendek/panjang; `PeriodResolver` harus memakai riwayat ini agar periode historis tidak berubah.
 
 ### 5.2 Fitur Core (Phase 0)
@@ -374,7 +382,13 @@ Money::format(1250000);          // "Rp 1.250.000"
 Money::format(-50000);           // "-Rp 50.000"
 Money::parse('1.250.000');       // 1250000  (menerima "1250000", "1.250.000", "Rp 1.250.000", "1,25jt" -> 1250000, "500rb" -> 500000)
 ```
-Blade: `<x-money :amount="$x" />` (merah untuk negatif bila `colored`). Input: `<x-input-money wire:model="amount" />` (format ribuan saat mengetik, nilai integer ke Livewire).
+Parser memakai aritmetika string/integer, bukan float. Titik hanya pemisah ribuan dengan grup tiga digit; koma merupakan pecahan desimal dan hasil akhir harus Rupiah bulat (misalnya `0,000001jt` = 1). Prefix `Rp` dan suffix `rb`/`jt` tidak peka huruf besar; tanda minus mendahului prefix (`-Rp 50.000`). Input tidak valid, pecahan Rupiah, dan overflow integer melempar `InvalidArgumentException`, bukan dibulatkan atau dikembalikan sebagai nol. Form pemanggil wajib mengubah exception ini menjadi pesan validasi terlokalisasi.
+
+Blade: `<x-money :amount="$x" />` (merah untuk negatif bila `colored`). Input: `<x-input-money id="amount" :label="__('finance.amount')" wire:model="amount" required />` (format ribuan saat mengetik, nilai integer/null ke Livewire; pemanggil menyediakan label terlokalisasi).
+
+**Kontrak input uang disetujui reviewer (LOG-018):** input interaktif dibatasi integer ±9.007.199.254.740.991 (Number.MAX_SAFE_INTEGER) untuk mencegah pembulatan JSON/JavaScript. Parser/formatter PHP Money tetap mendukung signed 64-bit. `x-input-money` memakai Alpine bawaan + `x-modelable` dengan binding Livewire pada wrapper; menerima format parser biasa/Rp/rb/jt, memformat nominal valid, menampilkan error terlokalisasi dan memblokir native form saat tidak valid. Input kosong/tidak valid mengirim null, bukan nominal valid lama. Form server wajib memakai `required` (atau `nullable` untuk opsional) bersama `App\Rules\SafeRupiah`; tipe string/float dan integer di luar batas ditolak. Rule bukan otorisasi atau pengganti validasi bisnis. Error validasi server ditampilkan oleh form pemanggil; komponen menyediakan pesan validasi browser. Gunakan properti Livewire nullable dan muat Vite app.js serta Livewire/Alpine. Input memakai keyboard teks agar minus, koma, dan suffix tetap dapat diketik. `npm test` menjalankan test JS Node bawaan tanpa dependency baru dan tercantum pada workflow CI.
+
+**Checkpoint komponen (LOG-017):** `x-money` sudah tersedia, menerima integer `amount`, boolean `colored`, dan atribut HTML pemanggil. `x-date` menerima `value` berupa string tanggal kalender ketat `YYYY-MM-DD` (tidak digeser timezone) atau `DateTimeInterface` untuk instant yang dikonversi ke `timezone` eksplisit; default `Asia/Jakarta` harus diganti timezone household oleh pemanggil saat household tersedia. Label mengikuti locale aplikasi (`27 Okt 2026` untuk Indonesia); markup `<time datetime="...">` mempertahankan tanggal/offset mesin. String relatif/timestamp bebas ditolak: berikan objek tanggal untuk instant. `x-input-money` dan `x-datetime` belum diimplementasikan.
 
 ### 7.2 PeriodResolver (periode keuangan)
 - Household punya `finance_period_start_day` (S).
@@ -393,6 +407,8 @@ $p->forDate(Carbon $date);        // periode yang memuat tanggal tsb
 $p->previous($period); $p->next($period);
 ```
 - **Semua** fitur Finance yang bicara "bulan ini" WAJIB memakai PeriodResolver.
+
+**Checkpoint CORE-03 (LOG-016):** mesin perhitungan tersedia melalui `new PeriodResolver($history, $timezone)` dengan history berurutan berbentuk `list<array{effective_on: string, start_day: int}>`. History kosong, tanggal tidak valid, hari di luar 1-28, duplikasi/urutan terbalik, dan perubahan di luar batas periode lama ditolak eksplisit. Baris pertama berlaku juga untuk tanggal sebelum pembuatannya; baris perubahan berikutnya menciptakan batas transisi, lalu mengikuti hari baru berikutnya. `Period` memakai CarbonImmutable dalam timezone household, awal hari dan akhir hari inklusif; key tanggal lokal. Factory `for($household)` dan pengambilan history dari DB tetap menunggu model/relasi CORE-04, bukan diganti model dummy. API lain (`current/fromKey/forDate/previous/next`) sudah diuji mandiri; penyimpanan, preview perubahan, dan pemindahan budget belum diimplementasikan.
 
 ### 7.3 Calendar Contract
 ```php
@@ -676,7 +692,7 @@ Teks notifikasi WAJIB singkat (≤ 120 karakter) dan berisi URL tujuan.
 | CORE-01 | Inisialisasi proyek | PHP 8.5, Laravel 13, Fortify + Livewire 4/Blade, Tailwind v4, Vite 8 (Node 24 LTS), Pest 5, Pint, Larastan 3, Boost development, struktur folder §4.1, `config/modules.php` (flag finance/organizer/asset). *AC:* resolusi dependency stabil dan `composer check-platform-reqs` lulus tanpa mengabaikan requirement; build frontend, `composer test`, `pint --test`, `phpstan` lulus di CI (GitHub Actions) untuk SQLite & MariaDB; Boost MCP initialize/daftar tool/panggilan dokumentasi lulus melalui client terminal yang disetujui reviewer (atau Copilot VS Code), tanpa menghapus instruksi proyek. | – |
 | CORE-02 | Deploy bare-metal & runbook | Nginx, PHP-FPM, proses worker/scheduler terkelola, zrok, `.env.example`, `docs/runbook/deploy.md`. *AC:* instalasi pada Linux bersih → HTTPS publik melalui zrok; app, worker, scheduler, dan backup aktif; proses pulih otomatis setelah reboot. | 01 |
 | CORE-03 | Utilitas Support | `Money`, `PeriodResolver`, `BelongsToHousehold`, komponen `x-money`, `x-input-money`, `x-date`. *AC:* unit test Money::parse (≥10 kasus) & PeriodResolver (S=1, S=25, akhir tahun, tahun kabisat, perubahan setting dengan periode transisi pendek/panjang dan tanpa mengubah key/rentang historis). | 01 |
-| CORE-04 | Household & member | Migrasi & model §5.1, enum MemberRole, Policy, slot member database. *AC:* unique household/slot menolak penerimaan undangan bersamaan yang melebihi 2 member; test konkurensi pada SQLite & MariaDB. | 03 |
+| CORE-04 | Household & member | Migrasi & model §5.1, enum MemberRole, Policy, slot member database. *AC:* unique household/slot menolak penerimaan undangan bersamaan yang melebihi 2 member; test konkurensi pada SQLite & MariaDB. Integrasi tenant/resolver CORE-03B dilanjutkan setelah model nyata tersedia. | 03A (keputusan LOG-019) |
 | CORE-05 | Registrasi invite-only | Admin buat invite household baru; owner undang partner; token hash, kedaluwarsa 7 hari, email undangan. *AC:* registrasi tanpa token ditolak; token dipakai 2x ditolak. | 04 |
 | CORE-06 | Onboarding | Wizard 3 langkah: nama household → zona waktu & hari mulai periode → undang partner (bisa dilewati). | 05 |
 | CORE-07 | Layout & navigasi | Layout mobile/desktop §9.2, bottom nav, sidebar, FAB + bottom sheet, dark mode, komponen §9.5. *AC:* tidak ada scroll horizontal di 360px. | 03 |

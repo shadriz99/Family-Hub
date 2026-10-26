@@ -1,13 +1,31 @@
 # Development Setup dan Rencana - Family Hub
 
 **Baseline:** 2026-10-26
-**Status:** Reviewer mengizinkan kelanjutan sesuai plan dengan perhatian pada credit Copilot; checkpoint fondasi CORE-01 berjalan, task belum selesai.
+**Status:** CORE-01 diterima untuk kelanjutan development setelah CI lulus; CORE-03 sedang berjalan, belum selesai.
+
+**Otorisasi publikasi (LOG-022):** reviewer meminta commit/push checkpoint lokal LOG-015 sampai LOG-021. Publikasi disiapkan pada `core-03-support`, bukan main; implementasi CORE-03A dan CORE-04 dipisahkan dalam commit, dokumentasi checkpoint disertakan pada batch publikasi yang sama. Preflight ulang lulus: 139 test PHP/1546 assertion, 4 test JS, build Vite, Pint/Larastan dan diff whitespace. Scan marker secret pada inventaris file yang akan dipublikasikan tidak menemukan kecocokan; file env/runtime DB/dependency/build tetap di-ignore. Hasil push/CI harus diverifikasi terpisah; tidak mengubah status parsial CORE-03/04 atau menyatakan MariaDB lulus sebelum run baru selesai.
 
 **Arahan terbaru (LOG-014):** SQLite dipilih untuk development; tidak memasang MariaDB lokal atau menghapus matriks kompatibilitas CI. Reviewer memilih menuntaskan CI CORE-01 sebelum CORE-03 dan mengizinkan branch khusus, commit, serta push fondasi ke repository miliknya (bukan ke main). Hasil remote harus dicatat setelah run selesai, bukan diasumsikan dari test lokal.
 
+**Kelanjutan (LOG-015):** setelah CI kedua DB lulus dan reviewer meminta melanjutkan sesuai plan, CORE-01 diterima untuk melanjutkan development (bukan acceptance produksi/UAT). CORE-03 dimulai pada branch lokal `core-03-support` dari fondasi yang telah diverifikasi; checkpoint pertama adalah `Money`. PeriodResolver, tenant support, dan komponen Blade belum selesai. Tidak ada merge ke main atau izin publikasi otomatis task baru.
+
+**Verifikasi checkpoint Money:** 41 kasus unit/46 assertion lulus; regression total 59 test/112 assertion, Pint, dan Larastan lulus lokal. CI task baru belum dijalankan. Sisa CORE-03 dikerjakan sebelum beralih ke CORE-04; status acceptance CORE-01 lama di bagian historis checklist telah digantikan oleh keputusan LOG-015 ini.
+
+**Checkpoint periode (LOG-016):** `Period` immutable dan `PeriodResolver` berbasis history/timezone tersedia dengan current, fromKey, forDate, previous, next. Test meliputi S=1/25/28, tahun kabisat/akhir tahun, transisi pendek/panjang, validasi history/key, timezone, dan kontinuitas 400 hari; regression 73 test/1362 assertion, Pint, Larastan lulus. Ini mesin perhitungan, belum integrasi household/DB: factory `for($household)` dan tenant support memerlukan model CORE-04. Komponen uang/tanggal juga belum tersedia. CORE-03 tetap parsial; berikutnya komponen bersama dan penyelarasan dependensi tenant dengan CORE-04, tanpa menyatakan integrasi sudah selesai.
+
+**Checkpoint komponen (LOG-017):** `x-money` dan `x-date` tersedia dengan 9 test komponen/22 assertion; regression total 82 test/1384 assertion, Pint/Larastan/build lulus. Browser fixture output Blade + stylesheet lokal diperiksa pada 360px/1280px light/dark, tanpa halaman demo/route permanen. `x-date` membedakan tanggal kalender dengan instant/timezone; pemanggil nantinya wajib memasok timezone household. Berikutnya `x-input-money` dengan test Livewire/browser; integrasi tenant/history household tetap belum ada. CORE-03 belum selesai.
+
+**Checkpoint input uang (LOG-018):** reviewer memilih integer Livewire dengan batas aman browser ±9.007.199.254.740.991. `x-input-money`, parser JS berbasis BigInt, dan rule server SafeRupiah tersedia; input buruk/kosong mengosongkan model. Form pemanggil harus memakai required/nullable + rule ini dan menampilkan error server. Hasil lokal 94 test PHP/1407 assertion, 4 test JS (`npm test`), Pint/Larastan/build lulus. Fixture Livewire loopback membuktikan binding, submit, reset server, batas presisi dan error DOM; interaksi klik/keyboard tool tidak konsisten sehingga sebagian diverifikasi dengan event/panggilan Livewire programatik, bukan bukti pointer/keyboard penuh. Input dan pesan error tidak overflow pada 360px/1280px light/dark; fixture/server sementara dibersihkan. CI kini mencantumkan npm test tetapi perubahan CORE-03 belum di-push/run. Sisa CORE-03: tenant support dan adapter household; perlu menyelaraskan dependensi CORE-04 sebelum menutup task.
+
 Dokumen ini menggabungkan setup environment aktual dan rencana implementasi. Riwayat pekerjaan tetap dicatat di [logbook](logbook.md); keputusan stack mengikuti [ADR-011](adr/ADR-011-current-stack.md) dan [Masterplan](00-MASTERPLAN.md).
 
+**Keputusan terbaru dan status aktif (LOG-019):** reviewer menyetujui CORE-03A → CORE-04 → CORE-03B. Catatan sebelumnya yang melarang mulai CORE-04 sebelum integrasi tenant selesai digantikan urutan ini; gap pointer/keyboard tetap terbuka. CORE-04 dimulai sebagai checkpoint skema/model pada branch kerja lokal yang sama, tanpa mencampur ID task dalam commit/PR (belum ada publikasi task baru). User dan sessions kini menggunakan ULID, tersedia Household, HouseholdMember, HouseholdFinancePeriodSetting, enum MemberRole dan constraint slot/unique membership. Model bukan lagi placeholder integer. Migrasi User awal diubah hanya karena belum ada DB aplikasi yang dimigrasikan atau rilis produksi; database integer yang sudah berisi data tidak memiliki jalur upgrade pada checkpoint ini. Test SQLite in-memory saja; tidak membuat DB aplikasi lokal. Hasil lokal: 101 test PHP/1421 assertion, 4 test JS, Pint/Larastan lulus. Policy, action/transaksi membership, bootstrap household/history dan konkurensi SQLite/MariaDB belum selesai; berikutnya tutup permukaan akses/penulisan tersebut sebelum mengklaim CORE-04 lengkap, lalu integrasikan tenant/resolver 03B.
+
 ## Setup environment
+
+**Checkpoint policy (LOG-020):** HouseholdPolicy didaftarkan eksplisit ke Laravel Gate. Owner/partner mengikuti matriks Masterplan untuk view/update/invite/cancel/remove/transfer/delete/leave; outsider, guest, dan admin tanpa membership ditolak. Query membership terbaru menghindari akses dari role/relasi stale dan household terhapus. 19 test policy/46 assertion serta regression total 120 test/1467 assertion, Pint/Larastan lulus lokal. Policy tidak menjalankan aksi, memilih slot, memverifikasi token undangan, atau memberi akses admin domain. CORE-04 tetap parsial: berikutnya action/transaksi membership, bootstrap histori, rollback dan konkurensi kedua DB; integrasi 03B menyusul. Tidak ada route baru atau migration DB aplikasi.
+
+**Checkpoint action (LOG-021):** `RemoveHouseholdMember` menangani partner keluar atau owner mengeluarkan partner; `TransferHouseholdOwnership` menukar role tanpa mengubah slot, warna, atau joined_at. Kedua action mengunci household aktif, memanggil Gate dan membaca membership terkini di dalam transaksi. Audit Spatie ditulis sinkron dalam transaksi yang sama, memakai ULID untuk log dan morph reference; kegagalan audit membatalkan mutasi. Test baru 19 kasus/79 assertion; total 139 test PHP/1546 assertion, Pint/Larastan lulus. Migrate/rollback/re-migrate semua tabel lulus pada SQLite in-memory, bukan DB aplikasi. Ini fondasi backend membership CORE-04 untuk caller CORE-14 nanti, bukan penyelesaian UI/pengaturan CORE-14. Berikutnya admission/slot melalui undangan CORE-05, bootstrap household/history dan bukti konkurensi SQLite/MariaDB; CORE-04 tetap parsial dan 03B belum selesai. Tidak ada route/action publik untuk bergabung atau provisioning bebas.
 
 ### Installed baseline
 
@@ -18,7 +36,7 @@ Dokumen ini menggabungkan setup environment aktual dan rencana implementasi. Riw
 - Root [package.json](../package.json) and [package-lock.json](../package-lock.json): Vite 8, Laravel Vite plugin 3, Tailwind 4, and its Vite integration.
 - The [mockup](../mockup/package.json) remains a separate npm project; its files and dependencies are unchanged.
 
-The official Laravel 13.0.0 skeleton is now integrated with the existing Laravel Framework 13.38.0 dependencies. Artisan, HTTP bootstrap, config, default welcome view, stock User/factory/seeder/migrations, PSR-4 mappings, example tests, Vite configuration, and Composer scripts are present. These are framework defaults, not Family Hub models or features; default integer IDs and migrations must be reconciled with the approved ULID/tenancy design before any domain work.
+The official Laravel 13.0.0 skeleton is integrated with Laravel Framework 13.38.0. Artisan, HTTP bootstrap, config, welcome, factory/seeder, PSR-4, tests, Vite, and Composer scripts are present. LOG-019 replaces the stock integer User/session identifiers with ULIDs and adds household/member/period-history schema and models. Account provisioning and authorized membership workflows are not implemented; the stock factory/seeder is not an approved admin bootstrap.
 
 A local ignored `.env` and app key exist. Session/cache use files so the welcome/login pages render without a database; SQLite remains configured, but no local application database has been created, migrated, or seeded. Tests migrate only isolated in-memory databases. Queue stays configured for the database driver but no worker is running. Fortify is enabled with an empty feature list: login/logout and password confirmation work, while registration/reset/TOTP/passkeys remain disabled. Passkeys auto-discovery stays excluded. Boost MCP configuration for Copilot is installed in `.vscode/mcp.json`; stdio initialization and its documentation tool were tested, but the actual VS Code Copilot connection is not yet confirmed.
 
@@ -43,6 +61,7 @@ composer install --no-scripts --no-interaction --prefer-dist
 composer dump-autoload
 npm ci --ignore-scripts
 npm run build
+npm test
 ```
 
 For a fresh clone only, copy `.env.example` to `.env` if absent, then run `php artisan key:generate`. Never overwrite an existing `.env` or regenerate a key for data that depends on it.
@@ -73,7 +92,8 @@ Composer is installed in `%LOCALAPPDATA%\Programs\Composer` with a `composer.cmd
 - `npm audit`: no vulnerabilities reported, including optional dependencies.
 - PHP dependency autoload and an in-memory SQLite query succeed without generating an application database.
 - Scaffold package discovery and `php artisan --version` succeed (Laravel Framework 13.38.0).
-- `composer test`: 18 tests pass, 66 assertions, including foundation checks and auth rendering, credential validation/error display/email retention, login/logout/session rotation, rate limiting, disabled feature routes, authenticated/guest redirects, and valid/invalid password confirmation. Auth tests use synthetic users and SQLite in-memory. The stock trivial unit example is not evidence of domain coverage.
+- `composer test`: current CORE-03 local regression passes 94 tests/1407 assertions; foundation/auth, Money, PeriodResolver, static components, and money-input/range validation. Auth tests use synthetic users and SQLite in-memory. Published CORE-01 CI evidence remains at `ffe4afe`; newer local tests are not claimed as remote CI coverage.
+- `npm test`: 4 Node tests pass for safe integer parsing, invalid/range input, stale-value clearing, cursor placement and incremental typing/backspace. No additional test dependency.
 - PSR-12 Pint check passes on scaffold PHP source.
 - `npm run build` succeeds; live welcome, `/up`, and referenced local built assets return HTTP 200 on the loopback server.
 - `composer lint` and `composer analyse` pass using permanent project configurations. Composer manifest/lock validation passes after metadata refresh without package upgrades; the license warning remains.
@@ -103,8 +123,8 @@ Composer is installed in `%LOCALAPPDATA%\Programs\Composer` with a `composer.cmd
 |---|---|---|
 | A. Repository, discovery, keputusan stack | Selesai untuk persiapan | [LOG-001 sampai LOG-003](logbook.md#log-001---repository-dan-tooling-dasar); keputusan open questions berikutnya tetap diperlukan |
 | B. Dependency dan dokumentasi | Selesai untuk persiapan | [LOG-004](logbook.md#log-004---manifest-dan-instalasi-dependency-tanpa-coding-aplikasi), [LOG-005](logbook.md#log-005---konsolidasi-dokumentasi), [LOG-006](logbook.md#log-006---logbook-dan-rencana-development), [LOG-007](logbook.md#log-007---penggabungan-setup-dan-rencana), [LOG-008](logbook.md#log-008---skill-sinkronisasi-dokumentasi) |
-| C. CORE-01 | Teknis/CI lulus; menunggu acceptance reviewer | [LOG-011](logbook.md#log-011---checkpoint-auth-core-01): 18 test/66 assertion lokal dan browser auth; [LOG-013](logbook.md#log-013---boost-melalui-terminal-perantara): Boost terminal; [LOG-014](logbook.md#log-014---publikasi-fondasi-untuk-ci-core-01): GitHub CI SQLite/MariaDB lulus pada `ffe4afe` |
-| D. Core lainnya | Belum dimulai | CORE-02 sampai CORE-16 belum selesai; runbook masih draft |
+| C. CORE-01 | Diterima untuk kelanjutan development | [LOG-011](logbook.md#log-011---checkpoint-auth-core-01), [LOG-013](logbook.md#log-013---boost-melalui-terminal-perantara), [LOG-014](logbook.md#log-014---publikasi-fondasi-untuk-ci-core-01); arahan lanjut reviewer LOG-015; bukan acceptance produksi |
+| D. Core lainnya | CORE-03/04 parsial | LOG-019: urutan 03A → 04 → 03B disetujui; skema/model household dan ULID tersedia; policy/aksi/konkurensi/tenant serta gap pointer/keyboard belum selesai |
 | E. Finance | Belum dimulai | FIN-01 sampai FIN-16 |
 | F. Organizer | Belum dimulai | ORG-01 sampai ORG-13 |
 | G. Asset | Belum dimulai | AST-01 sampai AST-12 |
@@ -212,7 +232,7 @@ Tidak perlu menunggu Phase 4 untuk menguji keamanan, aksesibilitas, backup, atau
 
 | Hal | Batas waktu | Status awal |
 |---|---|---|
-| Kelanjutan CORE-01 | Sebelum menutup task | Teknis/CI kedua DB lulus; menunggu acceptance reviewer sebelum CORE-03 |
+| Kelanjutan CORE-01 | Sebelum menutup task | Teknis/CI kedua DB lulus; reviewer mengizinkan lanjut CORE-03 pada LOG-015 |
 | Lisensi proyek | Sebelum deklarasi metadata/distribusi | Belum diputuskan; warning Composer diketahui |
 | Host Linux, akses admin, SMTP (Q-M2/Q-M3) | Sebelum uji deploy/email terkait | Detail aktual belum diverifikasi |
 | Retry reminder (Q-M9) | Sebelum CORE-09 | Open |

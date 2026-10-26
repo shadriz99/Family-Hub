@@ -20,6 +20,10 @@ Checkpoint CORE-01 membuktikan auth dasar melalui test SQLite in-memory dan brow
 
 ## 2. Syarat mulai UAT
 
+LOG-019 menambahkan skema/model household lokal dan ULID dengan constraint test SQLite in-memory; ini belum menyediakan akun owner/partner persisten, policy/aksi membership, konkurensi kedua DB, atau penerimaan UAT. Checklist berikut tetap tidak dicentang.
+
+LOG-020/021 melanjutkan policy dan action backend membership (keluar/keluarkan partner/transfer ownership) beserta audit transaksional. Test rollback migration dan rollback mutasi saat audit gagal lulus pada SQLite terisolasi; bukan pengujian UI atau konkurensi MariaDB. Akun persisten, caller halaman dan acceptance UAT tetap belum tersedia.
+
 - [ ] Build kandidat dari commit/tag yang diketahui; CI lulus.
 - [ ] Tidak ada pertanyaan keamanan/retensi yang masih menjadi blocker go-live (Q-M11, Q-M12; Q-M9 sebelum reminder aktif). Q-M1 tentang ambang migrasi zrok ke Cloudflare Tunnel bukan blocker rilis awal.
 - [ ] Deploy dan rollback dipahami oleh operator.

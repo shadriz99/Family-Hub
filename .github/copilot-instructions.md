@@ -8,13 +8,29 @@ Before implementation work, read `docs/00-MASTERPLAN.md`. For `FIN-*`, `ORG-*`, 
 
 Read `docs/logbook.md` and `docs/development-plan.md` before continuing work. After each task, append an evidence-based log entry and synchronize the plan status with it. Distinguish dependency preparation, implementation, runtime verification, and reviewer acceptance; never mark a task complete from installation alone.
 
+### Current continuation checkpoint (LOG-015)
+
+After the passing CORE-01 CI, the reviewer requested continuing the plan; treat this as acceptance to proceed with development, not production/UAT acceptance. This supersedes the pending-acceptance statements at the previous checkpoint above and below. CORE-03 has started on local branch `core-03-support`: Money parse/format and its 41 unit cases are implemented (LOG-015). No local database migration/seed or account provisioning has occurred. Publication authorization for CORE-01 is not blanket permission to commit/push subsequent tasks.
+
+LOG-016 extends that checkpoint: immutable Period and history-based PeriodResolver arithmetic are implemented, with 73 tests/1362 assertions, Pint, and Larastan passing. Household-backed `for($household)` and tenant support require the real CORE-04 model/history relation; do not invent placeholder models or claim that integration exists. Blade components remain pending. CORE-03 remains partial; no local migrations or publication have occurred.
+
+LOG-017 adds static `x-money` and `x-date`, with 82 tests/1384 assertions, Pint/Larastan/build passing and temporary browser-fixture checks. `x-input-money` remains pending. Date-only strings preserve calendar dates; DateTimeInterface values convert to the explicit household timezone (default Asia/Jakarta is not automatic tenant resolution). No domain page or local DB changes.
+
+LOG-018 adds `x-input-money` with reviewer-approved safe browser integer range +/-9007199254740991, integer/null Livewire binding, and localized errors. All consuming forms must validate `required`/`nullable` plus `App\Rules\SafeRupiah` server-side and display server validation errors; JavaScript validation is not a trust boundary. PHP Money keeps its full integer range. Local regression: 94 PHP tests/1407 assertions, 4 JS tests, Pint/Larastan/build pass. Run `npm test` for JS changes; CI now includes it but CORE-03 has not been published. Programmatic browser events/calls verified integration where interaction tools were unreliable; full pointer/keyboard checks remain a reported gap. Household/tenant integration remains pending.
+
 ## Mandatory documentation synchronization
+
+Current LOG-019 decision supersedes earlier placeholder/task-order notes: reviewer approved CORE-03A -> CORE-04 -> CORE-03B. Real household/member/period-history models, MemberRole, and ULID User/session schema now exist locally; no local application migration/seed has run. Tests use SQLite in-memory (101 PHP tests/1421 assertions, 4 JS tests; Pint/Larastan pass). CORE-04 remains partial: policies, transactional membership actions/slot allocation, initial history, concurrency on both DBs and migration rollback verification are pending. Tenant/resolver integration 03B follows the real models; do not mark it complete. Native pointer/keyboard gaps remain. There are no new domain routes, persistent accounts, or publication authorization for these tasks. Initial User migration was adjusted only before any application DB deployment, not as a safe upgrade for existing integer-key databases.
 
 For every change batch (code, configuration, dependencies, tooling, skills, instructions, or documentation), load and follow `.github/skills/development-docs-sync/SKILL.md`. Update both `docs/logbook.md` and `docs/development-plan.md` before completion, including documentation-only work. Read-only investigations require no artificial log entry. One coherent batch gets one entry; tracking updates do not recursively require more entries.
 
 For structural changes, review every maintained document under `docs/` and relevant instructions/skills or other documentation outside it. Synchronize every affected specification, ADR, plan, runbook, UAT checklist, path, link, command, and example in the same batch; record the review scope and unaffected documents in the logbook. Do not make cosmetic edits to unaffected files or falsify historical records. This is mandatory agent behavior, not an installed watcher or CI enforcement.
 
 ## Mandatory coordinated UI workflow
+
+LOG-020 adds an explicitly registered HouseholdPolicy with the approved owner/partner ability matrix and no system-admin bypass. Fresh membership queries reject stale/revoked roles and deleted households; actions/routes must call Gate when implemented and still validate use-case targets and concurrency. Local regression: 120 PHP tests/1467 assertions, Pint/Larastan pass; 19 policy tests cover access boundaries. Transactional membership actions, bootstrap history, rollback/concurrency evidence, and tenant adapter remain pending. No new public route or persistent account.
+
+LOG-021 adds RemoveHouseholdMember and TransferHouseholdOwnership backend Actions for future CORE-14 callers. Household lock, fresh Gate/membership checks, role mutations and synchronous Spatie audit share a transaction. Activity uses ULID PK/morphs and buffering is disabled; do not expose unscoped audit queries. Slots/colors/joined_at stay unchanged on ownership transfer; removal does not delete accounts/domain records. Regression: 139 PHP tests/1546 assertions, Pint/Larastan pass; isolated SQLite migrate/rollback/re-migrate passed. This supersedes pending-action/rollback notes above, not admission/bootstrap/parallel SQLite-MariaDB/03B gaps. No public caller, persistent account, application migration or publication.
 
 For every change batch affecting rendered UI or browser behavior (Blade, Livewire, CSS/JS, layout, UI translations, assets, or routes/backend behavior consumed by a page), use all three skills without waiting for a separate review request. Documentation-only and backend-only changes with no browser impact do not trigger this workflow.
 
@@ -38,6 +54,7 @@ Boost MCP config is installed for Copilot in `.vscode/mcp.json`. Per reviewer de
 The masterplan's planned CI checks are:
 
 - `composer test` — full test suite
+- `npm test` — money-input JavaScript regression tests (Node built-in runner)
 - `pint --test` — formatting check
 - `phpstan` — static analysis
 - Run tests against both SQLite and MariaDB in CI.

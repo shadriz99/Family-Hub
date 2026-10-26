@@ -9,6 +9,10 @@ Scaffold saat ini hanya berjalan lokal melalui `php artisan serve` pada loopback
 
 Login/logout dan konfirmasi kata sandi dasar tersedia (LOG-011), tetapi belum ada alur provisioning admin/undangan atau skema household. Tidak ada akun persisten yang disediakan oleh setup ini. Jangan membuka akses publik atau menjalankan migrasi placeholder untuk membuat akun pertama; tunggu implementasi Core dan gate rilis.
 
+**Pembaruan lokal LOG-019:** skema/model household dan ULID User/sessions kini tersedia untuk test SQLite in-memory, tetapi alur provisioning/policy/aksi membership belum selesai. Perubahan migrasi awal belum memiliki jalur upgrade data integer yang sudah ada. Jangan menerapkannya pada DB berisi data atau menganggap skema lokal ini siap produksi; verifikasi rilis, migration path, backup, dan gate Core terlebih dahulu.
+
+**Checkpoint LOG-021:** policy dan action backend keluar/keluarkan partner/transfer ownership tersedia, dengan audit Spatie sinkron dalam transaksi. Migration activity_log memakai ULID (PK dan morph), bukan morph integer bawaan. Semua migration telah diuji migrate/rollback/re-migrate pada SQLite in-memory saja; belum MariaDB/paralel atau upgrade data lama. Belum ada caller halaman, provisioning atau akun persisten; ini bukan izin menjalankan migrasi aplikasi/deploy.
+
 Runbook ini berlaku untuk deploy langsung di Linux bare-metal dengan Nginx, PHP-FPM, Laravel, dan zrok sebagai akses publik. Tidak menggunakan Docker. Jangan menyalin command, path, atau nama service sebelum disesuaikan dengan distro Linux, konfigurasi Nginx/PHP-FPM, dan versi aplikasi aktual. Jika prasyarat go-live belum terpenuhi, hentikan deploy.
 
 ## 1. Data lingkungan produksi
