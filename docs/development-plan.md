@@ -1,9 +1,9 @@
 # Development Setup dan Rencana - Family Hub
 
 **Baseline:** 2026-10-26
-**Status:** CORE-01 diterima untuk kelanjutan development (LOG-015). CORE-03 dinyatakan selesai reviewer (LOG-025); checkpoint CORE-03A/03B/04 ada di `main` (`6d6f7bc`), dan kedua job CI SQLite/MariaDB lulus (LOG-029). LOG-030 menambahkan bootstrap household dan konteks tenant per request; CORE-04 masih parsial di sisi admission/konkurensi dan job context.
+**Status:** CORE-01 diterima untuk kelanjutan development (LOG-015). CORE-03 dinyatakan selesai reviewer (LOG-025). Tip `main`/`core-03-support` adalah `d4a6986`; kode CORE-04 (`731fb45`) lulus kedua job CI SQLite/MariaDB (LOG-031). LOG-030 menambahkan bootstrap household dan konteks tenant per request; CORE-04 masih parsial di sisi admission/konkurensi dan job context.
 
-**CI kedua DB (LOG-029):** reviewer melaporkan job SQLite dan MariaDB lulus untuk `6d6f7bc`, termasuk migrasi, 144 test PHP/1562 assertions, 4 test JS, Pint, Larastan, dan build. Perbaikan collation LOG-028 dan nama index LOG-027 terbukti pada run nyata. Tidak ada deployment atau UAT.
+**CI kedua DB (LOG-029, LOG-031):** job SQLite dan MariaDB lulus untuk `6d6f7bc` (144 test PHP/1562 assertions) dan untuk `731fb45` (156 test PHP/1605 assertions), termasuk migrasi, test JS, Pint, Larastan, dan build. Perbaikan collation LOG-028 dan nama index LOG-027 terbukti pada run nyata. Tidak ada deployment atau UAT.
 
 **Publikasi dan merge (LOG-026):** `core-03-support` di-push (`2137b2b..bcbbe86`) dan `main` di-fast-forward ke SHA yang sama; kedua ref identik. Workflow SQLite/MariaDB berjalan pada push tersebut, tetapi statusnya belum dapat dipantau dari mesin ini (repo privat, tanpa GitHub CLI/API terautentikasi), jadi tidak ada klaim lulus untuk MariaDB maupun SQLite remote. CORE-04 tetap parsial: bootstrap household/history, middleware/job context, admission CORE-05, dan konkurensi belum selesai. Ini bukan acceptance UAT/produksi dan bukan izin deploy.
 

@@ -289,6 +289,13 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 - Dokumen yang diselaraskan: logbook, `docs/development-plan.md`, `docs/00-MASTERPLAN.md` (status isolasi §2.4), `.github/copilot-instructions.md`, dan `AGENTS.md` root. ADR, runbook, UAT, checklist, dan spesifikasi modul tidak berubah karena keputusan stack, topologi deploy, skema logis, dan kontrak modul tidak berubah.
 - **Publikasi:** atas permintaan reviewer, `731fb45` di-push ke `origin/main` (`49f218c..731fb45`) dan `core-03-support` disamakan ke SHA yang sama; `git ls-remote` mengonfirmasi keduanya identik. `core-01-foundation` (`42bda38`) sudah menjadi ancestor `main`, jadi tidak ada branch yang perlu di-merge. Hasil CI untuk `731fb45` belum dapat dipantau dari mesin ini (repo privat, tanpa GitHub CLI); jangan mengklaim lulus sebelum reviewer melaporkan. Ini bukan izin deploy atau UAT.
 
+### LOG-031 - CI lulus untuk bootstrap household dan konteks request
+
+- Reviewer melaporkan seluruh job CI hijau untuk `731fb45` (CORE-04 bootstrap + middleware konteks). Bukti mencakup matriks SQLite/MariaDB, migrasi seluruh tabel, 156 test PHP/1605 assertion, test JS, Pint, Larastan, dan build. Tautan run tidak dicatat karena tidak diberikan.
+- Ini menutup pertanyaan portabilitas `whereHas` membership, insert `HouseholdFinancePeriodSetting` di dalam transaksi, dan DDL mentah `household_members` pada MariaDB. `d4a6986` hanya menambah entri logbook dengan `[skip ci]`, sehingga tip dokumen tidak memiliki run sendiri dan tidak perlu bukti terpisah.
+- Cakupan tetap: tidak ada deployment, migration/seed DB aplikasi, akun nyata, atau UAT. CORE-04 masih parsial (konteks job/command, backfill histori periode, admission CORE-05, konkurensi slot); pekerjaan berikutnya adalah CORE-05 registrasi invite-only sesuai urutan rencana.
+- Dokumen yang diselaraskan: logbook dan `docs/development-plan.md`. Masterplan, ADR, runbook, UAT, instruksi, dan spesifikasi modul tidak berubah karena tidak ada keputusan, kontrak, atau topologi baru.
+
 ## Aturan pembaruan berikutnya
 
 1. Tambahkan entri baru dengan tanggal dan ID `LOG-NNN`; sertakan task ID resmi (`CORE-*`, `FIN-*`, `ORG-*`, `AST-*`) jika relevan.
