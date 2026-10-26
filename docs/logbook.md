@@ -244,6 +244,14 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 - **Verifikasi:** setelah merge 139 test PHP/1546 assertion; setelah CORE-03B 144 test PHP/1562 assertion, 4 test JS (`npm test`), `composer lint`, `composer analyse`, `npm run build`, dan `git diff --check` lulus pada SQLite in-memory. Tidak ada UI/browser, migration/seed DB aplikasi, akun, dependency baru, push, atau CI baru.
 - **Batas:** trait belum diterapkan pada `HouseholdMember` (akses via policy dan eksplisit per household) atau `Activity` (tabel tanpa kolom `household_id`), dan belum ada model modul. Middleware/command/job yang menginisialisasi konteks belum dibangun. Bootstrap household + histori periode, admission lewat undangan CORE-05, dan bukti konkurensi tetap pekerjaan CORE-04. Publikasi/push dan evaluasi merge ke main menunggu reviewer.
 
+### LOG-025 - MariaDB dikembalikan ke CI
+
+- Reviewer menyatakan CORE-03 selesai dan mengizinkan MariaDB masuk kembali ke CI ("since 03 is completed you can include mariadb ci again"). Keputusan ini menggantikan penundaan LOG-023 untuk gate CI; status "selesai" adalah pernyataan reviewer, bukan acceptance tertulis atas setiap AC CORE-03.
+- `.github/workflows/ci.yml` dikembalikan ke matriks `database: [sqlite, mariadb]` dengan service `mariadb:10.11`, `pdo_mysql`, dan step `Test MariaDB` yang menetapkan `DB_CONNECTION=mysql`, host/port, database `family_hub_test`, serta kredensial CI-only. Step SQLite tetap memakai `phpunit.xml` in-memory. Workflow kini identik dengan versi yang dipakai pada run gagal `40286560448`.
+- **Belum terbukti:** tidak ada Docker/MariaDB lokal, sehingga suite tidak dijalankan pada MariaDB di mesin ini dan tidak ada klaim kompatibilitas untuk perubahan CORE-03/04. Penyebab kegagalan MariaDB pada `40286560448` juga belum diketahui; log run lama tidak dapat diakses (GitHub CLI tidak terpasang, API run mengembalikan 404).
+- **Verifikasi lokal (perubahan workflow + dokumen):** 144 test PHP/1562 assertion, 4 test JS, `composer lint`, `composer analyse`, `npm run build`, `composer validate`, dan `git diff --check` lulus pada SQLite in-memory. Tidak ada migration/seed DB aplikasi, akun, dependency baru, atau perubahan kode domain. Push dan hasil run CI baru menunggu tindakan reviewer.
+- **Dokumen yang diselaraskan:** logbook, `docs/development-plan.md`, `docs/00-MASTERPLAN.md` (catatan checkpoint CI), `docs/adr/ADR-011-current-stack.md`, `.github/copilot-instructions.md`, `docs/runbook/deploy.md`, `docs/uat-go-live.md`, dan `AGENTS.md` root. Spesifikasi modul Finance/Organizer/Asset, runbook backup-restore, dan checklist lain tidak berubah karena kontrak domain, topologi deploy, dan skema tidak berubah.
+
 ## Aturan pembaruan berikutnya
 
 1. Tambahkan entri baru dengan tanggal dan ID `LOG-NNN`; sertakan task ID resmi (`CORE-*`, `FIN-*`, `ORG-*`, `AST-*`) jika relevan.

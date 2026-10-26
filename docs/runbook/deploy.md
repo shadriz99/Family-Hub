@@ -9,6 +9,8 @@ Scaffold saat ini hanya berjalan lokal melalui `php artisan serve` pada loopback
 
 LOG-023: reviewer memilih SQLite dahulu dan menunda MariaDB. CI aktif main hanya SQLite; kompatibilitas MariaDB untuk perubahan lanjutan belum terverifikasi. Main memuat fondasi CORE-01, bukan checkpoint CORE-03/04 dari branch support. Keputusan merge ini bukan izin deploy/migrate atau bukti UAT.
 
+LOG-025: reviewer menyatakan CORE-03 selesai dan meminta MariaDB kembali ke CI; workflow support kembali memakai matriks SQLite/MariaDB 10.11. Belum ada run baru dan belum ada bukti kompatibilitas MariaDB untuk skema household/CORE-04. Jangan memakai hasil CI fondasi LOG-014 sebagai bukti rilis, dan jangan menjalankan migration aplikasi atau deploy berdasarkan perubahan ini.
+
 Login/logout dan konfirmasi kata sandi dasar tersedia (LOG-011), tetapi belum ada alur provisioning admin/undangan atau skema household. Tidak ada akun persisten yang disediakan oleh setup ini. Jangan membuka akses publik atau menjalankan migrasi placeholder untuk membuat akun pertama; tunggu implementasi Core dan gate rilis.
 
 **Pembaruan lokal LOG-019:** skema/model household dan ULID User/sessions kini tersedia untuk test SQLite in-memory, tetapi alur provisioning/policy/aksi membership belum selesai. Perubahan migrasi awal belum memiliki jalur upgrade data integer yang sudah ada. Jangan menerapkannya pada DB berisi data atau menganggap skema lokal ini siap produksi; verifikasi rilis, migration path, backup, dan gate Core terlebih dahulu.

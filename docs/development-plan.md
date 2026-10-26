@@ -1,11 +1,13 @@
 # Development Setup dan Rencana - Family Hub
 
 **Baseline:** 2026-10-26
-**Status:** CORE-01 diterima untuk kelanjutan development (LOG-015). Checkpoint CORE-03A, CORE-04, dan CORE-03B tersedia pada `core-03-support`; CORE-03/04 masih parsial dan belum dipublikasikan ulang.
+**Status:** CORE-01 diterima untuk kelanjutan development (LOG-015). Reviewer menyatakan CORE-03 selesai dan mengizinkan MariaDB kembali ke CI (LOG-025); checkpoint CORE-03A/03B/04 tersedia pada `core-03-support`, sedangkan CORE-04 masih parsial dan belum dipublikasikan ulang.
 
-**Keputusan aktif LOG-023:** reviewer menunda MariaDB dan menjadikan SQLite satu-satunya target CI aktif. `core-01-foundation` sudah di-fast-forward ke main tanpa membawa `core-03-support`. Branch support harus mengintegrasikan main dan lulus pemeriksaan baru sebelum evaluasi merge; kegagalan MariaDB lama tidak boleh disebut lulus. Tidak ada migration/seed aplikasi atau provisioning akun.
+**Keputusan aktif LOG-025:** reviewer menyatakan CORE-03 selesai dan meminta MariaDB dimasukkan kembali ke CI. Matriks SQLite/MariaDB dipulihkan di `.github/workflows/ci.yml`; hasil run baru belum ada dan kompatibilitas MariaDB untuk perubahan CORE-03/04 belum boleh diklaim. Penundaan LOG-023 berakhir untuk gate CI, tetapi kegagalan lama `40286560448` tetap tidak terdokumentasi penyebabnya. Tidak ada push, merge ke main, migration/seed aplikasi, atau provisioning akun.
 
-**Integrasi support (LOG-024):** `main` di-merge ke `core-03-support` secara lokal (merge commit `1cd85ae`); konflik dokumen diselesaikan dengan mempertahankan histori LOG-015 sampai LOG-023 dan keputusan SQLite terbaru. CI branch support diselaraskan ke SQLite-only plus `npm test`. Setelah merge 139 test/1546 assertion lulus; hasil CORE-03B dicatat pada paragraf checkpoint di bawah. Merge/push ke main tetap menunggu reviewer.
+**Keputusan sebelumnya (LOG-023, historis):** reviewer menunda MariaDB dan menjadikan SQLite satu-satunya target CI aktif. `core-01-foundation` sudah di-fast-forward ke main tanpa membawa `core-03-support`. Branch support harus mengintegrasikan main dan lulus pemeriksaan baru sebelum evaluasi merge; kegagalan MariaDB lama tidak boleh disebut lulus.
+
+**Integrasi support (LOG-024):** `main` di-merge ke `core-03-support` secara lokal (merge commit `1cd85ae`); konflik dokumen diselesaikan dengan mempertahankan histori LOG-015 sampai LOG-023 dan keputusan SQLite terbaru. CI branch support saat itu diselaraskan ke SQLite-only plus `npm test`; matriks kedua DB dipulihkan pada LOG-025. Setelah merge 139 test/1546 assertion lulus; hasil CORE-03B dicatat pada paragraf checkpoint di bawah. Merge/push ke main tetap menunggu reviewer.
 
 **Arahan terbaru (LOG-014):** SQLite dipilih untuk development; tidak memasang MariaDB lokal atau menghapus matriks kompatibilitas CI. Reviewer memilih menuntaskan CI CORE-01 sebelum CORE-03 dan mengizinkan branch khusus, commit, serta push fondasi ke repository miliknya (bukan ke main). Hasil remote harus dicatat setelah run selesai, bukan diasumsikan dari test lokal.
 
@@ -48,7 +50,7 @@ Open `/login` for the Indonesian Livewire/Blade form, styled with Tailwind and b
 
 Core/Modules placeholder directories and `config/modules.php` exist, with all unreleased modules disabled. Non-production Eloquent lazy-loading prevention is enabled. Permanent Pint PSR-12 and Larastan level 6 configurations and Composer `lint`/`analyse` scripts are available. CI is defined in `.github/workflows/ci.yml` for PHP 8.5 with SQLite and MariaDB 10.11.
 
-**Bukti CI terbaru (LOG-014):** [Run 40268711517](https://github.com/shadri-zulkurniadi/Net/actions/runs/40268711517) pada `ffe4afe` lulus untuk kedua job SQLite/MariaDB, termasuk dependency install, Composer validate/platform, build, Pint, Larastan, dan test. Tidak ada server MariaDB lokal yang dipasang.
+**Bukti CI terbaru (LOG-014):** [Run 40268711517](https://github.com/shadri-zulkurniadi/Net/actions/runs/40268711517) pada `ffe4afe` lulus untuk kedua job SQLite/MariaDB, termasuk dependency install, Composer validate/platform, build, Pint, Larastan, dan test. Tidak ada server MariaDB lokal yang dipasang. Matriks kedua DB sempat dinonaktifkan pada LOG-023 dan dipulihkan pada LOG-025; belum ada run baru untuk tip `core-03-support`.
 
 ApexCharts is deferred until the reporting module needs it and its license is reviewed. Alpine comes from Livewire; no separate Alpine npm dependency is installed. No Flux, Volt, Sail, Docker, or global Laravel installer is needed.
 
