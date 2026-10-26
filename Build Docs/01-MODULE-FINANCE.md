@@ -331,7 +331,7 @@ erDiagram
 | BR-FIN-002 | `occurred_on` ≥ `opening_date` akun terkait; boleh tanggal masa depan maksimal +31 hari (peringatan, bukan error). |
 | BR-FIN-003 | Saldo akun = `opening_balance` + Σ income(account) − Σ expense(account) − Σ transfer(account_id) + Σ transfer(to_account_id). Dihitung via query, di-cache per akun (`cache key fin:balance:{account}`), cache dibuang pada setiap perubahan transaksi akun tsb. |
 | BR-FIN-004 | Saldo boleh negatif (tidak diblok); tampil merah. |
-| BR-FIN-005 | Total saldo dashboard = Σ saldo akun aktif dengan `include_in_total=true` (kartu kredit negatif ikut mengurangi). |
+| BR-FIN-005 | Dashboard memisahkan saldo operasional (tipe cash/bank/ewallet/credit_card) dan saldo tabungan (tipe savings), masing-masing Σ saldo akun aktif dengan `include_in_total=true`; kartu kredit negatif mengurangi operasional. Total gabungan = operasional + tabungan, ditampilkan sekunder. Kelompok mengikuti tipe akun, bukan alokasi transaksi. Transfer antar kelompok mengurangi sumber dan menambah tujuan; transfer dalam kelompok tidak mengubah subtotal kelompok. Expense mengurangi kelompok akun sumber. |
 | BR-FIN-010 | Kategori dengan transaksi tidak bisa dihapus → arsip, atau **gabungkan** ke kategori lain (pindahkan semua transaksi & anggaran). |
 | BR-FIN-011 | Kategori sistem (`system_key` tidak null) tidak bisa diarsip/dihapus; nama boleh diubah. |
 | BR-FIN-020 | Generator PlannedItem bersifat **idempoten** (aman dijalankan berkali-kali) memakai unique key §6.7. |
@@ -449,7 +449,7 @@ Semua reminder item dibatalkan saat status menjadi `paid`/`skipped`/`cancelled`,
 Reminder hanya dibuat untuk item dengan due_date ≤ hari ini + 35 hari (sisanya dibuat oleh job harian saat masuk jendela).
 
 ### 9.6 Dashboard Widget — `FinanceSummaryWidget`
-Total saldo · Sisa anggaran periode · Kewajiban belum dibayar periode (jumlah & nominal) · tombol cepat "Catat".
+Saldo operasional · Saldo tabungan · Total gabungan (sekunder) · Sisa target alokasi periode · Kewajiban belum dibayar periode (jumlah & nominal) · tombol cepat "Catat". Saldo tabungan kumulatif berbeda dari penempatan alokasi Tabungan & Investasi periode berjalan.
 
 ### 9.7 Household Exporter
 CSV: `accounts.csv`, `categories.csv`, `transactions.csv`, `budgets.csv`, `recurring_bills.csv`, `loans.csv`, `planned_items.csv` + lampiran.

@@ -472,7 +472,7 @@ Dashboard menampilkan maksimal 5 alert, diurutkan danger → warning → info.
 ### 9.3 Beranda (Dashboard)
 Urutan blok (mobile):
 1. Header: "Selamat pagi, {nama}" + nama household.
-2. **Kartu Ringkasan Keuangan** (dari Finance): total saldo akun, sisa anggaran periode ini, rencana pengeluaran belum dibayar periode ini.
+2. **Kartu Ringkasan Keuangan** (dari Finance): saldo operasional dan saldo tabungan dipisah berdasarkan jenis akun, total gabungan sebagai informasi sekunder, sisa target alokasi periode ini, rencana pengeluaran belum dibayar periode ini. Transfer memindahkan saldo antar kelompok akun, bukan expense; saldo tabungan bukan realisasi setoran alokasi periode.
 3. **Alert** (AlertAggregator, maks 5).
 4. **Hari Ini & Besok** (CalendarAggregator: hari ini + besok).
 5. **Daftar belanja aktif** (dari Organizer, jika ada).
@@ -483,11 +483,12 @@ Blok modul yang belum aktif tidak ditampilkan.
 ### 9.4 Design Tokens (Tailwind v4 `@theme`)
 | Token | Nilai |
 |---|---|
-| `--color-primary` | emerald-600 `#059669` |
-| `--color-danger` | rose-600 · `--color-warning` amber-500 · `--color-info` sky-600 |
-| Background | light `slate-50`, dark `slate-950`; card light `white`, dark `slate-900` |
-| Font | `Inter, system-ui, sans-serif` (self-host font file, JANGAN CDN) |
-| Radius | card `rounded-2xl`, input `rounded-xl`, tombol `rounded-xl`, chip `rounded-full` |
+| `--color-primary` | hijau hutan `#28543e`; dark sage `#bad6ae` |
+| `--color-danger` / warning / info | light `#ad3f45` / `#87571f` / `#386578`; dark `#ffafb1` / `#edc48b` / `#a7cad6` |
+| Background | light krem `#f6f4ee`, dark `#151f1b`; card light `#fffefa`, dark `#1f2c25` |
+| Teks | light ink `#263c32`, muted `#637067`; dark ink `#f3f1e8`, muted `#b2beb2` |
+| Font | UI `Inter, system-ui, sans-serif` (Inter jika tersedia/self-host, JANGAN CDN); judul serif lokal `"Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif` |
+| Radius | card `rounded-3xl`, input `rounded-xl`, tombol `rounded-2xl`, chip `rounded-full` |
 | Touch target | min `h-11` (44px) |
 | Dark mode | otomatis ikuti sistem + toggle manual (class strategy, disimpan di localStorage) |
 | Angka uang | `tabular-nums` |
@@ -509,6 +510,8 @@ Ikon: **Heroicons** (SVG inline via `blade-ui-kit/blade-heroicons` — *disetuju
 - Untuk mengubah CSS, masuk direktori `mockup`, jalankan `npm ci` lalu `npm run build`; `npm run watch` untuk iterasi lokal. Versi dependency dikunci pada `mockup/package-lock.json`. Tidak perlu Node pada saat hanya membuka mockup.
 - Gunakan kontrol browser native: `dialog` untuk modal/fokus/Escape, `details` untuk rincian/catatan, `select`, `input type=date`, checkbox/progress, serta Constraint Validation API. Aturan uang, persentase, dan pasangan akun tetap divalidasi eksplisit; native validation tidak menggantikan validasi backend saat implementasi.
 - Native date pada mockup dibatasi periode contoh Oktober 2026. Tema mengikuti preferensi OS saat dibuka dan dapat diganti selama sesi; persistensi preferensi produksi mengikuti §9.4.
+- Arah visual terbaru reviewer: **hangat dan organik**, tetap dashboard keluarga. Kanvas krem, hijau hutan, judul serif lokal, ilustrasi botani SVG dekoratif, dan aksen alokasi yang tetap dilengkapi label teks. Kartu ringkasan hijau menjadi fokus; tanpa hero layar penuh atau konten dekoratif yang menghalangi informasi.
+- Skill personal `premium-frontend-ui` menjadi referensi craftsmanship, bukan dependency aplikasi. Terapkan hierarki visual, motion berbasis transform/opacity, dan `prefers-reduced-motion`; jangan menambah preloader, scroll hijacking, custom cursor, font/CDN, atau library animasi. Kontrol native, aksesibilitas, dan input cepat tetap lebih penting dari efek sinematik.
 
 ---
 
@@ -516,7 +519,7 @@ Ikon: **Heroicons** (SVG inline via `blade-ui-kit/blade-heroicons` — *disetuju
 
 | Item | Spesifikasi |
 |---|---|
-| Manifest | `name: "Family Hub"`, `short_name: "FamilyHub"`, `start_url: "/?source=pwa"`, `display: "standalone"`, `theme_color: "#059669"`, `background_color: "#f8fafc"`, ikon 192, 512, 512 maskable, shortcuts: "Catat Pengeluaran" (`/finance/transactions/create?type=expense`), "Kalender" |
+| Manifest | `name: "Family Hub"`, `short_name: "FamilyHub"`, `start_url: "/?source=pwa"`, `display: "standalone"`, `theme_color: "#28543e"`, `background_color: "#f6f4ee"`, ikon 192, 512, 512 maskable, shortcuts: "Catat Pengeluaran" (`/finance/transactions/create?type=expense`), "Kalender" |
 | Service worker | File `public/sw.js` (vanilla, tanpa Workbox agar tidak menambah dependensi) |
 | Strategi aset statis (`/build/*`, font, ikon) | Cache-first, versioned cache name `fh-static-{hash}` |
 | Strategi navigasi (GET HTML) | **Network-first** timeout 4 detik → fallback ke cache halaman tsb → fallback `/offline` |

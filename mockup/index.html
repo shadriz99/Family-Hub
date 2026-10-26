@@ -22,6 +22,7 @@
     <symbol id="info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-9h.01"/></symbol>
     <symbol id="close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
     <symbol id="note" viewBox="0 0 24 24"><path d="M5 3h14v18H5Zm4 5h6m-6 4h6m-6 4h4"/></symbol>
+    <symbol id="heart" viewBox="0 0 24 24"><path d="M20 5a5 5 0 0 0-8 1 5 5 0 0 0-8-1c-4 4 1 9 8 15 7-6 12-11 8-15Z"/></symbol>
   </svg>
   <a class="skip" href="#main">Lewati ke konten</a>
   <aside class="sidebar" aria-label="Navigasi utama">
@@ -41,15 +42,20 @@
   </aside>
   <div class="shell">
     <header class="topbar">
-      <span class="crumb" id="page-name">Beranda</span>
+      <span class="crumb"><svg class="icon" aria-hidden="true"><use href="#home"/></svg><span id="page-name">Beranda</span></span>
       <div class="top-actions"><span class="demo-tag">Data contoh</span><button class="icon-button" id="theme" aria-label="Ganti ke mode gelap"><svg class="icon" aria-hidden="true"><use href="#moon"/></svg></button><button class="icon-button" id="notifications" aria-label="Lihat notifikasi contoh"><svg class="icon" aria-hidden="true"><use href="#bell"/></svg></button><span class="avatar" aria-label="Shadri">S</span></div>
     </header>
     <main id="main" tabindex="-1">
-      <div class="page-heading"><div><h1 id="heading">Selamat sore, Shadri.</h1><p class="muted" id="subtitle">Sabtu, 24 Oktober 2026 · Rumah Shadri</p></div><button class="primary desktop-add" data-expense><svg class="icon" aria-hidden="true"><use href="#plus"/></svg>Catat pengeluaran</button></div>
+      <div class="page-heading"><div><span class="eyebrow">Rumah Shadri · Ruang bersama</span><h1 id="heading">Selamat sore, Shadri.</h1><p class="muted" id="subtitle">Sabtu, 24 Oktober 2026 · Rumah Shadri</p></div><button class="primary desktop-add" data-expense><svg class="icon" aria-hidden="true"><use href="#plus"/></svg>Catat pengeluaran</button></div>
       <section class="summary" aria-labelledby="summary-title">
-        <div class="section-top"><h2 id="summary-title">Keuangan keluarga</h2><span class="period">Periode 1–31 Okt 2026</span></div>
+        <svg class="summary-art" viewBox="0 0 280 280" fill="none" aria-hidden="true"><path d="M145 285C130 210 190 126 222 20M155 238C94 237 66 203 59 174c56-6 90 17 96 64Zm23-60c-55-4-73-32-78-63 48-2 77 21 78 63Zm22-64c-39-11-50-40-46-67 39 9 55 36 46 67Zm-42 113c51 1 86-28 92-62-48-3-83 22-92 62Zm30-77c48 2 73-22 79-52-42-1-68 17-79 52Z" stroke="currentColor" stroke-width="2"/><circle cx="55" cy="65" r="21" stroke="currentColor" stroke-width="2"/></svg>
+        <div class="section-top"><div><span class="eyebrow">Sedikit dicatat, lebih tertata</span><h2 id="summary-title">Keuangan keluarga</h2></div><span class="period">1–31 Okt 2026</span></div>
         <div class="summary-grid">
-          <div class="metric"><small>Total saldo akun</small><p class="amount" id="balance">Rp 12.450.000</p><p class="caption">Seluruh akun contoh, termasuk tabungan</p></div>
+          <div class="metric"><small>Saldo operasional</small><p class="amount" id="balance">Rp 7.450.000</p></div>
+          <div class="metric"><small>Saldo tabungan</small><p class="amount" id="savings-balance">Rp 5.000.000</p></div>
+        </div>
+        <p class="caption summary-total">Total: <strong id="combined-balance">Rp 12.450.000</strong></p>
+        <div class="summary-planning">
           <div class="metric"><small>Sisa target alokasi</small><p class="amount positive" id="remaining">Rp 1.850.000</p><p class="caption">Target dikurangi realisasi periode ini</p></div>
           <div class="metric"><small>Kewajiban belum dibayar</small><p class="amount">Rp 850.000</p><p class="caption">2 tagihan di periode ini</p></div>
         </div>
@@ -129,14 +135,14 @@
       <p class="caption" id="date-hint">Mockup ini hanya menghitung periode 1–31 Okt 2026.</p>
       <div id="savings-fields" hidden>
         <label class="field">Bentuk pencatatan<select id="expense-kind"><option value="transfer">Transfer ke akun sendiri</option><option value="expense">Pengeluaran ke pihak luar</option></select></label>
-        <label class="field" id="destination-field">Akun tujuan<select id="expense-destination"><option>Dana darurat</option><option>Tabungan masa depan</option><option>Investasi</option><option>BCA</option></select></label>
+        <label class="field" id="destination-field">Akun tujuan<select id="expense-destination"></select></label>
         <p class="caption mt-2.5" id="transfer-hint">Transfer menambah penempatan alokasi, tanpa mengurangi total saldo gabungan.</p>
       </div>
       <details id="expense-details" class="mt-4">
         <summary class="min-h-11 cursor-pointer py-3 text-sm text-brand">Tambahkan catatan (opsional)</summary>
         <label class="field">Catatan<input id="expense-note" maxlength="100" placeholder="Contoh: Makan siang"></label>
       </details>
-      <label class="field">Akun sumber<select id="expense-account"><option>Dompet tunai</option><option>BCA</option><option>GoPay</option></select></label>
+      <label class="field">Akun sumber<select id="expense-account" required></select></label>
       <button class="primary save" type="submit" id="save-expense">Simpan pengeluaran contoh</button>
       <p class="caption mt-4">Pembayaran cicilan di sini hanya contoh transaksi langsung, bukan pelunasan tagihan otomatis. Scan struk belum tersedia.</p>
     </form>
@@ -159,6 +165,14 @@
     const $ = (selector) => document.querySelector(selector);
     const money = (value) => new Intl.NumberFormat('id-ID', { style:'currency', currency:'IDR', maximumFractionDigits:0 }).format(value);
     const entries = [];
+    const accounts = [
+      {name:'Dompet tunai',group:'operational',balance:450000},
+      {name:'BCA',group:'operational',balance:6500000},
+      {name:'GoPay',group:'operational',balance:500000},
+      {name:'Dana darurat',group:'savings',balance:3000000},
+      {name:'Tabungan masa depan',group:'savings',balance:1500000},
+      {name:'Investasi',group:'savings',balance:500000}
+    ];
     const allocations = [
       {key:'living',name:'Kebutuhan Hidup',bps:4500,groups:{'Makan & Minum':['Belanja Dapur'],'Transportasi':['Bensin','Parkir & Tol','Ojek/Taksi Online','Servis Kendaraan'],'Operasional Rumah':['Listrik','Air','Internet','Gas','Kebersihan'],'Kesehatan':['Obat','Dokter','BPJS'],'Pendidikan':['SPP','Buku','Kursus']}},
       {key:'tertiary',name:'Tersier',bps:1000,groups:{'Makan di Luar':['Dining out','Jajan & Kopi'],'Hiburan & Rekreasi':['Streaming','Rekreasi','Liburan'],'Hobi':['Peralatan Hobi','Koleksi'],'Perawatan Diri':['Skincare']}},
@@ -186,9 +200,16 @@
       const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
       use.setAttribute('href', '#' + name); svg.append(use); return svg;
     }
+    function balanceFor(group,transactions=entries) {
+      const names=accounts.filter(account=>account.group===group).map(account=>account.name);
+      return accounts.filter(account=>account.group===group).reduce((sum,account)=>sum+account.balance,0)
+        +transactions.reduce((sum,entry)=>sum-(names.includes(entry.account)?entry.amount:0)+(entry.kind==='transfer'&&names.includes(entry.destination)?entry.amount:0),0);
+    }
     function render() {
-      const total = entries.filter(entry => entry.kind === 'expense').reduce((sum, entry) => sum + entry.amount, 0);
-      $('#balance').textContent = money(12450000 - total);
+      const operational=balanceFor('operational'), savings=balanceFor('savings');
+      $('#balance').textContent = money(operational);
+      $('#savings-balance').textContent = money(savings);
+      $('#combined-balance').textContent = money(operational+savings);
       renderAllocations();
       const list = $('#transaction-list'); list.replaceChildren();
       for (const entry of [...entries, ...baseline]) {
@@ -211,7 +232,7 @@
         targetTotal+=target; usedTotal+=used;
         const row=document.createElement('div'); row.className='allocation-row'; row.dataset.allocation=allocation.key;
         const heading=document.createElement('div'); heading.className='allocation-title';
-        const name=document.createElement('strong'); name.textContent=allocation.name;
+        const name=document.createElement('strong'); name.className='allocation-name'; name.append(icon({living:'home',tertiary:'bag',debt:'wallet',savings:'box',social:'heart'}[allocation.key]),document.createTextNode(allocation.name));
         const percent=document.createElement('span'); percent.className='badge'; percent.textContent=(allocation.bps/100).toLocaleString('id-ID')+'%';
         heading.append(name,percent);
         const targetLabel=document.createElement('p'); targetLabel.className='caption'; targetLabel.textContent='Target '+money(target);
@@ -245,7 +266,7 @@
       $('#expense-destination').disabled=!transfer;
       $('#expense-destination').required=transfer;
       $('#save-expense').textContent=transfer?'Simpan transfer contoh':'Simpan pengeluaran contoh';
-      $('#transfer-hint').textContent=transfer?'Transfer menambah penempatan alokasi, tanpa mengurangi total saldo gabungan. Semua akun contoh dihitung dalam total saldo.':'Dana keluar ke pihak luar dicatat sebagai expense dan mengurangi total saldo gabungan.';
+      $('#transfer-hint').textContent=transfer?'Saldo berpindah sesuai akun sumber dan tujuan. Operasional → tabungan mengurangi saldo operasional dan menambah saldo tabungan; total gabungan tetap. Penempatan alokasi bukan saldo tabungan kumulatif.':'Dana keluar ke pihak luar mengurangi kelompok saldo akun sumber dan total gabungan.';
     }
     function updateAllocation() {
       const allocation=allocations.find(a=>a.key===$('#expense-allocation').value);
@@ -343,8 +364,26 @@
         if(dateInput.validity.valid!==valid) throw new Error('Validasi tanggal tidak sesuai: '+date);
       }
       if(!$('#expense-amount').required||$('#expense-form').noValidate) throw new Error('Validasi native form tidak aktif.');
+      const balanceCases=[
+        [[],7450000,5000000],
+        [[{account:'BCA',destination:'Dana darurat',kind:'transfer',amount:100000}],7350000,5100000],
+        [[{account:'Dana darurat',destination:'BCA',kind:'transfer',amount:100000}],7550000,4900000],
+        [[{account:'BCA',destination:'GoPay',kind:'transfer',amount:100000}],7450000,5000000],
+        [[{account:'Dana darurat',destination:'Investasi',kind:'transfer',amount:100000}],7450000,5000000],
+        [[{account:'BCA',kind:'expense',amount:100000}],7350000,5000000],
+        [[{account:'Dana darurat',kind:'expense',amount:100000}],7450000,4900000]
+      ];
+      for(const [transactions,operational,savings] of balanceCases) {
+        if(balanceFor('operational',transactions)!==operational||balanceFor('savings',transactions)!==savings) throw new Error('Pemisahan saldo akun tidak sesuai.');
+      }
+      if($('#balance').textContent!==money(balanceFor('operational'))||$('#savings-balance').textContent!==money(balanceFor('savings'))||$('#combined-balance').textContent!==money(balanceFor('operational')+balanceFor('savings'))) throw new Error('Ringkasan saldo tidak sinkron.');
+      for(const allocation of allocations) {
+        const name=$('[data-allocation="'+allocation.key+'"] .allocation-name');
+        if(name?.textContent!==allocation.name||!$(name.querySelector('use')?.getAttribute('href')||'#missing-icon')) throw new Error('Label/ikon alokasi tidak lengkap: '+allocation.key);
+      }
+      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches&&getComputedStyle($('.page-heading')).animationName!=='none') throw new Error('Preferensi reduced motion tidak dipatuhi.');
       if (document.documentElement.scrollWidth > window.innerWidth) throw new Error('Konten melebar melewati viewport.');
-      return cases.length + ' kasus nominal, 6 pemeriksaan alokasi, dan 6 pemeriksaan form native lulus; tidak ada overflow horizontal pada ' + window.innerWidth + ' px.';
+      return cases.length + ' kasus nominal, 6 pemeriksaan alokasi, 6 pemeriksaan form native, 8 pemeriksaan saldo, 5 label/ikon, dan preferensi motion lulus; tidak ada overflow horizontal pada ' + window.innerWidth + ' px.';
     }
     function saveExpense() {
       const amount = parseAmount($('#expense-amount').value);
@@ -356,6 +395,7 @@
       if(!config||!config.groups[category]?.includes(detail)) {$('#expense-error').textContent='Pilih alokasi, kategori dan rincian yang sesuai.';$('#expense-error').hidden=false;return;}
       const kind=allocation==='savings'?$('#expense-kind').value:'expense';
       const account=$('#expense-account').value, destination=kind==='transfer'?$('#expense-destination').value:null;
+      if(!accounts.some(a=>a.name===account)||(kind==='transfer'&&!accounts.some(a=>a.name===destination))) {$('#expense-error').textContent='Pilih akun sumber dan tujuan yang tersedia.';$('#expense-error').hidden=false;return;}
       if(kind==='transfer'&&account===destination) {$('#expense-destination').setCustomValidity('Akun sumber dan tujuan harus berbeda.');$('#expense-form').reportValidity();return;}
       const date=new Intl.DateTimeFormat('id-ID',{day:'numeric',month:'short'}).format(new Date($('#expense-date').value+'T12:00:00'));
       const entry = { amount, allocation, category, detail, kind, account, destination, title:$('#expense-details').open&&$('#expense-note').value.trim()?$('#expense-note').value.trim():detail, date };
@@ -387,6 +427,8 @@
     document.querySelectorAll('[data-task]').forEach(input => input.addEventListener('change', () => {
       document.querySelectorAll('[data-task]').forEach(other => { if (other.dataset.task === input.dataset.task) other.checked = input.checked; });
     }));
+    populate($('#expense-account'),accounts.map(account=>account.name));
+    populate($('#expense-destination'),[...accounts.filter(account=>account.group==='savings'),...accounts.filter(account=>account.group==='operational')].map(account=>account.name));
     render();
   </script>
 </body>
