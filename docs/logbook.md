@@ -266,6 +266,14 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 - Verifikasi lokal: 144 test PHP/1562 assertions, 4 test JS, Pint, Larastan, dan `git diff --check` lulus pada SQLite in-memory. Bukti MariaDB tetap menunggu run CI baru; jangan menyatakan gap MariaDB tertutup sebelum itu.
 - Instruksi proyek diperbarui agar index komposit diberi nama eksplisit <= 64 karakter. Dokumen lain (masterplan, ADR, runbook, UAT, spesifikasi modul) tidak berubah karena tidak ada perubahan kontrak, skema logis, atau topologi.
 
+### LOG-028 - Perbaikan collation foreign key MariaDB
+
+- Bukti CI dari reviewer untuk `bcbbe86`: job MariaDB gagal saat migrasi `2026_10_26_000001_core_create_households.php` baris 25 dengan `SQLSTATE[HY000]: General error: 1005` / `errno: 150 "Foreign key constraint is incorrectly formed"`; hasil akhir 62 failed, 82 passed. SQLite tetap lulus, sehingga kegagalan spesifik MariaDB.
+- Penyebab: `household_members` dibuat dengan DDL mentah tanpa opsi tabel sehingga mewarisi collation default server (MariaDB 10.11: `utf8mb4_general_ci`), sedangkan `households`/`users` dibuat Laravel dengan `default character set utf8mb4 collate 'utf8mb4_unicode_ci'` sesuai `config/database.php`. Foreign key pada kolom `CHAR(26)` mensyaratkan charset/collation identik, sehingga MariaDB menolak constraint. SQLite tidak menegakkan collation, jadi lolos. Ini penyebab aktual kegagalan run lama; masalah nama index LOG-027 tidak tercapai karena migrasi berhenti lebih dulu.
+- Perbaikan: DDL mentah kini menambahkan `ENGINE=InnoDB DEFAULT CHARSET=... COLLATE=...` dari konfigurasi koneksi hanya pada driver `mysql`; SQLite tidak berubah. Tidak mengubah tipe kolom, constraint, atau perilaku aplikasi.
+- Verifikasi lokal: `php artisan migrate --pretend --database=sqlite` menunjukkan DDL tanpa suffix pada SQLite dan index `household_period_unique`; 144 test PHP/1562 assertions, Pint, Larastan, dan `git diff --check` lulus. Bukti MariaDB menunggu run CI berikutnya; jangan menutup gap kompatibilitas sebelum hasilnya ada.
+- Dokumen yang diselaraskan: logbook dan `docs/development-plan.md`. Masterplan, ADR, runbook, UAT, dan instruksi tidak berubah karena kontrak/skema logis sama.
+
 ## Aturan pembaruan berikutnya
 
 1. Tambahkan entri baru dengan tanggal dan ID `LOG-NNN`; sertakan task ID resmi (`CORE-*`, `FIN-*`, `ORG-*`, `AST-*`) jika relevan.

@@ -22,6 +22,19 @@ return new class () extends Migration {
         });
 
         // Inline CHECK works on SQLite and MariaDB; SQLite cannot add it with ALTER TABLE.
+        // Raw DDL would inherit the server collation, but foreign keys into Schema-built
+        // tables require an exact collation match (MariaDB error 150 otherwise).
+        $connection = DB::connection();
+        $tableOptions = '';
+
+        if ($connection->getDriverName() === 'mysql') {
+            $tableOptions = sprintf(
+                ' ENGINE=InnoDB DEFAULT CHARSET=%s COLLATE=%s',
+                $connection->getConfig('charset') ?: 'utf8mb4',
+                $connection->getConfig('collation') ?: 'utf8mb4_unicode_ci',
+            );
+        }
+
         DB::statement("CREATE TABLE household_members (
             id CHAR(26) NOT NULL PRIMARY KEY,
             household_id CHAR(26) NOT NULL,
@@ -35,7 +48,7 @@ return new class () extends Migration {
             UNIQUE (household_id, slot),
             FOREIGN KEY (household_id) REFERENCES households(id),
             FOREIGN KEY (user_id) REFERENCES users(id)
-        )");
+        ){$tableOptions}");
 
         Schema::create('household_finance_period_settings', function (Blueprint $table): void {
             $table->ulid('id')->primary();
