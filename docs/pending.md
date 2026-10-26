@@ -10,7 +10,7 @@
 4. Keputusan reviewer dicatat di logbook (`LOG-NNN`), lalu item di sini ditutup atau diubah menjadi pekerjaan tertunda di bagian B.
 5. Jangan menandai item selesai hanya karena kode sudah ada; sertakan bukti verifikasi atau keputusan eksplisit.
 
-**Status:** diperbarui terakhir pada LOG-036 (email undangan, penerimaan partner, reset kata sandi).
+**Status:** diperbarui terakhir pada LOG-037 (Playwright jadi alat utama verifikasi browser).
 
 ## A. Butuh keputusan reviewer
 
@@ -32,6 +32,7 @@
 | P-13 | Undangan ganda yang masih pending | `InviteHouseholdMember` tidak mencegah lebih dari satu undangan pending per household; token kedua otomatis gagal karena slot penuh | Putuskan bila perlu undangan tunggal atau pencabutan otomatis saat undangan baru dibuat |
 | P-14 | Rate limit dan pengiriman email undangan | `InviteHouseholdMember` belum membatasi 10 undangan/jam sesuai SEC-3 dan mengirim `HouseholdInvitationMail` sinkron setelah commit; kegagalan mail meninggalkan undangan pending yang tidak pernah sampai ke penerima | Tambahkan limiter saat endpoint undang dibangun dan pindahkan pengiriman ke antrean/retry saat CORE-10 |
 | P-15 | Throttle dan timing permintaan reset kata sandi | Pesan sudah seragam untuk email terdaftar maupun tidak, tetapi form forgot-password belum punya limiter per IP dan email terdaftar merespons lebih lambat karena pengiriman mail | Putuskan throttle dan respons waktu seragam sebelum rilis; catat pada review keamanan CORE-14 |
+| P-16 | Status Playwright sebagai alat verifikasi | Keputusan LOG-037: Playwright dipakai lebih dulu, tetapi `playwright-core` hanya dipasang di direktori sementara dan memakai Chrome sistem, jadi tidak ada dependency repo, lockfile, atau job CI. Tentukan apakah ini permanen atau Playwright dipromosikan menjadi devDependency + langkah CI browser; berkas skill personal `webapp-testing` juga masih melarang pemasangan otomatis dan belum diselaraskan | Selama tertunda, setiap batch UI memasang ulang `playwright-core` di `%TEMP%` dan bukti browser tetap lokal, bukan bukti CI |
 
 ## Riwayat penutupan item
 
