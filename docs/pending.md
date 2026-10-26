@@ -1,0 +1,42 @@
+# Daftar Tertunda dan Keputusan Reviewer - Family Hub
+
+**Tujuan:** satu tempat untuk semua hal yang belum selesai dan butuh masukan reviewer: konflik spesifikasi, keputusan desain, pekerjaan yang sengaja ditunda, dan bukti yang masih menunggu. Daftar ini adalah ringkasan; bukti dan riwayat tetap ada di [logbook](logbook.md).
+
+**Aturan pemakaian:**
+
+1. Setiap batch perubahan wajib memeriksa daftar ini dan memperbarui item yang tersentuh, termasuk menambah item baru dan menutup item yang sudah diputuskan.
+2. Setiap item punya ID stabil (`P-NN`), status, dan satu langkah berikutnya yang jelas.
+3. Item yang butuh keputusan reviewer ditulis di bagian A dan dilaporkan juga di jawaban akhir batch.
+4. Keputusan reviewer dicatat di logbook (`LOG-NNN`), lalu item di sini ditutup atau diubah menjadi pekerjaan tertunda di bagian B.
+5. Jangan menandai item selesai hanya karena kode sudah ada; sertakan bukti verifikasi atau keputusan eksplisit.
+
+**Status:** diperbarui terakhir pada LOG-033 (setelah LOG-032, slice backend undangan partner).
+
+## A. Butuh keputusan reviewer
+
+| ID | Topik | Keputusan yang dibutuhkan | Dampak bila ditunda |
+|---|---|---|---|
+| P-01 | Skema `household_invitations` menyimpang dari §5.1 masterplan | Masterplan menetapkan `household_id` nullable, `email`, `type` (`new_household`/`partner`), dan `revoked_at`; implementasi LOG-032 hanya `household_id` wajib, tanpa `email`/`type`, dan revoke menghapus baris. Pilih: tambah kolom sekarang, atau ubah §5.1 agar sesuai slice partner | Menahan slice email undangan dan invite household baru oleh admin |
+| P-02 | Alur email undangan dan titik masuk registrasi | Registrasi publik dimatikan (`config/fortify.php` fitur kosong). Tentukan: token saja atau token + ikatan email; route registrasi khusus undangan; transport mail untuk test/CI (log/array) sebelum CORE-10 | CORE-05 belum memenuhi AC "registrasi tanpa token ditolak" secara end-to-end |
+| P-03 | Alur reset kata sandi | CORE-05 menyebut "alur login/reset", tetapi fitur reset Fortify sengaja kosong. Tentukan apakah reset masuk CORE-05 atau ditunda dengan ADR/peninjauan keamanan | Pengguna tanpa reset tidak punya pemulihan akun; keputusan tertunda menahan acceptance CORE-05 |
+| P-04 | Invite household baru oleh admin | `users.is_system_admin` sudah ada, tetapi belum ada policy, route, action, atau halaman `/admin`. Tentukan target kartu (CORE-05 atau CORE-15) dan apakah admin boleh membuat household tanpa menjadi anggota | Alur A pada §5.1 (admin membuat invite household baru) belum bisa diimplementasikan |
+| P-05 | Backfill histori periode keuangan | `CreateHousehold` hanya membuat satu baris periode berlaku hari ini. Tentukan apakah perlu periode lampau saat bootstrap dan sejauh mana | `PeriodResolver` aman untuk data baru, tetapi belum ada data historis household lama |
+| P-06 | `Activity` tanpa `household_id` dan `HouseholdMember` tanpa trait tenant | §2.4 masterplan menyebut setiap tabel domain punya `household_id`. Konfirmasi pengecualian permanen (audit global; membership di-scope eksplisit) atau setujui kolom/trait tambahan | Ketidakpastian pada uji isolasi lintas modul dan ekspor data |
+| P-07 | Bukti konkurensi penerimaan slot | Saat ini hanya ada penalaran unique `(household_id, slot)` + row lock, tanpa test proses paralel nyata. Tentukan apakah perlu test paralel SQLite/MariaDB sebelum CORE-04 ditutup | AC CORE-04 "test konkurensi" belum terbukti secara empiris |
+
+## B. Pekerjaan tertunda (tidak menahan batch saat ini)
+
+| ID | Topik | Status / alasan ditunda | Langkah berikutnya |
+|---|---|---|---|
+| P-08 | Bootstrap konteks tenant untuk job/command | Ditunda karena belum ada job/command nyata (LOG-030). Job nanti wajib membawa household ID eksplisit dan memasang konteks sendiri | Bangun base/middleware job saat job pertama (CORE-09/CORE-10) dibuat |
+| P-09 | Bukti CI untuk `528adbd` | Menunggu laporan reviewer; repo privat tanpa GitHub CLI/API terautentikasi | Catat hasil SQLite/MariaDB, tutup item bila hijau |
+| P-10 | Branch `core-01-foundation` | Masih ada di `42bda38`, sudah menjadi ancestor `main`; tidak dihapus agar histori tetap dapat diakses | Putuskan hapus atau arsipkan setelah reviewer setuju |
+| P-11 | UI/route/rate limit undangan | Di luar slice backend LOG-032; butuh skill UI dan verifikasi 360px/1280px | Kerjakan setelah P-01/P-02 diputuskan |
+| P-12 | Modul Finance/Organizer/Asset | `config/modules.php` menonaktifkan ketiganya; belum ada izin reviewer untuk fitur modul | Tunggu keputusan reviewer atas task modul |
+| P-13 | Undangan ganda yang masih pending | `InviteHouseholdMember` tidak mencegah lebih dari satu undangan pending per household; token kedua otomatis gagal karena slot penuh | Putuskan bila perlu undangan tunggal atau pencabutan otomatis saat undangan baru dibuat |
+
+## Riwayat penutupan item
+
+| ID | Ditutup oleh | Catatan |
+|---|---|---|
+| - | - | Belum ada item yang ditutup; daftar dibuat pada LOG-033 |

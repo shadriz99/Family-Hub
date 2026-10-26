@@ -1,7 +1,7 @@
 # Development Setup dan Rencana - Family Hub
 
 **Baseline:** 2026-10-26
-**Status:** CORE-01 diterima untuk kelanjutan development (LOG-015). CORE-03 dinyatakan selesai reviewer (LOG-025). Tip `main`/`core-03-support` adalah `d4a6986`; kode CORE-04 (`731fb45`) lulus kedua job CI SQLite/MariaDB (LOG-031). LOG-030 menambahkan bootstrap household dan konteks tenant per request; LOG-032 memulai CORE-05 dengan backend undangan partner. CORE-04 tetap parsial di sisi konkurensi dan job context; CORE-05 belum punya email, route registrasi, atau UI.
+**Status:** CORE-01 diterima untuk kelanjutan development (LOG-015). CORE-03 dinyatakan selesai reviewer (LOG-025). Tip `main`/`core-03-support` adalah `528adbd`; kode CORE-04 (`731fb45`) lulus kedua job CI SQLite/MariaDB (LOG-031), sedangkan slice undangan CORE-05 menunggu hasil CI. LOG-030 menambahkan bootstrap household dan konteks tenant per request; LOG-032 memulai CORE-05 dengan backend undangan partner. Semua konflik dan keputusan terbuka dilacak di [daftar tertunda](pending.md) (LOG-033); CORE-04 tetap parsial di sisi konkurensi dan job context, CORE-05 belum punya email, route registrasi, atau UI.
 
 **CI kedua DB (LOG-029, LOG-031):** job SQLite dan MariaDB lulus untuk `6d6f7bc` (144 test PHP/1562 assertions) dan untuk `731fb45` (156 test PHP/1605 assertions), termasuk migrasi, test JS, Pint, Larastan, dan build. Perbaikan collation LOG-028 dan nama index LOG-027 terbukti pada run nyata. Tidak ada deployment atau UAT.
 

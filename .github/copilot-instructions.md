@@ -8,7 +8,7 @@ This workspace contains specifications in `docs/`, installed dependencies, a Lar
 
 Before implementation work, read `docs/00-MASTERPLAN.md`. For `FIN-*`, `ORG-*`, or `AST-*` work, also read the corresponding module spec: `docs/01-MODULE-FINANCE.md`, `docs/02-MODULE-ORGANIZER.md`, or `docs/03-MODULE-ASSET.md`. If instructions conflict, follow the latest reviewer decision, then the relevant module spec, then the masterplan. Report unresolved conflicts instead of silently choosing.
 
-Read `docs/logbook.md` and `docs/development-plan.md` before continuing work. After each task, append an evidence-based log entry and synchronize the plan status with it. Distinguish dependency preparation, implementation, runtime verification, and reviewer acceptance; never mark a task complete from installation alone.
+Read `docs/logbook.md`, `docs/development-plan.md`, and `docs/pending.md` before continuing work. After each task, append an evidence-based log entry, synchronize the plan status with it, and update the pending list. Distinguish dependency preparation, implementation, runtime verification, and reviewer acceptance; never mark a task complete from installation alone.
 
 ### Current continuation checkpoint (LOG-015)
 
