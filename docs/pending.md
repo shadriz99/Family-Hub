@@ -10,7 +10,7 @@
 4. Keputusan reviewer dicatat di logbook (`LOG-NNN`), lalu item di sini ditutup atau diubah menjadi pekerjaan tertunda di bagian B.
 5. Jangan menandai item selesai hanya karena kode sudah ada; sertakan bukti verifikasi atau keputusan eksplisit.
 
-**Status:** diperbarui terakhir pada LOG-039 (bukti konkurensi slot partner).
+**Status:** diperbarui terakhir pada LOG-040 (rate limit pembuatan undangan).
 
 ## A. Butuh keputusan reviewer
 
@@ -32,7 +32,7 @@
 |---|---|---|---|
 | P-08 | Bootstrap konteks tenant untuk job/command | Ditunda karena belum ada job/command nyata (LOG-030). Job nanti wajib membawa household ID eksplisit dan memasang konteks sendiri | Bangun base/middleware job saat job pertama (CORE-09/CORE-10) dibuat |
 | P-12 | Modul Finance/Organizer/Asset | `config/modules.php` menonaktifkan ketiganya; belum ada izin reviewer untuk fitur modul | Tunggu keputusan reviewer atas task modul |
-| P-14 | Rate limit dan pengiriman email undangan | `InviteHouseholdMember` belum membatasi 10 undangan/jam sesuai SEC-3 dan mengirim `HouseholdInvitationMail` sinkron setelah commit; kegagalan mail meninggalkan undangan pending yang tidak pernah sampai ke penerima | Tambahkan limiter saat endpoint undang dibangun dan pindahkan pengiriman ke antrean/retry saat CORE-10 |
+| P-14 | Pengiriman email undangan | Limiter 10 undangan/jam sudah ada (LOG-040), tetapi `HouseholdInvitationMail` masih dikirim sinkron setelah commit; kegagalan mail meninggalkan undangan pending yang tidak pernah sampai ke penerima | Pindahkan pengiriman ke antrean/retry saat CORE-10 |
 
 ## Riwayat penutupan item
 

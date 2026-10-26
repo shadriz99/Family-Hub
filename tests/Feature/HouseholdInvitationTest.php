@@ -63,6 +63,40 @@ it('rejects invalid invitation emails without writing anything', function (strin
     'too long' => [str_repeat('a', 250).'@example.test'],
 ]);
 
+it('caps invitation issuance at ten per hour per owner', function (): void {
+    foreach (range(1, InviteHouseholdMember::MAX_PER_HOUR) as $index) {
+        app(InviteHouseholdMember::class)->handle($this->owner, $this->household, "partner{$index}@example.test");
+    }
+
+    expect(fn () => app(InviteHouseholdMember::class)->handle($this->owner, $this->household, 'eleventh@example.test'))
+        ->toThrow(ValidationException::class, __('household.invite_throttled'));
+
+    expect(HouseholdInvitation::query()->count())->toBe(InviteHouseholdMember::MAX_PER_HOUR);
+});
+
+it('does not spend the invite budget on rejected attempts', function (): void {
+    foreach (range(1, 12) as $attempt) {
+        expect(fn () => app(InviteHouseholdMember::class)->handle($this->owner, $this->household, 'not-an-email'))
+            ->toThrow(ValidationException::class, __('household.email_invalid'));
+    }
+
+    app(InviteHouseholdMember::class)->handle($this->owner, $this->household, 'partner@example.test');
+
+    expect(HouseholdInvitation::query()->count())->toBe(1);
+});
+
+it('allows invitations again once the hourly window passes', function (): void {
+    foreach (range(1, InviteHouseholdMember::MAX_PER_HOUR) as $index) {
+        app(InviteHouseholdMember::class)->handle($this->owner, $this->household, "partner{$index}@example.test");
+    }
+
+    $this->travel(61)->minutes();
+
+    app(InviteHouseholdMember::class)->handle($this->owner, $this->household, 'later@example.test');
+
+    expect(HouseholdInvitation::query()->count())->toBe(InviteHouseholdMember::MAX_PER_HOUR + 1);
+});
+
 it('admits the invited user as the partner exactly once', function (): void {
     $issued = app(InviteHouseholdMember::class)->handle($this->owner, $this->household, 'guest@example.test');
 

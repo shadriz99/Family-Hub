@@ -1,7 +1,7 @@
 # Logbook Development - Family Hub
 
 **Diperbarui:** 2026-10-26
-**Status:** CORE-01 diterima untuk kelanjutan development; CORE-03 dinyatakan selesai oleh reviewer, CORE-04 masih parsial. LOG-036 menambahkan email undangan, halaman penerimaan partner, dan alur reset kata sandi; LOG-039 membuktikan konkurensi slot partner. CI remote untuk perubahan ini belum terverifikasi. Belum ada rilis aplikasi.
+**Status:** CORE-01 diterima untuk kelanjutan development; CORE-03 dinyatakan selesai oleh reviewer, CORE-04 masih parsial. LOG-036 menambahkan email undangan, halaman penerimaan partner, dan alur reset kata sandi; LOG-039 membuktikan konkurensi slot partner; LOG-040 membatasi pembuatan undangan 10/jam. CI remote untuk perubahan ini belum terverifikasi. Belum ada rilis aplikasi.
 
 Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan selesai. [Rencana development](development-plan.md) menentukan langkah berikutnya; spesifikasi dan acceptance criteria tetap mengikuti [Masterplan](00-MASTERPLAN.md) dan dokumen modul.
 
@@ -9,12 +9,12 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 
 | Area | Status aktual | Bukti / tindak lanjut |
 |---|---|---|
-| Repository | `main` di `d077170` (LOG-036, alur kerja tanpa branch) | LOG-014: fondasi `ffe4afe`; LOG-026: checkpoint CORE-03/04 di-merge; LOG-031: CI hijau `731fb45`; LOG-035: kerja langsung di `main`; LOG-036: push `efae4f2..d077170`. Branch `core-01-foundation`/`core-03-support` tertinggal (P-10) |
+| Repository | `main` tanpa branch, commit terakhir `6125e9a` (LOG-040) | LOG-014: fondasi `ffe4afe`; LOG-026: checkpoint CORE-03/04 di-merge; LOG-031: CI hijau `731fb45`; LOG-035: kerja langsung di `main`; LOG-036: push `efae4f2..d077170`; LOG-039: push `2900d9f..fcaf25b`; LOG-040: limiter undangan. Branch `core-01-foundation`/`core-03-support` tertinggal (P-10) |
 | Environment lokal | Git, PHP, Composer, Node/npm dapat dijalankan | Rincian dan batas setup di [setup dan rencana development](development-plan.md) |
 | Dependency PHP/npm | Terpasang, lockfile tersedia | Composer solve, platform check, audit, dan smoke check lulus pada waktu setup |
 | CORE-01 | **Diterima untuk kelanjutan development** | LOG-011/013/014: fondasi, auth, Boost, CI kedua DB; LOG-015: reviewer meminta lanjut; bukan UAT/produksi |
 | Boost | Terminal stdio disetujui sebagai transport | LOG-013: initialize, daftar 10 tool, dan dokumentasi lulus; UI Copilot belum terhubung tetapi bukan blocker |
-| CORE-02 sampai CORE-16 | CORE-03 dinyatakan selesai reviewer; CORE-04 parsial; CORE-05 punya backend + email/UI partner | LOG-015–018: utilitas/komponen; LOG-019: urutan disetujui; LOG-020–021: policy/action; LOG-024: tenant scope, konteks household, `PeriodResolver::for`; LOG-025–026: MariaDB CI dipulihkan dan checkpoint di-merge ke main; LOG-030: bootstrap + middleware konteks; LOG-032/034: backend undangan A5.1; LOG-036: email undangan, penerimaan partner, reset kata sandi. Konteks job, backfill histori, konkurensi, Alur A admin, dan rate limit undangan belum selesai |
+| CORE-02 sampai CORE-16 | CORE-03 dinyatakan selesai reviewer; CORE-04 parsial; CORE-05 punya backend + email/UI partner + limiter undangan | LOG-015–018: utilitas/komponen; LOG-019: urutan disetujui; LOG-020–021: policy/action; LOG-024: tenant scope, konteks household, `PeriodResolver::for`; LOG-025–026: MariaDB CI dipulihkan dan checkpoint di-merge ke main; LOG-030: bootstrap + middleware konteks; LOG-032/034: backend undangan A5.1; LOG-036: email undangan, penerimaan partner, reset kata sandi; LOG-039: konkurensi slot; LOG-040: limiter 10 undangan/jam. Konteks job, backfill histori, pengecualian trait, Alur A admin, dan antrean mail belum selesai |
 | Finance / Organizer / Asset | Belum dimulai | Mockup adalah prototype yang sudah ada saat clone, bukan implementasi modul |
 | Produksi / UAT | Belum dijalankan | Tidak ada bukti deploy, restore, atau penerimaan pengguna |
 
@@ -372,6 +372,16 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 - Batas yang dicatat jujur: tidak ada test proses paralel OS-level (dua worker sungguhan). Test membuktikan constraint database dan penanganan jalur kalah-balapan secara deterministik; bukti paralelisme nyata hanya bisa didapat dari MariaDB CI dan tidak diklaim di sini.
 - Verifikasi lokal: `composer lint` dan `composer analyse` bersih, `composer test` **196 test/1778 assertion** lulus (sebelumnya 193/1767).
 - Dokumen diselaraskan: logbook (entri ini + tabel status), `docs/development-plan.md` (§4 CORE-04/CORE-05/CORE-15, tabel posisi, jumlah test, §3 ditandai historis), dan `docs/pending.md` (P-07 pindah ke riwayat penutupan; P-09/P-10/P-13/P-15/P-16 dipindah ke bagian A sesuai aturan file; P-17 baru untuk provisioning system admin pertama). CI untuk commit ini belum terverifikasi (P-09).
+
+### LOG-040 - Batas 10 undangan per jam (CORE-05, menutup separuh P-14)
+
+- Angka batasnya bukan keputusan baru: SEC-3 masterplan menetapkan "undangan 10/jam", jadi bagian limiter pada P-14 dikerjakan tanpa menunggu reviewer.
+- Perilaku: `InviteHouseholdMember` memeriksa `RateLimiter::tooManyAttempts` untuk kunci `core:invite-partner:{actor}` sebelum transaksi dengan `MAX_PER_HOUR = 10` dan `THROTTLE_DECAY_SECONDS = 3600`; bila terlampaui muncul `household.invite_throttled` sebagai `ValidationException` pada field `email`. Hit baru dicatat setelah email benar-benar terkirim, sehingga salah ketik alamat atau kegagalan kirim tidak menghabiskan kuota.
+- Test baru 3 kasus/29 assertion di `tests/Feature/HouseholdInvitationTest.php`: undangan ke-11 ditolak dan hanya 10 baris tersimpan, 12 percobaan email tidak valid tidak memakai kuota, dan undangan diizinkan lagi setelah jendela satu jam lewat.
+- Kunci per aktor (bukan per IP) karena action belum punya route/endpoint; batas per IP+email ala SEC-3 untuk endpoint HTTP menyusul bersama Alur A/panel undang (P-04). Ini batas yang dicatat, bukan klaim bahwa SEC-3 sudah lengkap.
+- Batas: pengiriman email tetap sinkron setelah commit; kegagalan mail masih meninggalkan undangan pending tanpa email sampai CORE-10. Sisa itu tetap dilacak sebagai P-14 (bagian B).
+- Verifikasi lokal: `composer lint` dan `composer analyse` bersih, `composer test` **199 test/1807 assertion** lulus (sebelumnya 196/1778).
+- Dokumen diselaraskan: logbook (entri ini + tabel status), `docs/development-plan.md` (status, checkpoint undangan, jumlah test, tabel posisi, baris CORE-05), `docs/pending.md` (status + P-14 menyisakan antrean mail), `docs/00-MASTERPLAN.md` (status implementasi §5.1 dan checkpoint auth), `AGENTS.md`, dan `.github/copilot-instructions.md`. CI untuk commit ini belum terverifikasi (P-09).
 
 ## Aturan pembaruan berikutnya
 

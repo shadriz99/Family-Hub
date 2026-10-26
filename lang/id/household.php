@@ -13,5 +13,6 @@ return [
     'invitation_used' => 'Undangan ini sudah digunakan.',
     'invitation_expired' => 'Undangan sudah kedaluwarsa. Minta pemilik household mengirim undangan baru.',
     'invitation_email_mismatch' => 'Undangan ini ditujukan untuk alamat email lain.',
+    'invite_throttled' => 'Batas 10 undangan per jam sudah tercapai. Coba lagi nanti.',
     'email_invalid' => 'Alamat email undangan tidak valid.',
 ];

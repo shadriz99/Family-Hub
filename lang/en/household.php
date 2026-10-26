@@ -13,5 +13,6 @@ return [
     'invitation_used' => 'This invitation has already been used.',
     'invitation_expired' => 'This invitation has expired. Ask the household owner for a new one.',
     'invitation_email_mismatch' => 'This invitation was issued to a different email address.',
+    'invite_throttled' => 'The limit of 10 invitations per hour has been reached. Try again later.',
     'email_invalid' => 'The invitation email address is not valid.',
 ];
