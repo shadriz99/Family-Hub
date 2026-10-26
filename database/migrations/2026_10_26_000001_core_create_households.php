@@ -44,7 +44,7 @@ return new class () extends Migration {
             $table->date('effective_on');
             $table->foreignUlid('created_by')->nullable()->constrained('users');
             $table->timestamps();
-            $table->unique(['household_id', 'effective_on']);
+            $table->unique(['household_id', 'effective_on'], 'household_period_unique');
         });
     }
 

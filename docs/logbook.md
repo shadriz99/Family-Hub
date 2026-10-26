@@ -259,6 +259,13 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 - **Verifikasi lokal sebelum push/merge:** 144 test PHP/1562 assertion, 4 test JS, Pint, Larastan, Vite build, `composer validate`, dan `git diff --check` lulus pada SQLite in-memory. Tidak menjalankan migration/seed DB aplikasi, membuat akun, atau mengubah dependency.
 - **Batas:** CORE-04 tetap parsial (bootstrap household/history, middleware/job context, admission CORE-05, konkurensi). Main kini memuat checkpoint CORE-03A/03B/04 beserta skemanya; ini bukan acceptance UAT/produksi, bukan bukti kompatibilitas MariaDB, dan bukan izin deploy. Dokumen yang diselaraskan pada batch ini: logbook, `docs/development-plan.md`, `AGENTS.md` root; dokumen lain tidak berubah karena tidak ada perubahan perilaku/kontrak baru.
 
+### LOG-027 - Perbaikan nama index untuk MariaDB
+
+- Investigasi CI: `Schema::unique(['household_id', 'effective_on'])` pada `household_finance_period_settings` menghasilkan nama index `household_finance_period_settings_household_id_effective_on_unique` (66 karakter). Laravel tidak memotong nama tersebut (terverifikasi di `Blueprint::createIndexName`), sedangkan MariaDB/MySQL membatasi identifier 64 karakter (error 1059). SQLite tidak membatasi, sehingga run SQLite lulus dan MariaDB gagal. Ini kandidat kuat penyebab kegagalan `40286560448`, tetapi belum dikonfirmasi karena log run tersebut tidak dapat diakses.
+- Perbaikan: index diberi nama eksplisit `household_period_unique`. Migrasi asli diedit karena belum ada database aplikasi yang dimigrasikan, belum ada rilis, dan jalur upgrade data belum pernah dibuat; aturan "migrasi baru setelah rilis" belum berlaku. `php artisan migrate --pretend` menunjukkan `create unique index "household_period_unique"`.
+- Verifikasi lokal: 144 test PHP/1562 assertions, 4 test JS, Pint, Larastan, dan `git diff --check` lulus pada SQLite in-memory. Bukti MariaDB tetap menunggu run CI baru; jangan menyatakan gap MariaDB tertutup sebelum itu.
+- Instruksi proyek diperbarui agar index komposit diberi nama eksplisit <= 64 karakter. Dokumen lain (masterplan, ADR, runbook, UAT, spesifikasi modul) tidak berubah karena tidak ada perubahan kontrak, skema logis, atau topologi.
+
 ## Aturan pembaruan berikutnya
 
 1. Tambahkan entri baru dengan tanggal dan ID `LOG-NNN`; sertakan task ID resmi (`CORE-*`, `FIN-*`, `ORG-*`, `AST-*`) jika relevan.

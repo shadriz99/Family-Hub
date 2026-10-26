@@ -5,6 +5,8 @@
 
 **Publikasi dan merge (LOG-026):** `core-03-support` di-push (`2137b2b..bcbbe86`) dan `main` di-fast-forward ke SHA yang sama; kedua ref identik. Workflow SQLite/MariaDB berjalan pada push tersebut, tetapi statusnya belum dapat dipantau dari mesin ini (repo privat, tanpa GitHub CLI/API terautentikasi), jadi tidak ada klaim lulus untuk MariaDB maupun SQLite remote. CORE-04 tetap parsial: bootstrap household/history, middleware/job context, admission CORE-05, dan konkurensi belum selesai. Ini bukan acceptance UAT/produksi dan bukan izin deploy.
 
+**Perbaikan kompatibilitas MariaDB (LOG-027):** nama index unik gabungan pada `household_finance_period_settings` melebihi batas identifier 64 karakter MariaDB/MySQL (66 karakter) dan tidak dipotong Laravel; index kini bernama eksplisit `household_period_unique`. Ini kandidat kuat penyebab kegagalan MariaDB lama, tetapi belum dikonfirmasi. Test lokal tetap lulus; bukti MariaDB menunggu run CI berikutnya.
+
 **Keputusan sebelumnya (LOG-025):** reviewer menyatakan CORE-03 selesai dan meminta MariaDB dimasukkan kembali ke CI. Matriks SQLite/MariaDB dipulihkan di `.github/workflows/ci.yml`; penundaan LOG-023 berakhir hanya untuk gate CI, sementara kegagalan lama `40286560448` tetap tidak terdokumentasi penyebabnya.
 
 **Keputusan sebelumnya (LOG-023, historis):** reviewer menunda MariaDB dan menjadikan SQLite satu-satunya target CI aktif. `core-01-foundation` sudah di-fast-forward ke main tanpa membawa `core-03-support`. Branch support harus mengintegrasikan main dan lulus pemeriksaan baru sebelum evaluasi merge; kegagalan MariaDB lama tidak boleh disebut lulus.
