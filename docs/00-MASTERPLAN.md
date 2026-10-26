@@ -1,6 +1,6 @@
 # 🏠 Family Hub — MASTERPLAN
 **Dokumen:** 00-MASTERPLAN.md
-**Versi:** 0.2
+**Versi:** 0.3
 **Status:** Approved for Phase 0 (Core) — modul lain mengikuti dokumen masing-masing
 **Pemilik produk / Reviewer:** Shadri (manusia)
 **Pelaksana:** AI Agent (developer) — wajib membaca dokumen ini sebelum mengerjakan task apa pun
@@ -18,6 +18,8 @@
 | `docs/runbook/deploy.md` | Prosedur deploy/pembaruan produksi dan pengecekan operasional | Deploy server |
 | `docs/runbook/backup-restore.md` | Prosedur backup, uji restore, dan pemulihan insiden | Sebelum go-live dan operasi |
 | `docs/uat-go-live.md` | Checklist penerimaan lintas modul dan kesiapan rilis | Sebelum rilis |
+| `docs/logbook.md` | Riwayat pekerjaan aktual, verifikasi, dan batas hasil | Sebelum melanjutkan pekerjaan dan setelah setiap task |
+| `docs/development-plan.md` | Setup/restore environment, urutan development, gate, status, dan keputusan tertunda | Menyiapkan environment dan memilih langkah berikutnya; sinkronkan dengan logbook |
 
 **Hirarki kebenaran:** Jika ada konflik, urutan prioritas: (1) keputusan terbaru reviewer di PR/chat → (2) dokumen modul → (3) MASTERPLAN. Konflik **wajib** dilaporkan dan dokumen diperbarui.
 
@@ -108,27 +110,62 @@ Pengelompokan dana **Tabungan & Investasi** serta pencatatan setoran/transfer ma
 
 | Layer | Pilihan | Catatan |
 |---|---|---|
-| Bahasa | PHP 8.3 | |
-| Framework | Laravel 12.x | Kunci versi di `composer.lock` |
-| UI interaktif | Livewire 3 + Alpine.js | Lihat ADR-002 |
-| CSS | Tailwind CSS v4 (via `@tailwindcss/vite`) | Konfigurasi tema CSS-first (`@theme`) |
-| Build | Vite | |
-| Auth | Laravel Breeze (stack Livewire) | Dimodifikasi untuk invite-only |
+| Bahasa | PHP 8.5.x | Baseline local, CI, dan produksi; stabil terverifikasi 8.5.12 |
+| Framework | Laravel 13.x (`^13.38`) | Stabil terverifikasi 13.38.0; kunci resolusi di `composer.lock` |
+| UI interaktif | Livewire 4.x + Alpine.js bawaan Livewire | Stabil Livewire 4.4.8; jangan memuat Alpine kedua kali. Lihat ADR-002/011 |
+| CSS | Tailwind CSS 4.x (via `@tailwindcss/vite`) | Stabil 4.3.3; konfigurasi tema CSS-first (`@theme`) |
+| Build | Vite 8.x + `laravel-vite-plugin` 3.x | Stabil 8.3.5 / 3.2.0; Node.js 24 LTS (terverifikasi 24.22.1), npm + lockfile |
+| Auth | Laravel Fortify 1.x + form Livewire 4 / komponen Blade proyek | Stabil 1.41.0; invite-only. Menggantikan Breeze; tanpa Volt/Flux. Lihat ADR-011 |
 | DB | **SQLite** (default) / **MariaDB 10.11+** (opsional) | Lihat §6 |
 | Queue | `database` driver | |
-| Scheduler | `php artisan schedule:work` (container terpisah) | |
-| Recurrence | `rlanvin/php-rrule` | Subset RRULE, lihat §7.4 |
-| Audit log | `spatie/laravel-activitylog` | |
-| File/foto | `spatie/laravel-medialibrary` | Disk `local` privat |
-| Web Push | `laravel-notification-channels/webpush` | VAPID |
-| iCalendar | `spatie/icalendar-generator` | |
-| Excel/CSV | `maatwebsite/excel` | Ekspor laporan |
-| Backup | `spatie/laravel-backup` | |
-| Chart | ApexCharts (npm) | |
-| Test | Pest 3 | |
-| Kualitas kode | Laravel Pint, Larastan level 6 | |
+| Scheduler | `php artisan schedule:work` (service Linux terkelola) | Tanpa Docker; lihat §13 |
+| Recurrence | `rlanvin/php-rrule` 3.x | Stabil 3.0.0; subset RRULE, lihat §7.4 |
+| Audit log | `spatie/laravel-activitylog` 5.x | Stabil 5.1.3 |
+| File/foto | `spatie/laravel-medialibrary` 11.x | Stabil 11.23.10; disk `local` privat |
+| Web Push | `laravel-notification-channels/webpush` 13.x | Stabil 13.0.1; VAPID; membutuhkan Laravel >=13.13 pada jalur 13.x |
+| iCalendar | `spatie/icalendar-generator` 3.x | Stabil 3.3.1 |
+| Excel/CSV | `maatwebsite/excel` 4.x | Stabil 4.0.6; ekspor laporan |
+| Backup | `spatie/laravel-backup` 10.x | Stabil 10.3.3; verifikasi operasi backup/restore pada Linux |
+| Chart | ApexCharts 8.x (npm) | Stabil 8.5.0; tinjau lisensi upstream sebelum distribusi |
+| Test | Pest 5.x + `pestphp/pest-plugin-laravel` 5.x | Stabil 5.3.3 / 5.0.1; plugin membutuhkan Laravel >=13.23; Pest ini membutuhkan Boost >=2.6 jika terpasang |
+| Test lifecycle | `mockery/mockery` 1.6.x (development saja) | Disetujui reviewer untuk `RefreshDatabase` Laravel; terpasang 1.6.15, lihat addendum ADR-011 |
+| Kualitas kode | Laravel Pint 1.x, Larastan 3.x level 6 | Stabil 1.32.1 / 3.13.2; Larastan memakai PHPStan 2.x |
+| AI tooling (development saja) | Laravel Boost 2.x (`^2.10.3`) | Disetujui untuk CORE-01; MCP/guidelines untuk Copilot VS Code, bukan fitur AI aplikasi |
 
 **Aturan paket:** AI agent **JANGAN** menambah paket Composer/npm di luar daftar ini tanpa membuat ADR dan disetujui reviewer.
+
+### 3.1 Verifikasi versi dan kompatibilitas (2026-10-26)
+
+Versi stabil di atas adalah snapshot dari metadata Packagist/npm dan rilis PHP/Node, bukan bukti dependency sudah terpasang. Gunakan major yang disetujui, resolusi stabil, serta `composer.lock` / `package-lock.json`; jangan mengambil prerelease atau major berikutnya secara otomatis. Manifest mockup tetap terpisah dan Tailwind 4.3.3-nya sudah sesuai.
+
+Laravel 13 mendukung PHP 8.3–8.5. Baseline proyek dinaikkan ke PHP 8.5 agar local/CI/produksi konsisten; Pest 5, Activitylog 5, dan iCalendar Generator 3 terbaru juga membutuhkan minimal PHP 8.4. SQLite tetap default dan MariaDB 10.11+ tetap batas kompatibilitas yang diuji, bukan klaim versi DB terbaru; perubahan mesin DB produksi tidak termasuk pembaruan dependency aplikasi ini.
+
+Breeze 2.4.2 mengizinkan Laravel 13 pada constraint Composer, tetapi installer Livewire-nya masih memasang Livewire `^3.6.4`, Volt `^1.7.0`, dan Tailwind `^3.1.0`. Karena itu jangan menjalankan `breeze:install livewire` untuk stack ini. Reviewer menyetujui Fortify + Livewire 4 + Blade proyek sendiri, tanpa mengambil seluruh starter kit beserta dependency tambahannya. Registrasi publik wajib dinonaktifkan; penerimaan undangan ditangani Core. Jangan mengaktifkan TOTP/passkey bawaan Fortify; email OTP opsional tetap mengikuti SEC-2 dan Q-M12.
+
+### 3.2 Laravel Boost
+
+Boost 2.10.3 menyatakan dukungan PHP `^8.2` dan Laravel `^11.45.3|^12.41.1|^13.0`, sehingga constraint-nya cocok dengan PHP 8.5 / Laravel 13 dan memenuhi batas Pest 5 (Boost >=2.6). Dokumentasi resmi menyediakan integrasi GitHub Copilot di VS Code. Ini verifikasi metadata, **belum** pembuktian resolusi dependency transitif atau koneksi MCP runtime.
+
+Saat CORE-01, setelah scaffold Laravel tersedia:
+
+```shell
+composer require laravel/boost:"^2.10.3" --dev
+php artisan boost:install
+```
+
+**Status persiapan 2026-10-26:** atas instruksi reviewer, manifest/lockfile root dan dependency PHP/npm sudah disiapkan tanpa scaffold atau coding aplikasi. Boost sudah terpasang sebagai paket development; `boost:install` dan MCP belum dijalankan. Resolusi Composer dan pemeriksaan platform lokal lulus; ini tidak menyelesaikan CORE-01. Lihat [setup dan rencana development](development-plan.md) untuk langkah restore dan pemeriksaan yang masih tertunda.
+
+**Pembaruan scaffold (LOG-009):** reviewer kemudian mengizinkan scaffold Laravel standar dan server lokal saja. Welcome/health, test boot, serta build aset sudah berjalan; belum ada fitur Family Hub, migration/seed yang dijalankan, CI, atau konfigurasi Boost MCP. Model/migration default skeleton bukan implementasi skema ULID/household yang disetujui. Detail dan perintah server tersedia di [development plan](development-plan.md).
+
+**Checkpoint fondasi (LOG-010):** reviewer mengizinkan kelanjutan sesuai plan. Placeholder Core/Modules, flag modul nonaktif, konfigurasi Pint/Larastan, test fondasi, dan workflow CI kedua DB tersedia. Test/lint/analisis/build lokal serta Boost stdio/tool dokumentasi lulus; workflow belum berjalan di GitHub dan koneksi UI Copilot belum terverifikasi. CORE-01 masih parsial; lihat [logbook](logbook.md) untuk bukti dan batasnya.
+
+**Checkpoint auth (LOG-011):** Fortify login/logout dan konfirmasi kata sandi terhubung ke Blade/Livewire dengan locale Indonesia dan Alpine bawaan. Form native memakai validasi/session Fortify, bukan implementasi auth ganda di Livewire. Registrasi/reset password/TOTP/passkeys tetap nonaktif; undangan/household belum dibuat. Test database terisolasi, lint, analisis, build, dan pemeriksaan browser 360px light/dark lulus; database aplikasi lokal tidak dimigrasikan atau di-seed. CORE-01 tetap parsial sampai CI kedua DB dan koneksi UI Copilot terbukti.
+
+Pilih GitHub Copilot pada installer, tinjau diff konfigurasi MCP/guidelines/skills, lalu mulai server melalui VS Code `MCP: List Servers` dan uji koneksi serta tool dokumentasinya. Pertahankan instruksi Family Hub dan skills yang sudah ada; jangan membiarkan hasil generate mengganti aturan domain, invite-only, isolasi household, atau batas dependency. Tool yang menjalankan kode/query hanya dipakai pada development dengan data sintetis, bukan database produksi atau secret. Jangan mengekspos server MCP ke jaringan publik. Boost tidak diperlukan saat runtime produksi (`composer install --no-dev`) dan tidak mengizinkan pengiriman struk/data keluarga ke layanan AI.
+
+**Keputusan transport terbaru (LOG-013):** reviewer mengizinkan client stdio terminal sebagai pengganti koneksi UI Copilot yang belum dapat diaktifkan. Inisialisasi, daftar tool, dan `search-docs` kembali lulus; gate koneksi Boost dipenuhi lewat jalur ini, tanpa mengklaim koneksi native UI. Jalankan saat diperlukan dan hentikan child setelah selesai. Keputusan ini menggantikan kewajiban koneksi UI pada CORE-01, bukan kewajiban CI kedua DB atau acceptance reviewer; lihat addendum ADR-011.
+
+Sebelum menandai CORE-01 selesai, wajib jalankan resolusi Composer penuh pada PHP 8.5 beserta ekstensi yang dibutuhkan, `composer check-platform-reqs`, build Vite, test SQLite/MariaDB, Pint, Larastan, dan smoke test integrasi Boost. Bila ada constraint transitif yang gagal, laporkan dan selesaikan secara eksplisit; jangan memakai `--ignore-platform-reqs`. Sumber dan keputusan lengkap: [ADR-011](adr/ADR-011-current-stack.md).
 
 ---
 
@@ -170,11 +207,15 @@ tests/
 ├── Feature/{Core,Finance,Organizer,Asset}/
 └── Unit/
 docs/
+├── 00-MASTERPLAN.md
+├── 01-MODULE-FINANCE.md
+├── 02-MODULE-ORGANIZER.md
+├── 03-MODULE-ASSET.md
 ├── adr/ADR-NNN-judul.md
 ├── runbook/{deploy,backup-restore}.md
+├── development-plan.md
+├── logbook.md
 └── uat-go-live.md
-Build Docs/
-└── 00-MASTERPLAN.md  01-MODULE-FINANCE.md  02-MODULE-ORGANIZER.md  03-MODULE-ASSET.md
 ```
 
 ### 4.2 Aturan Layer
@@ -630,7 +671,7 @@ Teks notifikasi WAJIB singkat (≤ 120 karakter) dan berisi URL tujuan.
 
 | ID | Judul | Deskripsi & AC | Dep |
 |---|---|---|---|
-| CORE-01 | Inisialisasi proyek | Laravel 12, Breeze Livewire, Tailwind v4, Pest, Pint, Larastan, struktur folder §4.1, `config/modules.php` (flag finance/organizer/asset). *AC:* `composer test`, `pint --test`, `phpstan` lulus di CI (GitHub Actions) untuk SQLite & MariaDB. | – |
+| CORE-01 | Inisialisasi proyek | PHP 8.5, Laravel 13, Fortify + Livewire 4/Blade, Tailwind v4, Vite 8 (Node 24 LTS), Pest 5, Pint, Larastan 3, Boost development, struktur folder §4.1, `config/modules.php` (flag finance/organizer/asset). *AC:* resolusi dependency stabil dan `composer check-platform-reqs` lulus tanpa mengabaikan requirement; build frontend, `composer test`, `pint --test`, `phpstan` lulus di CI (GitHub Actions) untuk SQLite & MariaDB; Boost MCP initialize/daftar tool/panggilan dokumentasi lulus melalui client terminal yang disetujui reviewer (atau Copilot VS Code), tanpa menghapus instruksi proyek. | – |
 | CORE-02 | Deploy bare-metal & runbook | Nginx, PHP-FPM, proses worker/scheduler terkelola, zrok, `.env.example`, `docs/runbook/deploy.md`. *AC:* instalasi pada Linux bersih → HTTPS publik melalui zrok; app, worker, scheduler, dan backup aktif; proses pulih otomatis setelah reboot. | 01 |
 | CORE-03 | Utilitas Support | `Money`, `PeriodResolver`, `BelongsToHousehold`, komponen `x-money`, `x-input-money`, `x-date`. *AC:* unit test Money::parse (≥10 kasus) & PeriodResolver (S=1, S=25, akhir tahun, tahun kabisat, perubahan setting dengan periode transisi pendek/panjang dan tanpa mengubah key/rentang historis). | 01 |
 | CORE-04 | Household & member | Migrasi & model §5.1, enum MemberRole, Policy, slot member database. *AC:* unique household/slot menolak penerimaan undangan bersamaan yang melebihi 2 member; test konkurensi pada SQLite & MariaDB. | 03 |
@@ -670,6 +711,7 @@ Teks notifikasi WAJIB singkat (≤ 120 karakter) dan berisi URL tujuan.
 6. **Definition of Done:** AC terpenuhi · test lulus (SQLite & MariaDB) · Pint & Larastan bersih · policy & test isolasi · tampil benar di 360px & desktop, light & dark · teks UI di `lang/id` · activity log · dokumen diperbarui bila ada perubahan perilaku.
 7. **Migrasi:** setelah rilis produksi, JANGAN ubah migrasi lama; buat migrasi baru. Semua migrasi wajib punya `down()`.
 8. **Seeder demo:** setiap modul menyediakan `DemoSeeder` berisi data realistis Indonesia (nama, nominal, tanggal relatif hari ini) untuk UAT.
+9. **Pelacakan pekerjaan:** setiap batch perubahan (termasuk dokumentasi, konfigurasi, dependency, tooling, dan skill) wajib mengikuti [development-docs-sync](../.github/skills/development-docs-sync/SKILL.md), memperbarui [logbook](logbook.md) dan [rencana development](development-plan.md). Perubahan struktural wajib meninjau seluruh dokumentasi proyek dan menyelaraskan semua dokumen terdampak, termasuk instruksi/skill; catat cakupan review serta dokumen yang tidak terdampak. Tidak perlu edit kosmetik pada dokumen yang tetap benar. Catat bukti verifikasi dan pemeriksaan yang belum dilakukan; persiapan dependency tidak berarti task implementasi selesai. Investigasi read-only tanpa perubahan tidak memerlukan entri baru.
 
 ---
 
@@ -678,7 +720,7 @@ Teks notifikasi WAJIB singkat (≤ 120 karakter) dan berisi URL tujuan.
 | ADR | Keputusan | Status |
 |---|---|---|
 | ADR-001 | Uang disimpan sebagai BIGINT rupiah | Accepted |
-| ADR-002 | Livewire 3 + Alpine (bukan SPA Vue/React) — satu bahasa, cocok untuk dikembangkan AI agent & direview satu orang; offline hanya read-only sehingga SPA tidak diperlukan | Accepted |
+| ADR-002 | Livewire + Alpine (bukan SPA Vue/React) — satu bahasa, cocok untuk dikembangkan AI agent & direview satu orang; offline hanya read-only sehingga SPA tidak diperlukan. Versi 4 menggantikan versi 3 melalui ADR-011 | Accepted; versi diperbarui ADR-011 |
 | ADR-003 | Single database multi-household dengan `household_id` + global scope | Accepted |
 | ADR-004 | ULID sebagai primary key | Accepted |
 | ADR-005 | Recurrence via RRULE subset + `rlanvin/php-rrule` | Accepted |
@@ -687,6 +729,7 @@ Teks notifikasi WAJIB singkat (≤ 120 karakter) dan berisi URL tujuan.
 | ADR-008 | Kalender agregasi virtual (tidak menyalin data ke tabel event) | Accepted |
 | ADR-009 | Service worker vanilla tanpa Workbox | Accepted |
 | ADR-010 | Akses jarak jauh: zrok untuk rilis awal; evaluasi Cloudflare Tunnel saat skala membesar | Accepted; pemicu migrasi ditetapkan sebelum perpindahan |
+| [ADR-011](adr/ADR-011-current-stack.md) | Baseline PHP 8.5, Laravel 13, Livewire 4, Fortify menggantikan Breeze, Pest 5, dependency stabil terbaru, dan Boost development | Accepted oleh reviewer di chat 2026-10-26; validasi runtime pada CORE-01 |
 
 ---
 
@@ -715,3 +758,4 @@ Teks notifikasi WAJIB singkat (≤ 120 karakter) dan berisi URL tujuan.
 |---|---|
 | 0.1 | Draft awal satu dokumen, ekspansi ide |
 | 0.2 | Dipecah menjadi masterplan + 3 dokumen modul; keputusan discovery D1–D8; household maks 2 member; offline read-only; .ics; deployment server rumah; aturan AI agent |
+| 0.3 | 2026-10-26: pembaruan baseline stack stabil, Fortify + Livewire 4 menggantikan Breeze, persetujuan Boost development, requirement Node/CI, dan batas verifikasi kompatibilitas (ADR-011) |

@@ -1,7 +1,7 @@
 # Runbook Backup & Restore — Family Hub
 
 **Status:** Draft; prosedur final harus diuji pada stack dan lokasi backup produksi.  
-**Rujukan:** `Build Docs/00-MASTERPLAN.md` §12–14.
+**Rujukan:** [Masterplan](../00-MASTERPLAN.md) §12–14.
 
 ## 1. Cakupan dan aturan keselamatan
 

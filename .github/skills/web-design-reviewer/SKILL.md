@@ -1,11 +1,15 @@
 ---
 name: web-design-reviewer
-description: 'This skill enables visual inspection of websites running locally or remotely to identify and fix design issues. Triggers on requests like "review website design", "check the UI", "fix the layout", "find design problems". Detects issues with responsive design, accessibility, visual consistency, and layout breakage, then performs fixes at the source code level.'
+description: "Use after any Family Hub change affecting UI or browser behavior, together with premium-frontend-ui and webapp-testing, or for explicit design reviews. Inspect responsive layout, accessibility, and visual consistency, then fix in-scope issues."
 ---
 
 # Web Design Reviewer
 
 This skill enables visual inspection and validation of website design quality, identifying and fixing issues at the source code level.
+
+## Family Hub coordination
+
+Follow the mandatory coordinated UI workflow in [repository instructions](../../copilot-instructions.md). Premium guidance informs implementation; this skill owns visual review, and `webapp-testing` verifies behavior after fixes. Share the browser session/evidence and one batch summary, not parallel edits or duplicate reports. Project design/stack constraints override generic visual effects. Use 360px mobile and 1280px desktop in light/dark as the baseline, adding tablet/wide checks when relevant. Skip pure documentation/backend-only changes without browser impact; report blocked checks honestly.
 
 ## Scope of Application
 

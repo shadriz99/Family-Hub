@@ -1,7 +1,13 @@
 # Runbook Deploy — Family Hub
 
 **Status:** Draft untuk diselaraskan dengan instalasi Linux bare-metal aktual.  
-**Rujukan:** `Build Docs/00-MASTERPLAN.md` §12–14.
+**Rujukan:** [Masterplan](../00-MASTERPLAN.md) §12–14.
+
+Riwayat pekerjaan dan bukti verifikasi dicatat di [logbook](../logbook.md); urutan implementasi dan gate CORE-02/CORE-16 mengikuti [rencana development](../development-plan.md). Runbook ini belum merupakan bukti deployment berhasil.
+
+Scaffold saat ini hanya berjalan lokal melalui `php artisan serve` pada loopback; ini bukan Nginx/PHP-FPM/zrok atau deployment produksi. Jangan memakai konfigurasi session/cache berbasis file pada scaffold sebagai keputusan akhir operasional; verifikasi konfigurasi produksi sesuai implementasi sebelum deploy.
+
+Login/logout dan konfirmasi kata sandi dasar tersedia (LOG-011), tetapi belum ada alur provisioning admin/undangan atau skema household. Tidak ada akun persisten yang disediakan oleh setup ini. Jangan membuka akses publik atau menjalankan migrasi placeholder untuk membuat akun pertama; tunggu implementasi Core dan gate rilis.
 
 Runbook ini berlaku untuk deploy langsung di Linux bare-metal dengan Nginx, PHP-FPM, Laravel, dan zrok sebagai akses publik. Tidak menggunakan Docker. Jangan menyalin command, path, atau nama service sebelum disesuaikan dengan distro Linux, konfigurasi Nginx/PHP-FPM, dan versi aplikasi aktual. Jika prasyarat go-live belum terpenuhi, hentikan deploy.
 

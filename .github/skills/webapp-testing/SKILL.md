@@ -1,11 +1,15 @@
 ---
 name: webapp-testing
-description: Toolkit for interacting with and testing local web applications using Playwright. Supports verifying frontend functionality, debugging UI behavior, capturing browser screenshots, and viewing browser logs.
+description: "Use after any Family Hub change affecting UI or browser behavior, together with premium-frontend-ui and web-design-reviewer. Verify interactions, validation, navigation, and regressions using available browser tools."
 ---
 
 # Web Application Testing
 
 This skill enables comprehensive testing and debugging of local web applications using Playwright automation.
+
+## Family Hub coordination
+
+Follow the mandatory coordinated UI workflow in [repository instructions](../../copilot-instructions.md). Run after implementation and visual inspection, reuse their browser session/evidence, and recheck interactions after fixes. Pure documentation or backend-only changes without browser impact do not trigger it. Prefer integrated browser tools; do not install Playwright automatically. Report blocked checks and programmatic-click fallbacks, and preserve shared browser pages and reviewer servers.
 
 You should use the Playwright MCP Server to undertake the work if possible. If the MCP Server is unavailable, you can run the code in a local Node.js environment with Playwright installed.
 
@@ -25,7 +29,7 @@ Use this skill when you need to:
 
 - Node.js installed on the system
 - A locally running web application (or accessible URL)
-- Playwright will be installed automatically if not present
+- Use available browser tooling; any additional dependency requires the project's approval process.
 
 ## Core Capabilities
 
@@ -85,7 +89,7 @@ await page.screenshot({ path: "debug.png", fullPage: true });
 1. **Always verify the app is running** - Check that the local server is accessible before running tests
 2. **Use explicit waits** - Wait for elements or navigation to complete before interacting
 3. **Capture screenshots on failure** - Take screenshots to help debug issues
-4. **Clean up resources** - Always close the browser when done
+4. **Clean up resources** - Close only temporary browser resources you created for this check, never reviewer-owned/shared pages
 5. **Handle timeouts gracefully** - Set reasonable timeouts for slow operations
 6. **Test incrementally** - Start with simple interactions before complex flows
 7. **Use selectors wisely** - Prefer data-testid or role-based selectors over CSS classes

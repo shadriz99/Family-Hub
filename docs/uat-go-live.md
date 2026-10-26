@@ -1,7 +1,7 @@
 # Checklist UAT & Go-live — Family Hub
 
 **Status:** Template; tandai hasil hanya setelah mencoba build yang berjalan.  
-**Rujukan:** `Build Docs/00-MASTERPLAN.md` §12–16 dan dokumen Finance, Organizer, Asset.
+**Rujukan:** [Masterplan](00-MASTERPLAN.md) §12–16 dan dokumen Finance, Organizer, Asset.
 
 ## 1. Informasi UAT
 
@@ -15,6 +15,8 @@
 | Data demo atau data nyata | |
 
 Gunakan household uji dan data sintetis untuk skenario negatif. Jangan mengunggah dokumen/rahasia nyata ke lingkungan non-produksi.
+
+Checkpoint CORE-01 (LOG-011) baru membuktikan auth dasar melalui test SQLite in-memory dan browser lokal. Belum ada akun persisten, household/undangan, CI remote, atau kandidat rilis; bukti ini tidak mencentang skenario UAT di bawah.
 
 ## 2. Syarat mulai UAT
 
@@ -100,7 +102,7 @@ Rilis hanya jika semua syarat berikut terpenuhi:
 
 | Hasil | Detail / tautan issue | Keputusan |
 |---|---|---|
-| Belum dijalankan | Build belum tersedia | Belum siap go-live |
+| Belum dijalankan | Scaffold standar dapat boot/build lokal; belum ada build fitur Family Hub atau kandidat UAT | Belum siap go-live |
 
 ## 6. Uji setelah go-live
 
