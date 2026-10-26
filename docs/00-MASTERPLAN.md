@@ -312,6 +312,8 @@ Aturan: slot dipilih saat `AcceptInvitation` dalam transaksi. Unique constraint 
 |---|---|
 | id, household_id (nullable untuk invite household baru), email, type (`new_household`,`partner`), token_hash, invited_by, expires_at, accepted_at, revoked_at, timestamps |
 
+**Status implementasi (LOG-034):** `App\Core\Models\HouseholdInvitation` dan migrasinya mengikuti kolom di atas: `household_id` nullable, `email`, `type` enum `InvitationType`, `token_hash` SHA-256 unik, `invited_by`, `expires_at`, `accepted_at`, dan `revoked_at` (revoke menandai baris, tidak menghapus). Slice yang ada baru Alur B (partner); Alur A (admin membuat household baru) belum punya aksi/route dan `AcceptInvitation` menolak undangan `new_household`. Email undangan belum dikirim; token dikembalikan ke pemanggil.
+
 **`reminders`** (dipakai semua modul)
 | Kolom | Tipe | Aturan |
 |---|---|---|

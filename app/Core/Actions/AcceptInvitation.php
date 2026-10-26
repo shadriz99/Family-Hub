@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Actions;
 
+use App\Core\Enums\InvitationType;
 use App\Core\Enums\MemberRole;
 use App\Core\Models\Household;
 use App\Core\Models\HouseholdInvitation;
@@ -27,7 +28,16 @@ final class AcceptInvitation
                 ->lockForUpdate()
                 ->first();
 
-            if ($invitation === null) {
+            if ($invitation === null || $invitation->revoked_at !== null) {
+                throw $this->reject('household.invitation_invalid');
+            }
+
+            if ($invitation->accepted_at !== null) {
+                throw $this->reject('household.invitation_used');
+            }
+
+            // The new-household flow creates an owner and belongs to its own slice.
+            if ($invitation->type !== InvitationType::Partner) {
                 throw $this->reject('household.invitation_invalid');
             }
 
@@ -35,10 +45,6 @@ final class AcceptInvitation
 
             if ($household === null) {
                 throw $this->reject('household.invitation_invalid');
-            }
-
-            if ($invitation->accepted_at !== null) {
-                throw $this->reject('household.invitation_used');
             }
 
             if ($invitation->expires_at->isPast()) {
@@ -69,7 +75,6 @@ final class AcceptInvitation
             $member->user()->associate($user);
             $household->members()->save($member);
 
-            $invitation->acceptedBy()->associate($user);
             $invitation->accepted_at = now()->toImmutable();
             $invitation->save();
 

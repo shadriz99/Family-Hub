@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Actions;
 
+use App\Core\Enums\InvitationType;
 use App\Core\Models\Household;
 use App\Core\Models\HouseholdInvitation;
 use App\Core\Support\IssuedInvitation;
@@ -18,10 +19,17 @@ final class InviteHouseholdMember
 
     /**
      * Only the plaintext token leaves this action; the database keeps its SHA-256 hash.
+     * The invitation is addressed to the partner's email; mailing it is a later slice.
      */
-    public function handle(User $actor, Household $household): IssuedInvitation
+    public function handle(User $actor, Household $household, string $email): IssuedInvitation
     {
-        return DB::transaction(function () use ($actor, $household): IssuedInvitation {
+        $email = mb_strtolower(trim($email));
+
+        if ($email === '' || mb_strlen($email) > 255 || filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+            throw ValidationException::withMessages(['email' => __('household.email_invalid')]);
+        }
+
+        return DB::transaction(function () use ($actor, $household, $email): IssuedInvitation {
             $household = Household::query()->lockForUpdate()->findOrFail($household->getKey());
             Gate::forUser($actor)->authorize('invitePartner', $household);
 
@@ -32,6 +40,8 @@ final class InviteHouseholdMember
             $token = bin2hex(random_bytes(32));
 
             $invitation = new HouseholdInvitation([
+                'email' => $email,
+                'type' => InvitationType::Partner,
                 'token_hash' => hash('sha256', $token),
                 'expires_at' => now()->addDays(self::EXPIRES_AFTER_DAYS),
             ]);

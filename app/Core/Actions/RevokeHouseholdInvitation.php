@@ -29,7 +29,12 @@ final class RevokeHouseholdInvitation
                 throw ValidationException::withMessages(['invitation' => __('household.invitation_used')]);
             }
 
-            $pending->delete();
+            if ($pending->revoked_at !== null) {
+                throw ValidationException::withMessages(['invitation' => __('household.invitation_invalid')]);
+            }
+
+            $pending->revoked_at = now()->toImmutable();
+            $pending->save();
 
             activity()->performedOn($household)->causedBy($actor)
                 ->withProperties(['invitation_id' => $pending->getKey()])

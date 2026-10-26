@@ -10,14 +10,13 @@
 4. Keputusan reviewer dicatat di logbook (`LOG-NNN`), lalu item di sini ditutup atau diubah menjadi pekerjaan tertunda di bagian B.
 5. Jangan menandai item selesai hanya karena kode sudah ada; sertakan bukti verifikasi atau keputusan eksplisit.
 
-**Status:** diperbarui terakhir pada LOG-033 (setelah LOG-032, slice backend undangan partner).
+**Status:** diperbarui terakhir pada LOG-034 (skema undangan kini sesuai §5.1 masterplan).
 
 ## A. Butuh keputusan reviewer
 
 | ID | Topik | Keputusan yang dibutuhkan | Dampak bila ditunda |
 |---|---|---|---|
-| P-01 | Skema `household_invitations` menyimpang dari §5.1 masterplan | Masterplan menetapkan `household_id` nullable, `email`, `type` (`new_household`/`partner`), dan `revoked_at`; implementasi LOG-032 hanya `household_id` wajib, tanpa `email`/`type`, dan revoke menghapus baris. Pilih: tambah kolom sekarang, atau ubah §5.1 agar sesuai slice partner | Menahan slice email undangan dan invite household baru oleh admin |
-| P-02 | Alur email undangan dan titik masuk registrasi | Registrasi publik dimatikan (`config/fortify.php` fitur kosong). Tentukan: token saja atau token + ikatan email; route registrasi khusus undangan; transport mail untuk test/CI (log/array) sebelum CORE-10 | CORE-05 belum memenuhi AC "registrasi tanpa token ditolak" secara end-to-end |
+| P-02 | Alur email undangan dan titik masuk registrasi | Registrasi publik dimatikan (`config/fortify.php` fitur kosong). Kolom `email` sudah ada dan diisi saat undang, tetapi belum dipakai untuk mencocokkan pendaftar. Tentukan: token saja atau token + ikatan email; route registrasi khusus undangan; transport mail untuk test/CI (log/array) sebelum CORE-10 | CORE-05 belum memenuhi AC "registrasi tanpa token ditolak" secara end-to-end |
 | P-03 | Alur reset kata sandi | CORE-05 menyebut "alur login/reset", tetapi fitur reset Fortify sengaja kosong. Tentukan apakah reset masuk CORE-05 atau ditunda dengan ADR/peninjauan keamanan | Pengguna tanpa reset tidak punya pemulihan akun; keputusan tertunda menahan acceptance CORE-05 |
 | P-04 | Invite household baru oleh admin | `users.is_system_admin` sudah ada, tetapi belum ada policy, route, action, atau halaman `/admin`. Tentukan target kartu (CORE-05 atau CORE-15) dan apakah admin boleh membuat household tanpa menjadi anggota | Alur A pada §5.1 (admin membuat invite household baru) belum bisa diimplementasikan |
 | P-05 | Backfill histori periode keuangan | `CreateHousehold` hanya membuat satu baris periode berlaku hari ini. Tentukan apakah perlu periode lampau saat bootstrap dan sejauh mana | `PeriodResolver` aman untuk data baru, tetapi belum ada data historis household lama |
@@ -39,4 +38,4 @@
 
 | ID | Ditutup oleh | Catatan |
 |---|---|---|
-| - | - | Belum ada item yang ditutup; daftar dibuat pada LOG-033 |
+| P-01 | LOG-034 | Reviewer memutuskan dokumentasi jadi acuan; migrasi/model/aksi undangan diselaraskan ke §5.1 (`household_id` nullable, `email`, `type`, `revoked_at`), `accepted_by` dihapus karena tidak ada di spesifikasi |

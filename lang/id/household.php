@@ -12,4 +12,5 @@ return [
     'invitation_invalid' => 'Undangan tidak ditemukan atau sudah dibatalkan.',
     'invitation_used' => 'Undangan ini sudah digunakan.',
     'invitation_expired' => 'Undangan sudah kedaluwarsa. Minta pemilik household mengirim undangan baru.',
+    'email_invalid' => 'Alamat email undangan tidak valid.',
 ];
