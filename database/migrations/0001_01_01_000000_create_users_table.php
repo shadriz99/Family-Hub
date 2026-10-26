@@ -13,11 +13,18 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
+            $table->ulid('id')->primary();
+            $table->string('name', 100);
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->boolean('is_system_admin')->default(false);
+            $table->string('locale', 5)->default('id');
+            $table->boolean('notify_push')->default(true);
+            $table->boolean('notify_email')->default(true);
+            $table->time('quiet_hours_start')->nullable()->default('21:00:00');
+            $table->time('quiet_hours_end')->nullable()->default('06:00:00');
+            $table->time('daily_digest_time')->nullable()->default('06:00:00');
             $table->rememberToken();
             $table->timestamps();
         });
@@ -30,7 +37,7 @@ return new class () extends Migration {
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
+            $table->foreignUlid('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');
