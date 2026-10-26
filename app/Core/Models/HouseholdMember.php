@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property MemberRole $role
+ * @property int $slot
+ * @property string $color
  */
 class HouseholdMember extends Model
 {

@@ -1,7 +1,7 @@
 # Development Setup dan Rencana - Family Hub
 
 **Baseline:** 2026-10-26
-**Status:** CORE-01 diterima untuk kelanjutan development (LOG-015). CORE-03 dinyatakan selesai reviewer (LOG-025). Tip `main`/`core-03-support` adalah `d4a6986`; kode CORE-04 (`731fb45`) lulus kedua job CI SQLite/MariaDB (LOG-031). LOG-030 menambahkan bootstrap household dan konteks tenant per request; CORE-04 masih parsial di sisi admission/konkurensi dan job context.
+**Status:** CORE-01 diterima untuk kelanjutan development (LOG-015). CORE-03 dinyatakan selesai reviewer (LOG-025). Tip `main`/`core-03-support` adalah `d4a6986`; kode CORE-04 (`731fb45`) lulus kedua job CI SQLite/MariaDB (LOG-031). LOG-030 menambahkan bootstrap household dan konteks tenant per request; LOG-032 memulai CORE-05 dengan backend undangan partner. CORE-04 tetap parsial di sisi konkurensi dan job context; CORE-05 belum punya email, route registrasi, atau UI.
 
 **CI kedua DB (LOG-029, LOG-031):** job SQLite dan MariaDB lulus untuk `6d6f7bc` (144 test PHP/1562 assertions) dan untuk `731fb45` (156 test PHP/1605 assertions), termasuk migrasi, test JS, Pint, Larastan, dan build. Perbaikan collation LOG-028 dan nama index LOG-027 terbukti pada run nyata. Tidak ada deployment atau UAT.
 
@@ -42,6 +42,8 @@ Dokumen ini menggabungkan setup environment aktual dan rencana implementasi. Riw
 **Checkpoint tenant dan resolver (LOG-024):** `HouseholdContext`, helper `currentHousehold()`, trait `BelongsToHousehold` + `HouseholdScope`, dan `PeriodResolver::for($household)` tersedia. Scope dan auto-fill/validasi `household_id` gagal tertutup bila konteks tidak ada; resolver membaca histori/timezone household tanpa bergantung konteks ambient. 5 test tenant baru/16 assertion; total 144 test PHP/1562 assertion, 4 test JS, Pint/Larastan/build lulus. Trait baru diterapkan pada `HouseholdFinancePeriodSetting`; `HouseholdMember` masih scoped eksplisit via policy/action dan `Activity` tidak memiliki `household_id`. Belum ada middleware/job context, bootstrap histori household, admission CORE-05, atau bukti konkurensi; CORE-03/04 tetap parsial.
 
 **Checkpoint bootstrap dan konteks request (LOG-030):** `CreateHousehold` membuat household + membership owner slot 1 + periode keuangan awal dalam satu transaksi dengan validasi nama/start day/timezone dan penolakan user yang sudah punya household, lalu menulis audit `core.household.created`. Middleware `UseHouseholdContext` pada grup `web` memasang konteks dari membership user terautentikasi dan selalu melupakannya setelah respons; household terhapus lunak diabaikan. 12 test baru/43 assertion; total 156 test PHP/1605 assertion, 4 test JS, Pint/Larastan/build lulus. Belum ada konteks untuk job/command, backfill histori periode, admission CORE-05, atau bukti konkurensi; CORE-04 tetap parsial.
+
+**Checkpoint undangan partner (LOG-032):** `household_invitations` menyimpan `token_hash` SHA-256 (token 64 karakter heksadesimal hanya keluar sekali), `expires_at` 7 hari, `accepted_at`/`accepted_by`, dan index unik `household_invitation_pending_idx`; `InviteHouseholdMember`, `AcceptInvitation`, dan `RevokeHouseholdInvitation` tersedia dengan otorisasi `invitePartner`/`cancelInvitation`, penolakan token kedaluwarsa/dipakai ulang/asing, batas dua member, dan audit. 15 test baru/54 assertion; total 171 test PHP/1659 assertion, Pint, Larastan, dan `migrate --pretend` SQLite lulus. Belum ada email, route registrasi, UI, atau invite household baru oleh admin; skema undangan menyimpang dari §5.1 masterplan (`email`, `type`, `revoked_at`, household_id nullable) dan menunggu keputusan reviewer sebelum slice berikutnya.
 
 ### Installed baseline
 
@@ -140,7 +142,7 @@ Composer is installed in `%LOCALAPPDATA%\Programs\Composer` with a `composer.cmd
 | A. Repository, discovery, keputusan stack | Selesai untuk persiapan | [LOG-001 sampai LOG-003](logbook.md#log-001---repository-dan-tooling-dasar); keputusan open questions berikutnya tetap diperlukan |
 | B. Dependency dan dokumentasi | Selesai untuk persiapan | [LOG-004](logbook.md#log-004---manifest-dan-instalasi-dependency-tanpa-coding-aplikasi), [LOG-005](logbook.md#log-005---konsolidasi-dokumentasi), [LOG-006](logbook.md#log-006---logbook-dan-rencana-development), [LOG-007](logbook.md#log-007---penggabungan-setup-dan-rencana), [LOG-008](logbook.md#log-008---skill-sinkronisasi-dokumentasi) |
 | C. CORE-01 | Diterima untuk kelanjutan development | [LOG-011](logbook.md#log-011---checkpoint-auth-core-01), [LOG-013](logbook.md#log-013---boost-melalui-terminal-perantara), [LOG-014](logbook.md#log-014---publikasi-fondasi-untuk-ci-core-01); arahan lanjut reviewer LOG-015; bukan acceptance produksi |
-| D. Core lainnya | CORE-03/04 parsial; CORE-03B lokal | LOG-019: urutan 03A → 04 → 03B disetujui; LOG-024: tenant scope/konteks dan `PeriodResolver::for` tersedia, trait terbatas pada period settings; LOG-030: bootstrap household dan middleware konteks request tersedia; konteks job, backfill histori, admission, dan konkurensi belum selesai |
+| D. Core lainnya | CORE-03/04 parsial; CORE-05 backend undangan | LOG-019: urutan 03A → 04 → 03B disetujui; LOG-024: tenant scope/konteks dan `PeriodResolver::for` tersedia, trait terbatas pada period settings; LOG-030: bootstrap household dan middleware konteks request; LOG-032: undangan partner dengan token hash/kedaluwarsa/revoke; konteks job, backfill histori, konkurensi, email/route/UI undangan, dan invite admin belum |
 | E. Finance | Belum dimulai | FIN-01 sampai FIN-16 |
 | F. Organizer | Belum dimulai | ORG-01 sampai ORG-13 |
 | G. Asset | Belum dimulai | AST-01 sampai AST-12 |
@@ -170,7 +172,7 @@ Urutan berikut memenuhi dependensi utama; pekerjaan yang independen tetap dapat 
 |---|---|---|
 | 1 | CORE-03 | Money, PeriodResolver, tenant support, komponen uang/tanggal; uji parser, perubahan periode, tahun kabisat, dan histori. Status LOG-024: Money/komponen/tenant+resolver lokal selesai; LOG-030 menambahkan middleware konteks request, konteks job belum |
 | 2 | CORE-04 | Household/member, role/policy, slot atomik maksimal dua anggota; uji isolasi dan konkurensi SQLite/MariaDB |
-| 3 | CORE-05 | Invite-only, hash token, expiry/reuse/revoke, alur login/reset; uji registrasi tanpa undangan ditolak |
+| 3 | CORE-05 | Invite-only, hash token, expiry/reuse/revoke, alur login/reset; uji registrasi tanpa undangan ditolak. Status LOG-032: backend undangan partner (hash, 7 hari, sekali pakai, revoke) selesai; email, route registrasi, dan invite admin belum |
 | 4 | CORE-06 | Onboarding household, timezone, periode, undang partner opsional |
 | 5 | CORE-07 | Layout/navigasi/FAB, komponen bersama, light/dark; uji mobile 360px dan keyboard |
 | 6 | CORE-08 | Recurrence wrapper/preset/humanize; uji akhir bulan dan batas recurrence |

@@ -43,4 +43,10 @@ class Household extends Model
     {
         return $this->hasMany(HouseholdFinancePeriodSetting::class)->orderBy('effective_on');
     }
+
+    /** @return HasMany<HouseholdInvitation, $this> */
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(HouseholdInvitation::class);
+    }
 }

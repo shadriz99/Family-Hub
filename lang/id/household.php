@@ -8,4 +8,8 @@ return [
     'start_day_invalid' => 'Hari mulai periode keuangan harus antara 1 dan 28.',
     'timezone_invalid' => 'Zona waktu household tidak valid.',
     'already_member' => 'Pengguna ini sudah menjadi anggota household lain.',
+    'invite_full' => 'Household ini sudah memiliki dua anggota.',
+    'invitation_invalid' => 'Undangan tidak ditemukan atau sudah dibatalkan.',
+    'invitation_used' => 'Undangan ini sudah digunakan.',
+    'invitation_expired' => 'Undangan sudah kedaluwarsa. Minta pemilik household mengirim undangan baru.',
 ];
