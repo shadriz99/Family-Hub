@@ -9,9 +9,9 @@ This skill enables comprehensive testing and debugging of local web applications
 
 ## Family Hub coordination
 
-Follow the mandatory coordinated UI workflow in [repository instructions](../../copilot-instructions.md). Run after implementation and visual inspection, reuse their browser session/evidence, and recheck interactions after fixes. Pure documentation or backend-only changes without browser impact do not trigger it. Prefer integrated browser tools; do not install Playwright automatically. Report blocked checks and programmatic-click fallbacks, and preserve shared browser pages and reviewer servers.
+Follow the mandatory coordinated UI workflow in [repository instructions](../../copilot-instructions.md). Run after implementation and visual inspection, reuse their browser session/evidence, and recheck interactions after fixes. Pure documentation or backend-only changes without browser impact do not trigger it. Prefer Playwright over ad-hoc browser automation. Report blocked checks and programmatic-click fallbacks, and preserve shared browser pages and reviewer servers.
 
-You should use the Playwright MCP Server to undertake the work if possible. If the MCP Server is unavailable, you can run the code in a local Node.js environment with Playwright installed.
+Prefer Playwright by installing `playwright-core` in a temporary directory outside the repository and launching the Chrome already installed on the machine (`chromium.launch({ executablePath })`), so no repository dependency, lockfile change, or bundled browser download is required. Use the Playwright MCP Server when it is configured. Fall back to headless Chrome over CDP only when Playwright cannot be installed or launched, and state the fallback plus what it could not prove. Promote Playwright to a real devDependency or CI step only with reviewer approval and an ADR.
 
 ## When to Use This Skill
 
