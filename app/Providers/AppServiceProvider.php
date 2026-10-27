@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Core\Alerts\AlertAggregator;
+use App\Core\Calendar\CalendarAggregator;
 use App\Core\Console\Commands\CreateSystemAdminCommand;
 use App\Core\Models\Household;
 use App\Core\Policies\HouseholdPolicy;
@@ -22,6 +24,14 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(HouseholdContext::class);
+
+        $this->app->singleton(CalendarAggregator::class, function ($app) {
+            return new CalendarAggregator($app);
+        });
+
+        $this->app->singleton(AlertAggregator::class, function ($app) {
+            return new AlertAggregator($app);
+        });
     }
 
     /**
