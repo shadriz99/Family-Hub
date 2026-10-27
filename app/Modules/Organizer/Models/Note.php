@@ -7,6 +7,7 @@ namespace App\Modules\Organizer\Models;
 use App\Core\Support\BelongsToHousehold;
 use App\Models\User;
 use App\Modules\Organizer\Enums\NoteType;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +15,23 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property string $id
+ * @property string $household_id
+ * @property string $created_by
+ * @property NoteType $type
+ * @property string|null $title
+ * @property string|null $body
+ * @property string $color
+ * @property array<string>|null $labels
+ * @property bool $is_pinned
+ * @property bool $is_private
+ * @property CarbonImmutable|null $archived_at
+ * @property string|null $last_edited_by
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property CarbonImmutable|null $deleted_at
+ */
 final class Note extends Model
 {
     use BelongsToHousehold;
@@ -46,7 +64,7 @@ final class Note extends Model
             'labels' => 'array',
             'is_pinned' => 'boolean',
             'is_private' => 'boolean',
-            'archived_at' => 'datetime',
+            'archived_at' => 'immutable_datetime',
         ];
     }
 

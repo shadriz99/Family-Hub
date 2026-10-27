@@ -11,6 +11,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
+ * @property string $id
+ * @property string $household_id
+ * @property string $user_id
  * @property MemberRole $role
  * @property int $slot
  * @property string $color
@@ -20,7 +23,7 @@ class HouseholdMember extends Model
 {
     use HasUlids;
 
-    protected $fillable = ['role', 'color', 'joined_at', 'slot'];
+    protected $fillable = ['household_id', 'user_id', 'role', 'color', 'joined_at', 'slot'];
 
     protected function casts(): array
     {

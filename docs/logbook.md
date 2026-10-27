@@ -959,6 +959,51 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
   - `vendor/bin/phpstan analyse`: `[OK] No errors` (156 file di level 6).
 - **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`, `docs/pending.md`.
 
+### LOG-060 - Phase 2: Organizer Selesai (ORG-02 sampai ORG-13)
+
+- **Konteks:** Melanjutkan dan menuntaskan seluruh task domain Organizer dari ORG-02 hingga ORG-13 sesuai spesifikasi `docs/02-MODULE-ORGANIZER.md`.
+- **Perubahan:**
+  - **Tugas / Tasks (ORG-02, ORG-03, ORG-04):**
+    - Aksi domain: `CreateTask`, `CompleteTask`, dan `UndoCompleteTask`.
+    - Aturan bisnis:
+      - BR-ORG-001/002: Hanya satu instance open per `series_id`. Saat instance selesai, instance berikutnya dibuat dengan `due_date` dihitung dari kejadian RRULE berikutnya setelah `due_date` saat ini (`Recurrence::next`).
+      - BR-ORG-003: Undo penyelesaian dalam 5 detik menghapus instance berikutnya yang belum disentuh dan mengembalikan status task ke open.
+      - BR-ORG-004: Rotasi penanggung jawab bergantian antar anggota household.
+      - US-ORG-04: Penyelesaian tugas dengan flag `expense_on_complete` mencatat transaksi pengeluaran via `FinanceGateway::recordExpense` (source `org_task`) dan menyimpan `expense_transaction_id`.
+    - Komponen Livewire:
+      - `App\Modules\Organizer\Livewire\Tasks\Index` (tab Hari Ini, Mendatang, Tanpa Tanggal, Selesai 30 hari; filter Saya/Pasangan/Semua; checkbox 44px; FAB quick add; toast batalkan).
+      - `App\Modules\Organizer\Livewire\Tasks\Form` (tambah/edit tugas, checklist sub-tugas, preset pengulangan harian/mingguan/bulanan/tahunan/kustom, rotasi, offset reminder, dan biaya).
+  - **Catatan & Checklist (ORG-05):**
+    - Komponen Livewire:
+      - `App\Modules\Organizer\Livewire\Notes\Index` (grid responsif 2-kolom mobile / 3-kolom desktop, filter arsip & sampah, pencarian judul/isi, label chip, pin note di atas).
+      - `App\Modules\Organizer\Livewire\Notes\Editor` (mode teks markdown ringan via `Str::markdown` dengan escape HTML per BR-ORG-011 dan mode checklist cepat via Enter; 6 palet warna kartu; deteksi konflik edit multi-user berbasis perbandingan timestamp `updated_at` dengan opsi simpan salinan atau timpa).
+  - **Daftar Belanja Kolaboratif & Checkout (ORG-06, ORG-07):**
+    - Service parser: `ShoppingItemParser` mengenali teks bebas (misal "telur 2 kg", "1.5 liter minyak goreng", "sabun 3") untuk mengekstrak jumlah, satuan, nama, dan auto-guess kelompok barang (`ShoppingGroup`).
+    - Komponen Livewire:
+      - `App\Modules\Organizer\Livewire\Shopping\Index` (manajemen multi-daftar aktif dan riwayat).
+      - `App\Modules\Organizer\Livewire\Shopping\Show` (kolaborasi realtime via `wire:poll.10s.visible`; centang belanja instan dengan avatar pencentang dan pemindahan item ke bagian bawah; kalkulasi total estimasi; dialog "Selesai Belanja" yang mencatat transaksi pengeluaran riil via `FinanceGateway` dan memindahkan item belum dicentang ke daftar belanja baru).
+      - Aksi "Belanja Lagi" untuk menggandakan item dari riwayat ke daftar baru.
+  - **Kalender Terpadu & Acara (ORG-08, ORG-09, ORG-10):**
+    - Sumber kalender modular: `OrganizerEventCalendarSource` (ekspansi acara berulang tahunan/bulanan via `Recurrence::occurrencesBetween` dan exception handling) dan `OrganizerTaskCalendarSource` (tugas berjadwal). Keduanya mengisolasi query dalam `runInContext` dan menangani gracefully lingkungan test in-memory.
+    - Komponen Livewire `App\Modules\Organizer\Livewire\Calendar\Index`:
+      - Tampilan Bulan (grid 7 kolom Senin s/d Minggu, titik warna di mobile, judul item di desktop, panel tanggal terpilih di bawah).
+      - Tampilan Agenda 60 hari ke depan.
+      - Filter chip sumber gabungan (Acara, Tugas, Tagihan & Cicilan Finance, Perawatan Aset) dan filter orang.
+      - Modal tambah acara cepat (ulang tahun, anniversary, acara umum).
+  - **Ekspor ICS & Pengingat (ORG-11, ORG-12):**
+    - `CalendarExportController` (`GET /calendar/export`): Menghasilkan file `.ics` RFC 5545 menggunakan Spatie `icalendar-generator` bersumber dari `CalendarAggregator`, dengan UID stabil, timezone household, flag all-day, batas rentang 400 hari & 5000 item (BR-ORG-040), serta masking nominal jika `hide_amounts` aktif.
+    - `OrganizerAlertSource`: Memasok peringatan tugas terlambat (`danger`) dan acara hari ini (`info`) ke `AlertAggregator`.
+    - Halaman Pengingat `App\Modules\Organizer\Livewire\Reminders\Index` (`GET /organizer/reminders`): Menampilkan delivery pengingat pending 14 hari ke depan dengan tombol tunda 1 jam, tunda besok 08:00, dan batalkan.
+  - **Integrasi & Widget (ORG-13):**
+    - `OrganizerSummaryWidget`: Widget dashboard utama Core (`dashboard.widgets`) menampilkan jumlah tugas hari ini, daftar belanja aktif, dan acara 7 hari ke depan.
+    - `OrganizerHouseholdExporter`: Mengekspor 4 dataset JSON (`tasks.json`, `notes.json` dengan privasi BR-ORG-010, `shopping_lists.json`, `events.json`) ke paket ZIP backup.
+    - Routing lengkap terdaftar di `routes/modules/organizer.php` dengan middleware `auth`, `verified`, dan `onboarded`.
+- **Verifikasi:**
+  - `php artisan test`: **367 test / 2650 assertions** lulus 100% green (termasuk 19 test fitur baru Organizer).
+  - `vendor/bin/pint --test`: Lulus rapi tanpa perbaikan format.
+  - `vendor/bin/phpstan analyse`: `[OK] No errors` (174 file di level 6).
+- **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`, `docs/pending.md`.
+
 ## Aturan pembaruan berikutnya
 
 1. Tambahkan entri baru dengan tanggal dan ID `LOG-NNN`; sertakan task ID resmi (`CORE-*`, `FIN-*`, `ORG-*`, `AST-*`) jika relevan.

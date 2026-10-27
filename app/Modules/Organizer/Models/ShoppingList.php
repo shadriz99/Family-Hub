@@ -7,12 +7,28 @@ namespace App\Modules\Organizer\Models;
 use App\Core\Support\BelongsToHousehold;
 use App\Models\User;
 use App\Modules\Organizer\Enums\ShoppingListStatus;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property string $id
+ * @property string $household_id
+ * @property string $created_by
+ * @property string $name
+ * @property string|null $store
+ * @property ShoppingListStatus $status
+ * @property CarbonImmutable|null $completed_at
+ * @property string|null $completed_by
+ * @property int|null $actual_total
+ * @property string|null $transaction_id
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property CarbonImmutable|null $deleted_at
+ */
 final class ShoppingList extends Model
 {
     use BelongsToHousehold;
@@ -40,7 +56,7 @@ final class ShoppingList extends Model
     {
         return [
             'status' => ShoppingListStatus::class,
-            'completed_at' => 'datetime',
+            'completed_at' => 'immutable_datetime',
             'actual_total' => 'integer',
         ];
     }

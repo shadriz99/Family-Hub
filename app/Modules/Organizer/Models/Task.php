@@ -9,12 +9,39 @@ use App\Models\User;
 use App\Modules\Organizer\Enums\TaskPriority;
 use App\Modules\Organizer\Enums\TaskReminderOffset;
 use App\Modules\Organizer\Enums\TaskStatus;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property string $id
+ * @property string $household_id
+ * @property string $created_by
+ * @property string|null $series_id
+ * @property string $title
+ * @property string|null $description
+ * @property string|null $assignee_user_id
+ * @property CarbonImmutable|null $due_date
+ * @property string|null $due_time
+ * @property TaskPriority $priority
+ * @property string|null $rrule
+ * @property bool $rotate_assignee
+ * @property TaskReminderOffset|null $reminder_offset
+ * @property TaskStatus $status
+ * @property CarbonImmutable|null $completed_at
+ * @property string|null $completed_by
+ * @property bool $expense_on_complete
+ * @property int|null $expense_estimate
+ * @property string|null $expense_category_id
+ * @property string|null $expense_transaction_id
+ * @property int $sort_order
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property CarbonImmutable|null $deleted_at
+ */
 final class Task extends Model
 {
     use BelongsToHousehold;
@@ -52,12 +79,12 @@ final class Task extends Model
     protected function casts(): array
     {
         return [
-            'due_date' => 'date',
+            'due_date' => 'immutable_date',
             'priority' => TaskPriority::class,
             'rotate_assignee' => 'boolean',
             'reminder_offset' => TaskReminderOffset::class,
             'status' => TaskStatus::class,
-            'completed_at' => 'datetime',
+            'completed_at' => 'immutable_datetime',
             'expense_on_complete' => 'boolean',
             'expense_estimate' => 'integer',
             'sort_order' => 'integer',

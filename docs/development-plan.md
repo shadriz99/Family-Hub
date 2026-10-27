@@ -146,8 +146,8 @@ Composer is installed in `%LOCALAPPDATA%\Programs\Composer` with a `composer.cmd
 | C. CORE-01 | Diterima untuk kelanjutan development | [LOG-011](logbook.md#log-011---checkpoint-auth-core-01), [LOG-013](logbook.md#log-013---boost-melalui-terminal-perantara), [LOG-014](logbook.md#log-014---publikasi-fondasi-untuk-ci-core-01); arahan lanjut reviewer LOG-015; bukan acceptance produksi |
 | D. Core lainnya | CORE-03 selesai; CORE-04 parsial; CORE-05 selesai Alur A & B; CORE-06 selesai onboarding; CORE-07 selesai layout & navigasi; CORE-08 selesai recurrence wrapper; CORE-11 selesai calendar & alert aggregator | LOG-019: urutan 03A → 04 → 03B disetujui; LOG-024: tenant scope/konteks dan `PeriodResolver::for` tersedia; LOG-030: bootstrap household dan middleware konteks request; LOG-032/LOG-034: undangan partner §5.1; LOG-036: email undangan partner, penerimaan, reset kata sandi; LOG-039: konkurensi slot partner terbukti; LOG-040: limiter 10/jam; LOG-041: 1 undangan aktif, admin bukan member; LOG-042: optimasi host Odroid-C2, SQLite WAL; LOG-043: alur A undangan household baru admin dan command `core:create-admin` (menutup P-17); LOG-044: onboarding wizard 3 langkah CORE-06; LOG-045: layout shell mobile/desktop, bottom nav 5 item, FAB, dark mode, 12 komponen §9.5 CORE-07; LOG-046: recurrence wrapper `Recurrence` di sekitar php-rrule CORE-08; LOG-047: kontrak dan aggregator `CalendarAggregator` (kuota 400 hari, tag `calendar.sources`) dan `AlertAggregator` (prioritas level, default 5 item, tag `alert.sources`) CORE-11. Konteks job, backfill histori, dan antrean mail belum |
 | E. Finance | **Selesai** (FIN-01 sampai FIN-16) | [LOG-055](logbook.md#log-055---phase-1-finance-skema--model-fin-01-dan-seeder-kategori-indonesia--demo-fin-02) (skema, model, enum, seeder kategori & demo); [LOG-057](logbook.md#log-057---phase-1-finance-akun-transaksi-anggaran-rencana-alokasi-recurring-pinjaman-laporan--integrasi-fin-03-sampai-fin-16) (seluruh fitur domain, UI Livewire, integrasi kalender/alert/dashboard/ekspor, dan 9 test file feature lulus); [LOG-058](logbook.md#log-058---penataan-5-kategori-utama-pengeluaran-anggaran-berbasis-persentase-100-dan-input-sub-kategori-manual-dinamis) (5 kategori utama pengeluaran, anggaran berbasis persentase total 100%, dan subkategori manual dinamis) |
-| F. Organizer | Sedang berjalan (Phase 2) | [LOG-059](logbook.md#log-059---phase-2-organizer--fondasi-skema-model-enum-provider--feature-flag-org-01): ORG-01 selesai (skema 8 tabel, model Eloquent, 7 enum, provider, feature flag aktif, 7 test feature lulus) |
-| G. Asset | Belum dimulai | AST-01 sampai AST-12 |
+| F. Organizer | **Selesai** (Phase 2) | [LOG-059](logbook.md#log-059---phase-2-organizer--fondasi-skema-model-enum-provider--feature-flag-org-01), [LOG-060](logbook.md#log-060---phase-2-organizer-selesai-org-02-sampai-org-13) (ORG-01 sampai ORG-13 selesai: tasks & recurrence & undo & rotasi & expense, notes & markdown & multi-color & conflict, collaborative shopping & parser & real-time & FinanceGateway expense, calendar month & agenda & unified sources, ICS export RFC 5545, reminders page, dashboard widget, household backup exporter, 19 feature test lulus) |
+| G. Asset | Sedang berjalan (Phase 3) | AST-01 sampai AST-12 |
 | H. Hardening dan go-live | Belum dimulai | UAT, Lighthouse, deploy, dan restore belum dibuktikan |
 
 ## 3. Langkah berikutnya: selesaikan CORE-01
@@ -213,17 +213,17 @@ Rujukan: [spesifikasi Finance](01-MODULE-FINANCE.md). Seluruh task FIN-01 sampai
 
 ## 6. Phase 2: Organizer
 
-Rujukan: [spesifikasi Organizer](02-MODULE-ORGANIZER.md).
+Rujukan: [spesifikasi Organizer](02-MODULE-ORGANIZER.md). Seluruh task ORG-01 sampai ORG-13 telah selesai diimplementasikan dan diverifikasi:
 
 1. **ORG-01:** skema/model/provider/feature flag. Status LOG-059: selesai (migrasi 8 tabel `org_tasks`, `org_task_items`, `org_notes` dengan privasi scope, `org_note_items`, `org_shopping_lists`, `org_shopping_items`, `org_events`, `org_event_exceptions`, 7 enum PHP, 8 model Eloquent dengan `BelongsToHousehold` & ULID, `OrganizerServiceProvider`, feature flag `modules.organizer => true`, 7 test lulus).
-2. **ORG-02, ORG-03, ORG-04:** tugas, recurrence/rotasi/undo, dan penyelesaian dengan pengeluaran melalui FinanceGateway.
-3. **ORG-05:** catatan/checklist, privat, konflik edit, arsip/tempat sampah; uji route, pencarian, ekspor, dan notifikasi.
-4. **ORG-06, ORG-07:** belanja kolaboratif/parser/poll dan transaksi paling banyak sekali; null gateway tidak menghalangi selesai.
-5. **ORG-08, ORG-09, ORG-10:** acara/exception, sources, lalu kalender Bulan/Agenda.
-6. **ORG-11, ORG-12:** ekspor ICS, pengingat/alert; uji UID stabil, all-day lokal/end eksklusif, batas rentang, nominal disembunyikan default.
-7. **ORG-13:** widget/exporter/polish dan UAT dua kali belanja.
+2. **ORG-02, ORG-03, ORG-04:** tugas, recurrence/rotasi/undo, dan penyelesaian dengan pengeluaran melalui FinanceGateway. Status LOG-060: selesai (`CreateTask`, `CompleteTask`, `UndoCompleteTask`, Livewire `Tasks\Index` & `Tasks\Form`, rotasi assignee, single active recurrence instance BR-ORG-001/002/003, expense link US-ORG-04).
+3. **ORG-05:** catatan/checklist, privat, konflik edit, arsip/tempat sampah. Status LOG-060: selesai (Livewire `Notes\Index` & `Notes\Editor`, card color, Markdown aman, deteksi konflik timestamp, filter pin/label/arsip/trash, isolasi privasi BR-ORG-010).
+4. **ORG-06, ORG-07:** belanja kolaboratif/parser/poll dan transaksi riil pengeluaran. Status LOG-060: selesai (`ShoppingItemParser`, Livewire `Shopping\Index` & `Shopping\Show`, live polling 10s, dialog selesai belanja dengan pencatatan `FinanceGateway`, belanja lagi).
+5. **ORG-08, ORG-09, ORG-10:** acara/exception, sources, lalu kalender Bulan/Agenda. Status LOG-060: selesai (`OrganizerEventCalendarSource`, `OrganizerTaskCalendarSource`, Livewire `Calendar\Index`, grid bulan 7-kolom, agenda 60 hari, modal quick add).
+6. **ORG-11, ORG-12:** ekspor ICS, pengingat/alert. Status LOG-060: selesai (`CalendarExportController` feed RFC 5545 Spatie icalendar-generator, `OrganizerAlertSource`, Livewire `Reminders\Index` tunda/batalkan pengingat).
+7. **ORG-13:** widget/exporter/polish. Status LOG-060: selesai (`OrganizerSummaryWidget`, `OrganizerHouseholdExporter` 4 dataset JSON, 19 feature test lulus).
 
-**Gate Phase 2:** kalender menggabungkan sumber aktif; impor ICS diuji; alur tugas/catatan/belanja dan integrasi Finance nonaktif lulus.
+**Gate Phase 2:** Seluruh AC dan test modul lulus (367 test green, Pint bersih, Larastan no errors). Langkah berikutnya adalah Phase 3: Asset (AST-01 sampai AST-12).
 
 ## 7. Phase 3: Asset
 
