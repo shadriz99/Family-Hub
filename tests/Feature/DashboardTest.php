@@ -174,7 +174,7 @@ it('filters dynamic module widgets based on module feature flags', function (): 
     app()->instance('widget.inactive', $inactiveWidget);
     app()->tag(['widget.active', 'widget.inactive'], 'dashboard.widgets');
 
-    config(['modules.finance' => false, 'modules.organizer' => false]);
+    config(['modules.finance' => false, 'modules.organizer' => false, 'modules.asset' => false]);
 
     $manager = app(DashboardManager::class);
     $widgets = $manager->widgets($this->household);

@@ -11,7 +11,7 @@ it('keeps unreleased modules disabled', function (): void {
     expect(config('modules'))->toBe([
         'finance' => true,
         'organizer' => true,
-        'asset' => false,
+        'asset' => true,
     ]);
 });
 

@@ -1004,6 +1004,53 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
   - `vendor/bin/phpstan analyse`: `[OK] No errors` (174 file di level 6).
 - **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`, `docs/pending.md`.
 
+### LOG-061 - Phase 3: Asset Selesai (AST-01 sampai AST-12)
+
+- **Konteks:** Melanjutkan dan menuntaskan seluruh task domain Modul Asset & Perawatan dari AST-01 hingga AST-12 sesuai spesifikasi `docs/03-MODULE-ASSET.md` dan `docs/development-plan.md`.
+- **Perubahan:**
+  - **Skema Basis Data & Model (AST-01):**
+    - Migrasi `2026_10_30_000001_asset_create_tables.php` membuat 9 tabel: `ast_locations`, `ast_categories`, `ast_assets`, `ast_documents`, `ast_vendors`, `ast_maintenance_plans`, `ast_issues`, `ast_service_records`, dan `ast_meter_readings`.
+    - Enums: `AssetStatus`, `MeterUnit`, `DocumentType`, `DocumentStatus`, `MaintenanceTrigger`, `IntervalUnit`, `ServiceType`, `IssuePriority`, `IssueStatus`, `PlanStatus`.
+    - Model Eloquent lengkap dengan `HasUlids`, `BelongsToHousehold`, `SoftDeletes`, casts, relasi, dan docblocks: `Location`, `AssetCategory`, `Asset`, `AssetDocument`, `MaintenancePlan`, `ServiceRecord`, `MeterReading`, `Vendor`, `Issue`.
+    - Template perawatan default kendaraan dan elektronik rumah tangga pada `config/asset_templates.php`.
+    - Aksi seeder data default `SeedDefaultAssetData` dan listener `SeedDefaultAssetDataListener` pada event `HouseholdCreated` dieksekusi aman dalam konteks tenant (`runInContext`).
+    - Service provider `AssetServiceProvider` didaftarkan ke `bootstrap/providers.php` dan feature flag `config/modules.php` diaktifkan (`'asset' => true`).
+  - **Aset, Lokasi & Vendor (AST-02, AST-03, AST-08):**
+    - Komponen Livewire:
+      - `App\Modules\Asset\Livewire\Assets\Index`: Ringkasan jumlah aset, total nilai estimasi, filter kategori & lokasi, grouping fleksibel, pencarian, dan tombol aksi cepat.
+      - `App\Modules\Asset\Livewire\Assets\Form`: Formulir tambah/edit aset dengan auto-prefill satuan meter berdasarkan kategori, dan pemuatan checklist template perawatan saat aset baru dibuat.
+      - `App\Modules\Asset\Livewire\Assets\Show`: Halaman detail aset dengan tab Riwayat Servis, Rencana Perawatan, Dokumen, dan Kerusakan/Isu.
+      - `App\Modules\Asset\Livewire\Locations\Index`: Manajemen lokasi/ruangan per household.
+      - `App\Modules\Asset\Livewire\Vendors\Index` & `Vendors\Form`: Manajemen direktori vendor/bengkel dengan rating bintang dan tag layanan.
+    - Service `WhatsAppLinkGenerator`: Normalisasi nomor telepon format lokal ke standar internasional `62xxx` (BR-AST-040) dan membuat tautan `https://wa.me/...` dengan template pesan janji temu/servis otomatis.
+  - **Dokumen, Meter & Servis (AST-04, AST-05, AST-06, AST-07, AST-09, AST-10):**
+    - Service `UpdateMeter`: Validasi pembacaan monotonik (BR-AST-002) dan penanganan pergantian/reset odometer dengan penghitungan offset kumulatif (BR-AST-003).
+    - Aksi `RecordService`: Mencatat servis, memajukan jadwal jatuh tempo rencana perawatan (`calculateNextDueDate`, `calculateNextDueMeter`), mereset snooze, mencatat pembacaan meter, membuat dokumen garansi servis otomatis, dan mengintegrasikan transaksi pengeluaran via `FinanceGateway::recordExpense` dengan `source_type = 'asset_service'`.
+    - Aksi `DeleteServiceRecord`: Soft-delete riwayat servis, mengembalikan (`rollback`) status tanggal/meter rencana perawatan ke catatan sebelumnya (BR-AST-021), dan menghapus transaksi pengeluaran Finance yang terkait.
+    - Aksi `RenewDocument`: Menandai dokumen lama sebagai `superseded`, membuat dokumen perpanjangan baru (BR-AST-031), dan mencatat pengeluaran Finance (BR-AST-050).
+    - Aksi `DisposeAsset`: Pelepasan aset dengan status `sold`, `disposed`, atau `lost`, menonaktifkan seluruh rencana perawatan aktif dan membatalkan PlannedItem Finance terkait (BR-AST-032).
+    - Komponen Livewire:
+      - `App\Modules\Asset\Livewire\Maintenance\Index` & `Maintenance\Form`: Manajemen rencana perawatan berulang (waktu/meter/keduanya) dan fitur snooze (tunda jadwal).
+      - `App\Modules\Asset\Livewire\Services\Form`: Formulir pencatatan servis terpadu dengan opsi keuangan.
+      - `App\Modules\Asset\Livewire\Documents\Index`, `Documents\Form`, & `Documents\Show`: Pengarsipan dokumen aset (STNK, BPKB, garansi, sertifikat) dengan tanggal kedaluwarsa dan aksi perpanjang.
+      - `App\Modules\Asset\Livewire\Issues\Index`, `Issues\Form`, & `Issues\Show`: Pelaporan kerusakan/isu aset dengan prioritas, status alur kerja (open/scheduled/in_progress/resolved/closed), dan tombol konversi langsung ke catatan servis.
+  - **Integrasi Kalender, Alert, Widget, Exporter & Artisan Commands (AST-11, AST-12):**
+    - Integrasi Kalender: `AssetMaintenanceCalendarSource`, `AssetDocumentCalendarSource`, `AssetIssueCalendarSource` memasok item jatuh tempo perawatan, kedaluwarsa dokumen, dan jadwal perbaikan ke `CalendarAggregator`.
+    - Integrasi Alert: `AssetAlertSource` memasok notifikasi perawatan terlambat (`danger`), mendekati jatuh tempo (`warning`), kerusakan mendesak (`danger`), dan dokumen kedaluwarsa/garansi segera habis dalam 30 hari (`info`/`danger`) ke `AlertAggregator`.
+    - Dashboard Widget: `AssetAttentionWidget` menampilkan aset yang butuh perhatian (jadwal servis mendesak, isu terbuka, dan dokumen kedaluwarsa).
+    - Backup Exporter: `AssetHouseholdExporter` mengekspor 9 dataset JSON lengkap (`assets.json`, `categories.json`, `locations.json`, `documents.json`, `maintenance_plans.json`, `service_records.json`, `meter_readings.json`, `vendors.json`, `issues.json`) ke arsip ZIP backup household.
+    - Artisan Commands:
+      - `php artisan assets:refresh-due-dates`: Menghitung ulang status jatuh tempo seluruh rencana perawatan dan memperbarui PlannedItem Finance secara berkala.
+      - `php artisan assets:odometer-reminders`: Mengirimkan pengingat pembaruan odometer untuk aset bermeter yang belum diperbarui dalam kurun 30 hari.
+  - **Testing & Quality Assurance:**
+    - 23 test feature baru di `tests/Feature/Asset/` mencakup: skema & model tenant isolation, migrasi data default, operasi meter & offset reset kumulatif, siklus servis & rollback, integrasi Finance expense, perpanjangan dokumen, pelaporan isu & konversi servis, pelepasan aset, kalender/alert aggregator, widget dashboard, backup exporter, dan artisan commands.
+- **Verifikasi:**
+  - `php artisan test`: **390 test / 2760 assertions** lulus 100% green.
+  - `vendor/bin/pint --test`: Lulus rapi tanpa perbaikan format.
+  - `vendor/bin/phpstan analyse`: `[OK] No errors` (197 file di PHPStan Level 6).
+  - `npm run build`: Berhasil tanpa error dalam 2.71 detik.
+- **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`, `docs/pending.md`.
+
 ## Aturan pembaruan berikutnya
 
 1. Tambahkan entri baru dengan tanggal dan ID `LOG-NNN`; sertakan task ID resmi (`CORE-*`, `FIN-*`, `ORG-*`, `AST-*`) jika relevan.

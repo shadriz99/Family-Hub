@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Modules\Asset\Providers\AssetServiceProvider;
 use App\Modules\Finance\Providers\FinanceServiceProvider;
 use App\Modules\Organizer\Providers\OrganizerServiceProvider;
 use App\Providers\AppServiceProvider;
@@ -12,4 +13,5 @@ return [
     FortifyServiceProvider::class,
     FinanceServiceProvider::class,
     OrganizerServiceProvider::class,
+    AssetServiceProvider::class,
 ];

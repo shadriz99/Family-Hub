@@ -22,7 +22,6 @@
 
 | ID | Topik | Status / alasan ditunda | Langkah berikutnya |
 |---|---|---|---|
-| P-12 | Modul Asset (Phase 3) | `config/modules.php` mengaktifkan `finance` (Phase 1, LOG-055) dan `organizer` (Phase 2, LOG-059); `asset` dinonaktifkan menunggu fase berikutnya | Buka feature flag `asset` pada Phase 3 |
 | P-21 | Konfigurasi SMTP produksi dan verifikasi pengiriman email fisik | Keputusan LOG-053: driver email memakai mode `log` (`MAIL_MAILER=log`) untuk testing lokal/clipboard dan tautan undangan langsung tersedia di UI. Kredensial SMTP nyata dipasang di Phase 4 sebelum go-live | Masukkan kredensial SMTP produksi pada Phase 4 Hardening |
 | P-19 | Q-M12: 2FA Email OTP | Keputusan LOG-056: ditunda ke rilis v1.1. Untuk rilis awal keluarga (MVP), keamanan mengandalkan password hash Argon2id/Bcrypt, rate limiting per IP/email, dan pendaftaran tertutup via token undangan | Evaluasi implementasi 2FA email OTP pada siklus v1.1 |
 
@@ -30,6 +29,7 @@
 
 | ID | Ditutup oleh | Catatan |
 |---|---|---|
+| P-12 | LOG-061 | Modul Asset (Phase 3) selesai penuh (AST-01 sampai AST-12): skema 9 tabel, model & cast enum, UpdateMeter monotonik & offset kumulatif reset, WhatsApp link generator dengan normalisasi 62xxx & pesan template, RecordService/RenewDocument/DisposeAsset dengan sinkronisasi Finance expense & PlannedItem, UI Livewire aset/perawatan/dokumen/kerusakan/vendor/lokasi, sumber kalender/alert, widget dashboard, backup exporter, artisan commands, dan 23 feature test lulus |
 | P-05 | LOG-056 | Reviewer menyetujui rekomendasi Opsi A: tidak perlu backfill periode keuangan lampau saat bootstrap household. `PeriodResolver` secara deterministik menghitung periode lampau dari setting awal jika ada transaksi bertanggal lampau |
 | P-06 | LOG-056 | Reviewer menyetujui rekomendasi Opsi A: pengecualian permanen kolom `household_id` pada tabel `activity_log` (Spatie audit global berbasis polymorphic ULID). `HouseholdMember` tetap di-scope ketat via composite unique constraint `(household_id, slot)` dan foreign key `user_id` |
 | P-15 | LOG-056 | Rate limiter 5 permintaan per menit per IP diterapkan pada endpoint `POST /forgot-password` melalui `RateLimiter::for('forgot-password')` di `FortifyServiceProvider` dan middleware `throttle:forgot-password` di `routes/web.php`, diverifikasi dengan feature test |
