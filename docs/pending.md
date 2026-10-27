@@ -10,7 +10,7 @@
 4. Keputusan reviewer dicatat di logbook (`LOG-NNN`), lalu item di sini ditutup atau diubah menjadi pekerjaan tertunda di bagian B.
 5. Jangan menandai item selesai hanya karena kode sudah ada; sertakan bukti verifikasi atau keputusan eksplisit.
 
-**Status:** diperbarui terakhir pada LOG-041 (satu undangan aktif, admin bukan anggota household, branch lama dihapus).
+**Status:** diperbarui terakhir pada LOG-043 (penyelesaian CORE-05 Alur A, artisan command system admin menutup P-17).
 
 ## A. Butuh keputusan reviewer
 
@@ -21,7 +21,6 @@
 | P-09 | Bukti CI untuk commit setelah `731fb45` | Menunggu laporan reviewer; repo privat tanpa GitHub CLI/API terautentikasi. `d077170` (LOG-036) dan commit sesudahnya sudah di-push dan workflow berjalan otomatis, tetapi hasilnya belum bisa dibaca dari mesin ini | Laporkan hasil SQLite/MariaDB per commit, lalu tutup item bila hijau; jangan sebut commit mana pun lulus CI sebelum ada laporan |
 | P-15 | Throttle dan timing permintaan reset kata sandi | Pesan sudah seragam untuk email terdaftar maupun tidak, tetapi form forgot-password belum punya limiter per IP dan email terdaftar merespons lebih lambat karena pengiriman mail | Putuskan batas throttle dan target timing, lalu catat pada review keamanan CORE-14 |
 | P-16 | Status Playwright sebagai alat verifikasi | Keputusan LOG-037: Playwright dipakai lebih dulu, tetapi `playwright-core` hanya dipasang di direktori sementara dan memakai Chrome sistem, jadi tidak ada dependency repo, lockfile, atau job CI | Tentukan apakah ini permanen atau Playwright dipromosikan menjadi devDependency + langkah CI browser |
-| P-17 | Pembuatan system admin pertama | `users.is_system_admin` ada, tetapi tidak ada jalur resmi untuk membuat admin pertama (seeder stok tidak disetujui, belum ada command/route). Alur A CORE-05 tidak bisa diuji end-to-end tanpa ini | Putuskan jalurnya (mis. command artisan sekali pakai atau langkah manual terdokumentasi) sebelum Alur A dikerjakan |
 
 ## B. Pekerjaan tertunda (tidak menahan batch saat ini)
 
@@ -43,3 +42,4 @@
 | P-04 | LOG-041 | Reviewer memutuskan akun system admin murni akun manajemen: boleh membuat invite household baru tanpa menjadi anggota, dan pembuatan invite admin tetap milik CORE-05 sesuai lingkup masterplan (CORE-15 hanya panel + uji batas akses). Penerimaan undangan dan pembuatan household oleh akun admin kini ditolak. Alur A belum dibangun; jalur admin pertama tetap P-17 |
 | P-10 | LOG-041 | Branch remote `core-01-foundation` (`42bda38`) dan `core-03-support` (`28ebeb2`) dihapus, begitu juga salinan lokalnya. Hanya `main` yang tersisa di remote |
 | P-13 | LOG-041 | Hanya satu undangan aktif per household: `InviteHouseholdMember` mencabut undangan pending sebelumnya di dalam transaksi yang sama, sehingga token lama tidak bisa dipakai lagi |
+| P-17 | LOG-043 | Command Artisan `php artisan core:create-admin` tersedia untuk membuat atau mempromosikan akun admin pertama dengan validasi email/password dan penolakan akun yang sudah memiliki membership household |

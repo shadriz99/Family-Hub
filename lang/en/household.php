@@ -16,4 +16,5 @@ return [
     'invitation_email_mismatch' => 'This invitation was issued to a different email address.',
     'invite_throttled' => 'The limit of 10 invitations per hour has been reached. Try again later.',
     'email_invalid' => 'The invitation email address is not valid.',
+    'unauthorized' => 'This action requires system administrator privileges.',
 ];

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Mail;
 
+use App\Core\Enums\InvitationType;
 use App\Core\Support\IssuedInvitation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -22,23 +23,28 @@ final class HouseholdInvitationMail extends Mailable
 
     public function envelope(): Envelope
     {
-        return new Envelope(
-            subject: __('auth.mail_subject', ['household' => $this->householdName()]),
-        );
+        $invitation = $this->issued->invitation;
+        $subject = $invitation->type === InvitationType::NewHousehold
+            ? __('auth.mail_new_household_subject')
+            : __('auth.mail_subject', ['household' => $this->householdName()]);
+
+        return new Envelope(subject: $subject);
     }
 
     public function content(): Content
     {
         $invitation = $this->issued->invitation;
         $household = $invitation->household;
+        $timezone = $household->timezone ?? 'Asia/Jakarta';
 
         return new Content(
             markdown: 'mail.household-invitation',
             with: [
+                'isNewHousehold' => $invitation->type === InvitationType::NewHousehold,
                 'householdName' => $this->householdName(),
                 'url' => route('invitation.show', $this->issued->token),
                 'expiresAt' => $invitation->expires_at
-                    ->setTimezone($household->timezone ?? 'Asia/Jakarta')
+                    ->setTimezone($timezone)
                     ->translatedFormat('j F Y H:i'),
             ],
         );
@@ -46,6 +52,6 @@ final class HouseholdInvitationMail extends Mailable
 
     private function householdName(): string
     {
-        return $this->issued->invitation->household->name;
+        return $this->issued->invitation->household->name ?? '';
     }
 }

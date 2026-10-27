@@ -51,11 +51,18 @@ return [
     'invite_logout' => 'Keluar dari akun ini',
     'invite_join' => 'Terima undangan',
     'invite_submit' => 'Buat akun dan bergabung',
+    'invite_for_new_household' => 'Anda diundang untuk membuat keluarga baru di Family Hub. Akun akan dibuat untuk :email.',
+    'household_name' => 'Nama keluarga',
+    'invite_submit_new_household' => 'Buat akun dan keluarga',
 
     'mail_subject' => 'Undangan bergabung dengan :household',
     'mail_heading' => 'Undangan ke :household',
     'mail_intro' => ':household mengundang Anda untuk bergabung sebagai partner di Family Hub.',
     'mail_action' => 'Buat kata sandi dan bergabung',
+    'mail_new_household_subject' => 'Undangan membuat keluarga baru di Family Hub',
+    'mail_new_household_heading' => 'Undangan Keluarga Baru',
+    'mail_new_household_intro' => 'Administrator mengundang Anda untuk membuat keluarga baru di Family Hub.',
+    'mail_new_household_action' => 'Buat kata sandi dan keluarga',
     'mail_expiry' => 'Tautan ini berlaku sampai :date.',
     'mail_ignore' => 'Abaikan email ini jika Anda tidak mengenal pengirimnya.',
 ];

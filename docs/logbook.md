@@ -393,6 +393,37 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 - Verifikasi lokal: `composer lint` dan `composer analyse` bersih, `composer test` **202 test/1825 assertion** lulus (sebelumnya 199/1807).
 - Dokumen diselaraskan: logbook (entri ini + tabel status), `docs/00-MASTERPLAN.md` (§2.1 peran admin, §5.1 status implementasi, §5.2 poin 5), `docs/development-plan.md` (status, checkpoint undangan, jumlah test, tabel posisi, baris CORE-05), `docs/pending.md` (P-04/P-10/P-13 pindah ke riwayat penutupan), `AGENTS.md`, dan `.github/copilot-instructions.md`. CI untuk commit ini belum terverifikasi (P-09).
 
+### LOG-042 - Profil optimasi Odroid-C2, konfigurasi SQLite WAL, dan penegasan stack tanpa Redis
+
+- **Konteks & Keputusan:** Reviewer meminta penyesuaian stack untuk server produksi rumah Odroid-C2 (RAM 2GB, CPU ARM Cortex-A53 4-core, eMMC, Armbian Ubuntu Minimal).
+- **Evaluasi Stack:**
+  - Menegaskan arsitektur *zero-daemon* untuk session & cache: tidak menggunakan daemon Redis (menghemat 30–50MB RAM dan mengeliminasi proses ekstra). Session dan cache dialihkan ke SQLite/file sesuai kebutuhan.
+  - SQLite WAL: Ditegakkan wajib di `config/database.php` dan `AppServiceProvider` melalui event `ConnectionEstablished` (`PRAGMA busy_timeout = 5000; PRAGMA journal_mode = WAL; PRAGMA synchronous = NORMAL; PRAGMA cache_size = -8000; PRAGMA temp_store = MEMORY;`).
+  - Zero-Node on Production: Dilarang memasang Node.js/Vite di Odroid-C2. Aset frontend di-build di environment developer/CI (`npm run build`) dan disinkronkan ke `public/build/`.
+  - Profil OS & Memori Odroid-C2: ZRAM bawaan Armbian untuk swap terkompresi di RAM, `vm.swappiness = 10`, PHP-FPM pool `ondemand` (`max_children = 4`), OPcache 64MB (`validate_timestamps = 0`), dan queue worker didaur ulang (`--max-jobs=200 --max-time=3600 --memory=64`).
+- **Instalasi Skill:** Skill `ponytail` (beserta `ponytail-review` dan `ponytail-audit`) serta `premium-frontend-ui` dipasang di `.github/skills/` dan disinkronkan ke `.agents/skills/`.
+- **Verifikasi Lokal:**
+  - `composer lint` (Pint) lulus.
+  - `composer analyse` (Larastan Level 6) `[OK] No errors`.
+  - `composer test` **202 test/1825 assertion** lulus.
+  - `npm test` **4 test JS** lulus.
+- **Dokumen yang diselaraskan:** `docs/runbook/deploy.md` (§3.1 profil Odroid-C2 dan tabel data lingkungan), `docs/00-MASTERPLAN.md` (DB-1 dan §13.3), `docs/development-plan.md`, `docs/pending.md`, dan logbook ini.
+
+### LOG-043 - Sisa CORE-05 Alur A: artisan command system admin (P-17) dan alur undangan household baru
+
+- **P-17 — Provisioning System Admin Pertama:** Command Artisan `php artisan core:create-admin` tersedia untuk membuat atau mempromosikan user ke `is_system_admin = true`. Command memvalidasi nama, email, dan password minimal 8 karakter; jika user sudah memiliki membership household, proses promosi ditolak (menegakkan LOG-041 bahwa admin dilarang menjadi anggota household). Menutup item P-17 di daftar tertunda.
+- **Alur A — Undangan Household Baru oleh Admin:**
+  - `InviteNewHousehold`: Hanya dapat dipanggil oleh akun dengan `is_system_admin = true`. Mengirim undangan tipe `new_household` (dengan `household_id = null`), token SHA-256 acak 64 karakter, masa berlaku 7 hari, dibatasi 10 undangan per jam per aktor (SEC-3). Undangan pending baru mencabut undangan pending sebelumnya untuk email yang sama di dalam transaksi. Mengirim email `HouseholdInvitationMail` secara sinkron dan mencatat audit `core.household.new_household_invited`.
+  - `AcceptNewHouseholdInvitation` & `RegisterInvitedOwner`: Menerima undangan `new_household`, memvalidasi email akun cocok dengan undangan, menolak akun admin sistem atau akun yang sudah menjadi anggota household lain, lalu memanggil `CreateHousehold` untuk membuat household dan menetapkan pengguna sebagai Owner (slot 1). Menandai undangan `accepted_at` dan mencatat audit `core.household.owner_joined`.
+  - Integrasi Livewire: `AcceptInvitationForm` kini mendeteksi tipe undangan `new_household` vs `partner`. Bila `new_household`, form menampilkan field nama keluarga (`householdName`) dan copy lokalisasi yang sesuai, lalu membuat akun owner dan bootstrap household.
+- **Verifikasi Lokal:**
+  - `composer lint` (Pint) lulus.
+  - `composer analyse` (Larastan Level 6) `[OK] No errors`.
+  - `composer test` **214 test/1870 assertion** lulus (+12 test baru pada `CreateSystemAdminCommandTest` dan `AdminHouseholdInvitationTest`).
+  - `npm test` **4 test JS** lulus.
+  - `npm run build` berhasil memperbarui aset dan manifest Vite.
+- **Dokumen yang diselaraskan:** `docs/00-MASTERPLAN.md` (§5.1 status implementasi), `docs/development-plan.md` (status, tabel posisi, baris CORE-05), `docs/pending.md` (P-17 ditutup ke riwayat penutupan), dan logbook ini.
+
 ## Aturan pembaruan berikutnya
 
 1. Tambahkan entri baru dengan tanggal dan ID `LOG-NNN`; sertakan task ID resmi (`CORE-*`, `FIN-*`, `ORG-*`, `AST-*`) jika relevan.

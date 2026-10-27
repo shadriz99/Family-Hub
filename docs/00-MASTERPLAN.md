@@ -314,7 +314,7 @@ Aturan: slot dipilih saat `AcceptInvitation` dalam transaksi. Unique constraint 
 |---|---|
 | id, household_id (nullable untuk invite household baru), email, type (`new_household`,`partner`), token_hash, invited_by, expires_at, accepted_at, revoked_at, timestamps |
 
-**Status implementasi (LOG-034, diperbarui LOG-040):** `App\Core\Models\HouseholdInvitation` dan migrasinya mengikuti kolom di atas: `household_id` nullable, `email`, `type` enum `InvitationType`, `token_hash` SHA-256 unik, `invited_by`, `expires_at`, `accepted_at`, dan `revoked_at` (revoke menandai baris, tidak menghapus). Alur B (partner) kini mencakup pengiriman email bertautan `invitation.show`, halaman penerimaan yang membuat akun atau meminta akun lama masuk, dan penolakan token bila email akun tidak cocok dengan email undangan. Pembuatan undangan dibatasi 10 per jam per aktor sesuai SEC-3 (LOG-040), dan hanya satu undangan boleh aktif per household: undangan baru mencabut undangan pending sebelumnya (LOG-041). Alur A (admin membuat household baru) belum punya aksi/route dan `AcceptInvitation` menolak undangan `new_household`, tetapi akun admin sistem kini ditolak saat menerima undangan maupun membuat household (LOG-041); antrean mail juga belum ada.
+**Status implementasi (LOG-034, diperbarui LOG-043):** `App\Core\Models\HouseholdInvitation` dan migrasinya mengikuti kolom di atas: `household_id` nullable, `email`, `type` enum `InvitationType`, `token_hash` SHA-256 unik, `invited_by`, `expires_at`, `accepted_at`, dan `revoked_at` (revoke menandai baris, tidak menghapus). Alur B (partner) mencakup pengiriman email bertautan `invitation.show`, halaman penerimaan yang membuat akun atau meminta akun lama masuk, dan penolakan token bila email akun tidak cocok dengan email undangan. Alur A (admin mengundang household baru) lengkap pada LOG-043: command `core:create-admin` untuk akun admin (menutup P-17), aksi `InviteNewHousehold` dibatasi 10 undangan/jam (SEC-3) dengan pembatalan undangan pending sebelumnya untuk email yang sama, serta `AcceptNewHouseholdInvitation` / `RegisterInvitedOwner` dan integrasi form penerimaan Livewire untuk membuat akun owner dan bootstrap household. Akun admin sistem ditolak menjadi anggota household mana pun (LOG-041); antrean mail menyusul di CORE-10 (P-14).
 
 **`reminders`** (dipakai semua modul)
 | Kolom | Tipe | Aturan |
@@ -372,7 +372,7 @@ Tabel lain: `notifications` (Laravel), `push_subscriptions` (paket webpush), `ac
 
 | # | Aturan |
 |---|---|
-| DB-1 | Default `DB_CONNECTION=sqlite`, file `database/database.sqlite`, **WAJIB** mode WAL (`PRAGMA journal_mode=WAL`, `busy_timeout=5000`) diset di `AppServiceProvider`. |
+| DB-1 | Default `DB_CONNECTION=sqlite`, file `database/database.sqlite`, **WAJIB** mode WAL (`PRAGMA journal_mode=WAL`, `busy_timeout=5000`, `synchronous=NORMAL`, `cache_size=-8000`, `temp_store=MEMORY`) diset di `AppServiceProvider` dan `config/database.php`. |
 | DB-2 | Kode **WAJIB** kompatibel dengan kedua DB. Gunakan Eloquent/Query Builder. JANGAN pakai fungsi SQL spesifik (`DATE_FORMAT`, `strftime`, `JSON_EXTRACT`, `IFNULL` vs `COALESCE` → pakai `COALESCE`). |
 | DB-3 | Agregasi per bulan/periode dilakukan dengan filter rentang tanggal (`whereBetween`) yang dihitung oleh `PeriodResolver`, bukan dengan fungsi tanggal SQL. |
 | DB-4 | Primary key: **ULID** (`$table->ulid('id')->primary()`, trait `HasUlids`). |
@@ -670,7 +670,7 @@ Teks notifikasi WAJIB singkat (≤ 120 karakter) dan berisi URL tujuan.
 | Env | Keterangan |
 |---|---|
 | `local` | Laptop developer / AI agent sandbox, SQLite |
-| `production` | Server rumah |
+| `production` | Server rumah: Odroid-C2 (RAM 2GB, Cortex-A53 ARM64, Armbian Minimal, eMMC, Nginx, PHP-FPM, SQLite WAL, zero-daemon Redis) |
 (Tidak ada staging terpisah; gunakan branch + data seed untuk UAT.)
 
 ### 13.4 Scheduler (ringkas semua modul)

@@ -9,10 +9,29 @@
         <p class="text-sm leading-relaxed text-[#637067] dark:text-[#b2beb2]">{{ __('auth.invite_existing', ['email' => $email]) }}</p>
 
         @if ($signedInAsInvitee)
-            <button type="button" wire:click="submit" wire:loading.attr="disabled"
-                class="min-h-11 w-full rounded-2xl bg-[#28543e] px-4 py-3 font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current disabled:opacity-60 dark:bg-[#bad6ae] dark:text-[#151f1b]">
-                {{ __('auth.invite_join') }}
-            </button>
+            @if ($isNewHousehold)
+                <div class="space-y-4">
+                    <div>
+                        <label for="existing-invite-household-name" class="mb-2 block text-sm font-medium">{{ __('auth.household_name') }}</label>
+                        <input id="existing-invite-household-name" type="text" wire:model="householdName" required
+                            @error('householdName') aria-invalid="true" aria-describedby="existing-invite-household-name-error" @enderror
+                            class="min-h-11 w-full rounded-xl border border-current/25 bg-transparent px-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current">
+                        @error('householdName')
+                            <p id="existing-invite-household-name-error" role="alert" class="mt-2 text-sm text-[#ad3f45] dark:text-[#ffafb1]">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <button type="button" wire:click="submit" wire:loading.attr="disabled"
+                        class="min-h-11 w-full rounded-2xl bg-[#28543e] px-4 py-3 font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current disabled:opacity-60 dark:bg-[#bad6ae] dark:text-[#151f1b]">
+                        {{ __('auth.invite_submit_new_household') }}
+                    </button>
+                </div>
+            @else
+                <button type="button" wire:click="submit" wire:loading.attr="disabled"
+                    class="min-h-11 w-full rounded-2xl bg-[#28543e] px-4 py-3 font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current disabled:opacity-60 dark:bg-[#bad6ae] dark:text-[#151f1b]">
+                    {{ __('auth.invite_join') }}
+                </button>
+            @endif
         @elseif (auth()->check())
             <p class="text-sm leading-relaxed text-[#637067] dark:text-[#b2beb2]">{{ __('auth.invite_wrong_account', ['email' => auth()->user()->email]) }}</p>
             <form method="POST" action="{{ route('logout') }}">
@@ -29,9 +48,25 @@
             </a>
         @endif
     @else
-        <p class="text-sm leading-relaxed text-[#637067] dark:text-[#b2beb2]">{{ __('auth.invite_for', ['household' => $householdName, 'email' => $email]) }}</p>
+        @if ($isNewHousehold)
+            <p class="text-sm leading-relaxed text-[#637067] dark:text-[#b2beb2]">{{ __('auth.invite_for_new_household', ['email' => $email]) }}</p>
+        @else
+            <p class="text-sm leading-relaxed text-[#637067] dark:text-[#b2beb2]">{{ __('auth.invite_for', ['household' => $householdName, 'email' => $email]) }}</p>
+        @endif
 
         <form wire:submit="submit" class="space-y-5">
+            @if ($isNewHousehold)
+                <div>
+                    <label for="invite-household-name" class="mb-2 block text-sm font-medium">{{ __('auth.household_name') }}</label>
+                    <input id="invite-household-name" type="text" wire:model="householdName" required
+                        @error('householdName') aria-invalid="true" aria-describedby="invite-household-name-error" @enderror
+                        class="min-h-11 w-full rounded-xl border border-current/25 bg-transparent px-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current">
+                    @error('householdName')
+                        <p id="invite-household-name-error" role="alert" class="mt-2 text-sm text-[#ad3f45] dark:text-[#ffafb1]">{{ $message }}</p>
+                    @enderror
+                </div>
+            @endif
+
             <div>
                 <label for="invite-name" class="mb-2 block text-sm font-medium">{{ __('auth.name') }}</label>
                 <input id="invite-name" type="text" wire:model="name" required autocomplete="name"
@@ -62,7 +97,7 @@
 
             <button type="submit" wire:loading.attr="disabled"
                 class="min-h-11 w-full rounded-2xl bg-[#28543e] px-4 py-3 font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current disabled:opacity-60 dark:bg-[#bad6ae] dark:text-[#151f1b]">
-                {{ __('auth.invite_submit') }}
+                {{ $isNewHousehold ? __('auth.invite_submit_new_household') : __('auth.invite_submit') }}
             </button>
         </form>
     @endif

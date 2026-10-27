@@ -51,11 +51,18 @@ return [
     'invite_logout' => 'Sign out of this account',
     'invite_join' => 'Accept invitation',
     'invite_submit' => 'Create account and join',
+    'invite_for_new_household' => 'You are invited to create a new household on Family Hub. An account will be created for :email.',
+    'household_name' => 'Household name',
+    'invite_submit_new_household' => 'Create account and household',
 
     'mail_subject' => 'Invitation to join :household',
     'mail_heading' => 'Invitation to :household',
     'mail_intro' => ':household invited you to join as a partner on Family Hub.',
     'mail_action' => 'Set a password and join',
+    'mail_new_household_subject' => 'Invitation to create a new household on Family Hub',
+    'mail_new_household_heading' => 'New Household Invitation',
+    'mail_new_household_intro' => 'An administrator invited you to create a new household on Family Hub.',
+    'mail_new_household_action' => 'Set a password and create household',
     'mail_expiry' => 'This link is valid until :date.',
     'mail_ignore' => 'Ignore this email if you do not know the sender.',
 ];

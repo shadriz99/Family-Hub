@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Livewire\Auth;
 
 use App\Core\Actions\AcceptInvitation;
+use App\Core\Actions\AcceptNewHouseholdInvitation;
+use App\Core\Actions\RegisterInvitedOwner;
 use App\Core\Actions\RegisterInvitedPartner;
 use App\Core\Enums\InvitationType;
 use App\Core\Models\HouseholdInvitation;
@@ -27,6 +29,8 @@ final class AcceptInvitationForm extends Component
 
     public string $householdName = '';
 
+    public bool $isNewHousehold = false;
+
     public bool $existingAccount = false;
 
     public bool $signedInAsInvitee = false;
@@ -44,8 +48,9 @@ final class AcceptInvitationForm extends Component
             return;
         }
 
+        $this->isNewHousehold = ($invitation->type === InvitationType::NewHousehold);
         $this->email = $invitation->email;
-        $this->householdName = (string) $invitation->household?->name;
+        $this->householdName = $invitation->household !== null ? $invitation->household->name : '';
         $this->existingAccount = User::query()->where('email', $invitation->email)->exists();
         $this->signedInAsInvitee = $this->actorMatches($invitation);
         $this->problem = $this->problemFor($invitation);
@@ -71,18 +76,48 @@ final class AcceptInvitationForm extends Component
                 return;
             }
 
-            app(AcceptInvitation::class)->handle($existing, $this->token);
+            if ($this->isNewHousehold) {
+                $this->validate([
+                    'householdName' => ['required', 'string', 'max:100'],
+                ]);
+
+                app(AcceptNewHouseholdInvitation::class)->handle($existing, $this->token, $this->householdName);
+            } else {
+                app(AcceptInvitation::class)->handle($existing, $this->token);
+            }
+
             $this->redirect('/');
 
             return;
         }
 
-        $this->validate([
+        $rules = [
             'name' => ['required', 'string', 'max:100'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+        ];
 
-        $user = app(RegisterInvitedPartner::class)->handle($invitation, $this->token, $this->name, $this->password);
+        if ($this->isNewHousehold) {
+            $rules['householdName'] = ['required', 'string', 'max:100'];
+        }
+
+        $this->validate($rules);
+
+        if ($this->isNewHousehold) {
+            $user = app(RegisterInvitedOwner::class)->handle(
+                $invitation,
+                $this->token,
+                $this->name,
+                $this->password,
+                $this->householdName,
+            );
+        } else {
+            $user = app(RegisterInvitedPartner::class)->handle(
+                $invitation,
+                $this->token,
+                $this->name,
+                $this->password,
+            );
+        }
 
         Auth::login($user);
         session()->regenerate();
@@ -101,7 +136,7 @@ final class AcceptInvitationForm extends Component
 
     private function problemFor(HouseholdInvitation $invitation): ?string
     {
-        if ($invitation->type !== InvitationType::Partner || $invitation->household === null) {
+        if ($invitation->type === InvitationType::Partner && $invitation->household === null) {
             return __('auth.invite_invalid');
         }
 

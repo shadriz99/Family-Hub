@@ -29,12 +29,13 @@ Catat nilai operasional di password manager atau tempat privat, bukan di Git:
 
 | Informasi | Nilai |
 |---|---|
-| Host/server dan akses administrator | Isi sebelum deploy |
+| Host/server dan akses administrator | Odroid-C2 (Quad-core Cortex-A53 ARM64, 2GB RAM, eMMC) |
 | Domain/URL HTTPS melalui zrok | Isi sebelum deploy |
 | Metode akses jarak jauh | zrok untuk rilis awal; Cloudflare Tunnel dipertimbangkan saat skala membesar |
-| Distro/version Linux dan lokasi repo | Isi setelah host ditetapkan |
-| Nginx site config dan PHP-FPM socket/pool | Isi setelah instalasi |
-| Zona waktu server | Catat nilai aktual; zona waktu household dikonfigurasi di aplikasi |
+| Distro/version Linux dan lokasi repo | Armbian Ubuntu Minimal (ARM64); lokasi repo misal `/var/www/Family-Hub` |
+| Nginx site config dan PHP-FPM socket/pool | Nginx dengan worker event-driven; PHP-FPM pool `ondemand` (`max_children = 4`) |
+| Zona waktu server | Asia/Jakarta (catat nilai aktual server; zona waktu household dikonfigurasi di aplikasi) |
+| Database & Caching | SQLite (mode WAL, synchronous NORMAL, cache_size -8000, temp_store MEMORY); Session/Cache via SQLite (tanpa Redis daemon) |
 | Lokasi backup lokal dan off-site | Isi setelah target ditentukan |
 | Kontak administrator/penerima alert | Isi sebelum go-live |
 
@@ -74,6 +75,55 @@ Jangan melakukan migrasi database produksi sebelum ada backup terverifikasi.
 11. Pastikan Nginx, PHP-FPM, worker, scheduler, zrok client, dan DB sehat sebelum membuka akses pengguna.
 
 Command instalasi dan nama unit systemd harus ditambahkan setelah distro serta konfigurasi host diketahui dan prosedur diuji.
+
+### 3.1 Profil optimasi host Odroid-C2 (RAM 2GB, eMMC, Armbian Minimal)
+
+Sesuai evaluasi arsitektur hemat daya/memori (LOG-042), terapkan parameter berikut di host produksi:
+
+1. **Kernel & Memori OS:**
+   - Gunakan **ZRAM** bawaan Armbian (`armbian-zram-config`) untuk kompresi swap di RAM (LZ4/ZSTD) guna menghindari keausan eMMC dan swap-lag.
+   - Atur swap file eMMC (1GB–2GB) hanya sebagai jaring pengaman darurat OOM killer.
+   - Setel `/etc/sysctl.conf`:
+     ```ini
+     vm.swappiness = 10
+     vm.vfs_cache_pressure = 50
+     ```
+2. **PHP-FPM Pool (`/etc/php/8.5/fpm/pool.d/www.conf`):**
+   - Mode `ondemand` untuk melepas proses worker saat idle:
+     ```ini
+     pm = ondemand
+     pm.max_children = 4
+     pm.process_idle_timeout = 10s
+     pm.max_requests = 500
+     ```
+3. **OPcache (`/etc/php/8.5/mods-available/opcache.ini`):**
+   - Bytecode cache di shared memory agar CPU ARM tidak mengompilasi skrip berulang:
+     ```ini
+     opcache.enable = 1
+     opcache.memory_consumption = 64
+     opcache.interned_strings_buffer = 16
+     opcache.max_accelerated_files = 10000
+     opcache.validate_timestamps = 0
+     ```
+     *(Catatan: jika kode diperbarui, lakukan `systemctl reload php8.5-fpm`)*.
+4. **SQLite WAL & Memory Pragmas:**
+   - Ditegakkan di `config/database.php` dan `AppServiceProvider`:
+     - Mode WAL (`PRAGMA journal_mode=WAL;`), `busy_timeout=5000`, `synchronous=NORMAL`.
+     - `PRAGMA cache_size = -8000;` (8MB memori buffer SQLite).
+     - `PRAGMA temp_store = MEMORY;` (tabel sementara di RAM).
+5. **Zero-Daemon Cache/Session (Tanpa Redis):**
+   - Tidak memasang daemon Redis (menghemat 30–50MB RAM dan 1 service tambahan).
+   - Session & cache menggunakan driver `database` (tabel SQLite dengan WAL) atau `file`.
+6. **Zero-Node on Production:**
+   - Dilarang memasang Node.js/npm atau menjalankan `npm run build` di Odroid-C2 (menghindari lonjakan RAM 1GB+ dan beban CPU).
+   - Aset Vite dibangun di lingkungan development/CI; hanya `public/build/` yang disinkronkan ke host.
+7. **Nginx Static Asset Offloading:**
+   - Sajikan `public/build/` dengan header agresif (`expires max;`, `gzip on;`, `access_log off;`) agar request aset tidak diteruskan ke PHP-FPM.
+8. **Managed Queue Worker:**
+   - Daur ulang proses worker agar terhindar dari akumulasi memory leak:
+     ```bash
+     php artisan queue:work --sleep=3 --tries=3 --max-jobs=200 --max-time=3600 --memory=64
+     ```
 
 ## 4. Deploy pembaruan
 
