@@ -10,7 +10,7 @@
 4. Keputusan reviewer dicatat di logbook (`LOG-NNN`), lalu item di sini ditutup atau diubah menjadi pekerjaan tertunda di bagian B.
 5. Jangan menandai item selesai hanya karena kode sudah ada; sertakan bukti verifikasi atau keputusan eksplisit.
 
-**Status:** diperbarui terakhir pada LOG-044 (penyelesaian wizard onboarding household CORE-06).
+**Status:** diperbarui terakhir pada LOG-045 (penyelesaian layout, navigasi mobile/desktop, FAB, dark mode, dan komponen §9.5 CORE-07).
 
 ## A. Butuh keputusan reviewer
 

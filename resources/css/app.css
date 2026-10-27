@@ -5,11 +5,48 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+@custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
+
 @theme {
-    --font-sans: Inter, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+    --font-serif: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+    --font-display: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+}
+
+:root {
+    color-scheme: light;
+    --bg-canvas: #f6f4ee;
+    --bg-surface: #fffefa;
+    --color-ink: #263c32;
+    --color-muted: #637067;
+    --color-line: #dedfd4;
+    --color-brand: #28543e;
+    --color-brand-soft: #e9efe4;
+    --color-danger: #ad3f45;
+    --color-warning: #87571f;
+    --color-info: #386578;
+}
+
+:root.dark, :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg-canvas: #151f1b;
+    --bg-surface: #1f2c25;
+    --color-ink: #f3f1e8;
+    --color-muted: #b2beb2;
+    --color-line: #3c4b40;
+    --color-brand: #bad6ae;
+    --color-brand-soft: #304233;
+    --color-danger: #ffafb1;
+    --color-warning: #edc48b;
+    --color-info: #a7cad6;
 }
 
 [x-cloak] {
     display: none !important;
+}
+
+/* Ensure no horizontal scroll on small viewports */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
 }

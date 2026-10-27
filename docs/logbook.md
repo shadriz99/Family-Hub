@@ -1,7 +1,7 @@
 # Logbook Development - Family Hub
 
 **Diperbarui:** 2026-10-27
-**Status:** CORE-01 diterima untuk kelanjutan development; CORE-03 dinyatakan selesai oleh reviewer; CORE-04 parsial (konkurensi slot selesai); CORE-05 selesai di sisi Alur A & B (backend, email, UI, limiter 10/jam, 1 aktif, create-admin menutup P-17); CORE-06 (onboarding wizard) selesai pada LOG-044. CI remote untuk perubahan ini belum terverifikasi. Belum ada rilis aplikasi.
+**Status:** CORE-01 diterima untuk kelanjutan development; CORE-03 dinyatakan selesai oleh reviewer; CORE-04 parsial (konkurensi slot selesai); CORE-05 selesai di sisi Alur A & B (backend, email, UI, limiter 10/jam, 1 aktif, create-admin menutup P-17); CORE-06 (onboarding wizard) selesai pada LOG-044; CORE-07 (layout, navigasi, FAB, dark mode, komponen §9.5) selesai pada LOG-045. CI remote untuk perubahan ini belum terverifikasi. Belum ada rilis aplikasi.
 
 Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan selesai. [Rencana development](development-plan.md) menentukan langkah berikutnya; spesifikasi dan acceptance criteria tetap mengikuti [Masterplan](00-MASTERPLAN.md) dan dokumen modul.
 
@@ -9,12 +9,12 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 
 | Area | Status aktual | Bukti / tindak lanjut |
 |---|---|---|
-| Repository | `main` tanpa branch; batch terakhir LOG-044 | LOG-014: fondasi `ffe4afe`; LOG-026: checkpoint CORE-03/04 di-merge; LOG-031: CI hijau `731fb45`; LOG-035: kerja langsung di `main`; LOG-036: push `efae4f2..d077170`; LOG-039: push `2900d9f..fcaf25b`; LOG-040: limiter undangan; LOG-041: 1 aktif, admin non-member; LOG-042: Odroid-C2 WAL; LOG-043: alur A admin, create-admin (P-17); LOG-044: wizard onboarding CORE-06 |
+| Repository | `main` tanpa branch; batch terakhir LOG-045 | LOG-014: fondasi `ffe4afe`; LOG-026: checkpoint CORE-03/04 di-merge; LOG-031: CI hijau `731fb45`; LOG-035: kerja langsung di `main`; LOG-036: push `efae4f2..d077170`; LOG-039: push `2900d9f..fcaf25b`; LOG-040: limiter undangan; LOG-041: 1 aktif, admin non-member; LOG-042: Odroid-C2 WAL; LOG-043: alur A admin, create-admin (P-17); LOG-044: wizard onboarding CORE-06; LOG-045: layout/navigasi & komponen §9.5 CORE-07 |
 | Environment lokal | Git, PHP, Composer, Node/npm dapat dijalankan | Rincian dan batas setup di [setup dan rencana development](development-plan.md) |
 | Dependency PHP/npm | Terpasang, lockfile tersedia | Composer solve, platform check, audit, dan smoke check lulus pada waktu setup |
 | CORE-01 | **Diterima untuk kelanjutan development** | LOG-011/013/014: fondasi, auth, Boost, CI kedua DB; LOG-015: reviewer meminta lanjut; bukan UAT/produksi |
 | Boost | Terminal stdio disetujui sebagai transport | LOG-013: initialize, daftar 10 tool, dan dokumentasi lulus; UI Copilot belum terhubung tetapi bukan blocker |
-| CORE-02 sampai CORE-16 | CORE-03 selesai; CORE-04 parsial; CORE-05 selesai Alur A & B; CORE-06 selesai onboarding wizard | LOG-015–018: utilitas/komponen; LOG-019: urutan disetujui; LOG-020–021: policy/action; LOG-024: tenant scope, konteks household, `PeriodResolver::for`; LOG-025–026: MariaDB CI dipulihkan dan checkpoint di-merge ke main; LOG-030: bootstrap + middleware konteks; LOG-032/034: backend undangan §5.1; LOG-036: email undangan, penerimaan partner, reset kata sandi; LOG-039: konkurensi slot; LOG-040: limiter 10 undangan/jam; LOG-041: satu undangan aktif, admin bukan anggota household; LOG-042: optimasi host Odroid-C2, SQLite WAL; LOG-043: alur A admin, create-admin (P-17); LOG-044: wizard onboarding 3 langkah CORE-06. Konteks job, backfill histori, pengecualian trait, dan antrean mail belum selesai |
+| CORE-02 sampai CORE-16 | CORE-03 selesai; CORE-04 parsial; CORE-05 selesai Alur A & B; CORE-06 selesai onboarding wizard; CORE-07 selesai layout & navigasi | LOG-015–018: utilitas/komponen; LOG-019: urutan disetujui; LOG-020–021: policy/action; LOG-024: tenant scope, konteks household, `PeriodResolver::for`; LOG-025–026: MariaDB CI dipulihkan dan checkpoint di-merge ke main; LOG-030: bootstrap + middleware konteks; LOG-032/034: backend undangan §5.1; LOG-036: email undangan, penerimaan partner, reset kata sandi; LOG-039: konkurensi slot; LOG-040: limiter 10 undangan/jam; LOG-041: satu undangan aktif, admin bukan anggota household; LOG-042: optimasi host Odroid-C2, SQLite WAL; LOG-043: alur A admin, create-admin (P-17); LOG-044: wizard onboarding 3 langkah CORE-06; LOG-045: layout shell mobile/desktop, bottom nav 5 item, FAB, dark mode, 12 komponen §9.5 CORE-07. Konteks job, backfill histori, pengecualian trait, dan antrean mail belum selesai |
 | Finance / Organizer / Asset | Belum dimulai | Mockup adalah prototype yang sudah ada saat clone, bukan implementasi modul |
 | Produksi / UAT | Belum dijalankan | Tidak ada bukti deploy, restore, atau penerimaan pengguna |
 
@@ -450,6 +450,43 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
   - `composer lint` (Pint): Lulus.
   - `composer analyse` (Larastan level 6): `[OK] No errors`.
   - `npm run build`: Aset frontend Vite terkompilasi bersih.
+- **Dokumen yang diselaraskan:** `docs/logbook.md` (entri ini), `docs/development-plan.md`, `docs/pending.md`, dan `docs/00-MASTERPLAN.md`.
+
+### LOG-045 - CORE-07 Layout, Navigasi Mobile/Desktop, FAB, Bottom Sheet, Dark Mode, dan Komponen §9.5
+
+- **Task ID:** CORE-07 (Layout & Navigasi)
+- **Komponen Blade Bersama (§9.5):**
+  - `x-card`: Kontainer kartu bersudut `rounded-3xl` dengan title, subtitle, badge, dan actions.
+  - `x-datetime`: Komponen waktu/tanggal instant berbasis timezone household (dengan class `App\View\Components\Datetime.php`).
+  - `x-badge-status`: Status jatuh tempo sesuai §9.1 poin 4 (`Terlambat` rose, `Hari ini` amber, `Segera` sky/info, `Lunas/Selesai` emerald/green).
+  - `x-member-avatar`: Avatar inisial dengan warna slot/peran anggota (`#059669` owner, `#7C3AED` partner).
+  - `x-empty-state`: Ilustrasi ikon, judul, deskripsi, dan tombol aksi terintegrasi.
+  - `x-progress-bar`: Bar kemajuan dengan pewarnaan otomatis (<80% emerald, 80–99% amber, ≥100% rose).
+  - `x-offline-banner`: Banner deteksi status koneksi offline secara reaktif via Alpine `navigator.onLine`.
+  - `x-period-switcher`: Navigator periode antar bulan/siklus (`[◀] Nov 2026 [▶]`).
+  - `x-filter-chips`: Baris chip filter horizontal dengan dukungan touch target dan overflow scroll ramah mobile.
+  - `x-fab`: Tombol aksi mengambang utama di tengah bottom nav mobile dengan target sentuh ≥48px.
+  - `x-confirm`: Dialog konfirmasi aksi penting/berisiko dengan opsi verifikasi ketik kata kunci ("HAPUS").
+  - `x-bottom-sheet`: Dialog/bottom sheet responsif (slide-up di mobile, modal di desktop) dengan backdrop dan aksesibilitas keyboard Escape.
+- **Master Shell Layout & Navigasi (§9.2):**
+  - `resources/views/components/app-layout.blade.php` (dan `components/layouts/app.blade.php`):
+    - **Desktop (≥1024px):** Sidebar kiri persisten lebar 64 (256px), logo brand, kartu household aktif, daftar anggota keluarga, menu modul ber-badge "Segera" jika belum aktif, toggle dark mode, dan logout.
+    - **Mobile (<1024px):** Top bar ringkas (nama household, toggle dark mode, lonceng notifikasi, avatar) dan Bottom Navigation 5 item: `Beranda`, `Keuangan`, `[+]` (FAB tengah), `Kalender`, `Lainnya`.
+    - **Quick Add Bottom Sheet:** Membuka pilihan aksi cepat (`Pengeluaran`, `Pemasukan`, `Transfer`, `Tugas`, `Catatan`, `Item Belanja`, `Laporan Kerusakan`) yang disaring secara kondisional berdasarkan feature flag `config/modules.php`.
+    - **Lainnya Bottom Sheet:** Menu akses cepat ke modul non-utama, pengaturan, dan opsi logout.
+- **Dark Mode (§9.4):**
+  - Implementasi class/data-theme dark mode disimpan di `localStorage` dan terintegrasi otomatis dengan preferensi browser (`prefers-color-scheme: dark`).
+  - Skrip inisialisasi inline di `<head>` mencegah kedipan putih (*flash of unstyled theme*).
+- **Halaman Beranda & Welcome:**
+  - `resources/views/dashboard.blade.php`: Tampilan awal dashboard bagi anggota keluarga terautentikasi dan ter-onboard.
+  - `resources/views/welcome.blade.php`: Halaman depan publik privat bernuansa hangat, organik, hijau hutan, dengan tautan masuk.
+- **Verifikasi:**
+  - Test suite baru `tests/Feature/LayoutAndComponentsTest.php` (12 test, 54 assertion): uji render welcome guest, render dashboard shell untuk pengguna terautentikasi, uji render seluruh 12 komponen §9.5, uji ambang batas warna progress bar, format timezone datetime, dan status badge.
+  - `composer test`: **237 test/1981 assertion** lulus (+12 test baru).
+  - `npm test`: **4 test JS** lulus.
+  - `composer lint` (Pint): Lulus.
+  - `composer analyse` (Larastan level 6): `[OK] No errors` (42 file).
+  - `npm run build`: Aset CSS dan JS Vite terkompilasi bersih (86.87 kB CSS, 2.89 kB JS).
 - **Dokumen yang diselaraskan:** `docs/logbook.md` (entri ini), `docs/development-plan.md`, `docs/pending.md`, dan `docs/00-MASTERPLAN.md`.
 
 ## Aturan pembaruan berikutnya
