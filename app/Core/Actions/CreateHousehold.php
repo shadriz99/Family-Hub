@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Core\Actions;
 
 use App\Core\Enums\MemberRole;
+use App\Core\Events\HouseholdCreated;
 use App\Core\Models\Household;
 use App\Core\Models\HouseholdMember;
 use App\Core\Support\HouseholdContext;
@@ -40,7 +41,7 @@ final class CreateHousehold
             throw ValidationException::withMessages(['owner' => __('household.admin_not_member')]);
         }
 
-        return DB::transaction(function () use ($owner, $name, $startDay, $timezone): Household {
+        $household = DB::transaction(function () use ($owner, $name, $startDay, $timezone): Household {
             $existing = HouseholdMember::query()
                 ->where('user_id', $owner->getKey())
                 ->lockForUpdate()
@@ -91,5 +92,9 @@ final class CreateHousehold
 
             return $household;
         });
+
+        event(new HouseholdCreated($household, $owner));
+
+        return $household;
     }
 }

@@ -34,4 +34,27 @@ final class HouseholdContext
     {
         return $this->household ?? throw new LogicException('No household context is active.');
     }
+
+    /**
+     * Run a callback within the context of the given household, restoring the previous context afterwards.
+     *
+     * @template T
+     * @param callable(): T $callback
+     * @return T
+     */
+    public function runInContext(Household $household, callable $callback): mixed
+    {
+        $previous = $this->household;
+        $this->use($household);
+
+        try {
+            return $callback();
+        } finally {
+            if ($previous !== null) {
+                $this->use($previous);
+            } else {
+                $this->forget();
+            }
+        }
+    }
 }

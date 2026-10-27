@@ -99,6 +99,8 @@ final class AcceptInvitation
             $invitation->accepted_at = now()->toImmutable();
             $invitation->save();
 
+            app(\App\Core\Services\ReminderService::class)->syncDeliveriesForNewMember($household, $user);
+
             activity()->performedOn($household)->causedBy($user)
                 ->withProperties(['member_user_id' => $user->getKey(), 'slot' => $member->slot])
                 ->log('core.household.partner_joined');

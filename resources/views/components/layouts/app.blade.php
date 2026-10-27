@@ -16,6 +16,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="theme-color" content="#28543e">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/icon-192.svg">
     <title>{{ $pageTitle }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
@@ -233,11 +239,14 @@
                     </button>
 
                     {{-- Notification Bell --}}
-                    <button type="button"
+                    <a href="{{ route('notifications.index') }}"
                         aria-label="{{ __('Notifikasi') }}"
                         class="relative flex size-10 items-center justify-center rounded-2xl border border-current/15 text-current/80 transition-colors hover:bg-current/5">
                         <x-heroicon-o-bell class="size-5" />
-                    </button>
+                        @if ($user && $user->unreadNotifications()->count() > 0)
+                            <span class="absolute top-2 right-2 size-2 rounded-full bg-[#059669] ring-2 ring-white dark:bg-[#10b981] dark:ring-[#1f2c25]"></span>
+                        @endif
+                    </a>
 
                     {{-- User Profile Avatar / Logout Menu Mobile --}}
                     @if ($user)

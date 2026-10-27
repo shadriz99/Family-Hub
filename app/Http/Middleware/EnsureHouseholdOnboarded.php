@@ -21,7 +21,15 @@ final class EnsureHouseholdOnboarded
     {
         $user = $request->user();
 
-        if ($user === null || $user->is_system_admin) {
+        if ($user === null) {
+            return $next($request);
+        }
+
+        if ($user->is_system_admin) {
+            if (! $request->is('/')) {
+                abort(Response::HTTP_FORBIDDEN, __('Aksi ini memerlukan keanggotaan rumah tangga.'));
+            }
+
             return $next($request);
         }
 

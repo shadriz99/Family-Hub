@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline — Family Hub</title>
+  <style>
+    :root {
+      --bg: #f6f4ee;
+      --card-bg: #fffefa;
+      --text: #263c32;
+      --muted: #637067;
+      --primary: #28543e;
+      --border: rgba(38, 60, 50, 0.15);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #151f1b;
+        --card-bg: #1f2c25;
+        --text: #f3f1e8;
+        --muted: #b2beb2;
+        --primary: #10b981;
+        --border: rgba(243, 241, 232, 0.15);
+      }
+    }
+    body {
+      margin: 0;
+      padding: 1.5rem;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      box-sizing: border-box;
+    }
+    .card {
+      max-width: 420px;
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+    .icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 1.25rem;
+      color: var(--primary);
+    }
+    h1 {
+      font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+      font-size: 1.75rem;
+      margin: 0 0 0.5rem;
+      letter-spacing: -0.02em;
+    }
+    p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin: 0 0 1.5rem;
+    }
+    .btn {
+      display: inline-block;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.875rem;
+      padding: 0.625rem 1.25rem;
+      border-radius: 1rem;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 4.243a9 9 0 01-12.728 0m0 0l2.829-2.829m-2.829 2.829L3 21m2.828-15.536a5 5 0 017.072 0m0 0l-2.829 2.829" />
+    </svg>
+    <h1>Sedang Offline</h1>
+    <p>Anda sedang tidak terhubung ke jaringan internet. Halaman ini ditampilkan karena perangkat dalam mode offline.</p>
+    <button type="button" class="btn" onclick="window.location.reload()">Coba Muat Ulang</button>
+  </main>
+</body>
+</html>

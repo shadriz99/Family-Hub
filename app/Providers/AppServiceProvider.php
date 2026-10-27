@@ -7,8 +7,12 @@ namespace App\Providers;
 use App\Core\Alerts\AlertAggregator;
 use App\Core\Calendar\CalendarAggregator;
 use App\Core\Console\Commands\CreateSystemAdminCommand;
+use App\Core\Console\Commands\DispatchRemindersCommand;
+use App\Core\Dashboard\DashboardManager;
+use App\Core\Exporters\CoreHouseholdExporter;
 use App\Core\Models\Household;
 use App\Core\Policies\HouseholdPolicy;
+use App\Core\Services\HouseholdExportService;
 use App\Core\Support\HouseholdContext;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Events\ConnectionEstablished;
@@ -32,6 +36,20 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(AlertAggregator::class, function ($app) {
             return new AlertAggregator($app);
         });
+
+        $this->app->singleton(DashboardManager::class, function ($app) {
+            return new DashboardManager(
+                $app->tagged('dashboard.widgets'),
+                $app->make(AlertAggregator::class),
+                $app->make(CalendarAggregator::class),
+            );
+        });
+
+        $this->app->tag([CoreHouseholdExporter::class], 'household.exporters');
+
+        $this->app->singleton(HouseholdExportService::class, function ($app) {
+            return new HouseholdExportService($app->tagged('household.exporters'));
+        });
     }
 
     /**
@@ -45,6 +63,7 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 CreateSystemAdminCommand::class,
+                DispatchRemindersCommand::class,
             ]);
         }
 

@@ -10,30 +10,34 @@
 4. Keputusan reviewer dicatat di logbook (`LOG-NNN`), lalu item di sini ditutup atau diubah menjadi pekerjaan tertunda di bagian B.
 5. Jangan menandai item selesai hanya karena kode sudah ada; sertakan bukti verifikasi atau keputusan eksplisit.
 
-**Status:** diperbarui terakhir pada LOG-045 (penyelesaian layout, navigasi mobile/desktop, FAB, dark mode, dan komponen §9.5 CORE-07).
+**Status:** diperbarui terakhir pada LOG-056 (resolusi batch pending P-05, P-06, P-15, P-16, P-18, P-19, P-20 sesuai rekomendasi reviewer).
 
 ## A. Butuh keputusan reviewer
 
 | ID | Topik | Keputusan yang dibutuhkan | Dampak bila ditunda |
 |---|---|---|---|
-| P-05 | Backfill histori periode keuangan | `CreateHousehold` hanya membuat satu baris periode berlaku hari ini. Tentukan apakah perlu periode lampau saat bootstrap dan sejauh mana | `PeriodResolver` aman untuk data baru, tetapi belum ada data historis household lama |
-| P-06 | `Activity` tanpa `household_id` dan `HouseholdMember` tanpa trait tenant | §2.4 masterplan menyebut setiap tabel domain punya `household_id`. Konfirmasi pengecualian permanen (audit global; membership di-scope eksplisit) atau setujui kolom/trait tambahan | Ketidakpastian pada uji isolasi lintas modul dan ekspor data |
 | P-09 | Bukti CI untuk commit setelah `731fb45` | Menunggu laporan reviewer; repo privat tanpa GitHub CLI/API terautentikasi. `d077170` (LOG-036) dan commit sesudahnya sudah di-push dan workflow berjalan otomatis, tetapi hasilnya belum bisa dibaca dari mesin ini | Laporkan hasil SQLite/MariaDB per commit, lalu tutup item bila hijau; jangan sebut commit mana pun lulus CI sebelum ada laporan |
-| P-15 | Throttle dan timing permintaan reset kata sandi | Pesan sudah seragam untuk email terdaftar maupun tidak, tetapi form forgot-password belum punya limiter per IP dan email terdaftar merespons lebih lambat karena pengiriman mail | Putuskan batas throttle dan target timing, lalu catat pada review keamanan CORE-14 |
-| P-16 | Status Playwright sebagai alat verifikasi | Keputusan LOG-037: Playwright dipakai lebih dulu, tetapi `playwright-core` hanya dipasang di direktori sementara dan memakai Chrome sistem, jadi tidak ada dependency repo, lockfile, atau job CI | Tentukan apakah ini permanen atau Playwright dipromosikan menjadi devDependency + langkah CI browser |
 
 ## B. Pekerjaan tertunda (tidak menahan batch saat ini)
 
 | ID | Topik | Status / alasan ditunda | Langkah berikutnya |
 |---|---|---|---|
-| P-08 | Bootstrap konteks tenant untuk job/command | Ditunda karena belum ada job/command nyata (LOG-030). Job nanti wajib membawa household ID eksplisit dan memasang konteks sendiri | Bangun base/middleware job saat job pertama (CORE-09/CORE-10) dibuat |
-| P-12 | Modul Finance/Organizer/Asset | `config/modules.php` menonaktifkan ketiganya; belum ada izin reviewer untuk fitur modul | Tunggu keputusan reviewer atas task modul |
-| P-14 | Pengiriman email undangan | Limiter 10 undangan/jam sudah ada (LOG-040), tetapi `HouseholdInvitationMail` masih dikirim sinkron setelah commit; kegagalan mail meninggalkan undangan pending yang tidak pernah sampai ke penerima | Pindahkan pengiriman ke antrean/retry saat CORE-10 |
+| P-12 | Modul Organizer & Asset | `config/modules.php` mengaktifkan `finance` (Phase 1, LOG-055); `organizer` dan `asset` dinonaktifkan menunggu fase berikutnya | Buka feature flag per fase (Phase 2 untuk Organizer, Phase 3 untuk Asset) |
+| P-21 | Konfigurasi SMTP produksi dan verifikasi pengiriman email fisik | Keputusan LOG-053: driver email memakai mode `log` (`MAIL_MAILER=log`) untuk testing lokal/clipboard dan tautan undangan langsung tersedia di UI. Kredensial SMTP nyata dipasang di Phase 4 sebelum go-live | Masukkan kredensial SMTP produksi pada Phase 4 Hardening |
+| P-19 | Q-M12: 2FA Email OTP | Keputusan LOG-056: ditunda ke rilis v1.1. Untuk rilis awal keluarga (MVP), keamanan mengandalkan password hash Argon2id/Bcrypt, rate limiting per IP/email, dan pendaftaran tertutup via token undangan | Evaluasi implementasi 2FA email OTP pada siklus v1.1 |
 
 ## Riwayat penutupan item
 
 | ID | Ditutup oleh | Catatan |
 |---|---|---|
+| P-05 | LOG-056 | Reviewer menyetujui rekomendasi Opsi A: tidak perlu backfill periode keuangan lampau saat bootstrap household. `PeriodResolver` secara deterministik menghitung periode lampau dari setting awal jika ada transaksi bertanggal lampau |
+| P-06 | LOG-056 | Reviewer menyetujui rekomendasi Opsi A: pengecualian permanen kolom `household_id` pada tabel `activity_log` (Spatie audit global berbasis polymorphic ULID). `HouseholdMember` tetap di-scope ketat via composite unique constraint `(household_id, slot)` dan foreign key `user_id` |
+| P-15 | LOG-056 | Rate limiter 5 permintaan per menit per IP diterapkan pada endpoint `POST /forgot-password` melalui `RateLimiter::for('forgot-password')` di `FortifyServiceProvider` dan middleware `throttle:forgot-password` di `routes/web.php`, diverifikasi dengan feature test |
+| P-16 | LOG-056 | `@playwright/mcp` dipasang secara global (`/usr/local/bin/playwright-mcp`) dan didaftarkan ke `.vscode/mcp.json` dengan flag `--no-sandbox`. Repository tetap bersih tanpa dependensi tambahan di `package.json` |
+| P-18 | LOG-056 | Reviewer menyetujui kebijakan default reminder (Q-M9): maksimal 3 kali percobaan dengan staged backoff (5m, 15m, 30m), status terminal `failed`, dan kegagalan terisolasi per penerima |
+| P-20 | LOG-056 | Reviewer menyetujui kebijakan retensi backup terenkripsi (Q-M11): disetel di `config/backup.php` (7 hari harian, 4 minggu mingguan, 6 bulan bulanan, 1 tahun tahunan; clean otomatis via scheduler 01:30) |
+| P-08 | LOG-048 | Helper `HouseholdContext::runInContext(Household $household, callable $callback)` dibuat dan digunakan oleh `ReminderService` serta command scheduler `reminders:dispatch` untuk mengeksekusi delivery di bawah konteks tenant household terkait tanpa membocorkan state |
+| P-14 | LOG-049 | `HouseholdInvitationMail` mengimplementasikan `ShouldQueue` (CORE-10) sehingga pengiriman email undangan berpindah ke antrean asinkron dan kegagalan mail driver tidak membatalkan atau memblokir transaksi undangan |
 | P-01 | LOG-034 | Reviewer memutuskan dokumentasi jadi acuan; migrasi/model/aksi undangan diselaraskan ke §5.1 (`household_id` nullable, `email`, `type`, `revoked_at`), `accepted_by` dihapus karena tidak ada di spesifikasi |
 | P-02 | LOG-036 | Reviewer memutuskan email undangan membawa tautan ke layar buat kata sandi; pengiriman tautan membuat akun household, dan `AcceptInvitation` menolak token bila email akun tidak cocok dengan email undangan |
 | P-03 | LOG-036 | Reviewer memutuskan reset kata sandi masuk CORE-05: `Features::resetPasswords()` aktif dengan view proyek sendiri dan jawaban seragam untuk email tak dikenal |

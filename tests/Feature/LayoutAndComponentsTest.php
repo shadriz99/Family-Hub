@@ -47,7 +47,7 @@ final class LayoutAndComponentsTest extends TestCase
         $response = $this->actingAs($owner)->get('/');
 
         $response->assertOk();
-        $response->assertSee('Selamat datang, Shadri');
+        $response->assertSee(', Shadri');
         $response->assertSee('Keluarga Shadri');
 
         // Desktop Sidebar & Brand

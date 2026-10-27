@@ -9,7 +9,7 @@ use Livewire\Livewire;
 
 it('keeps unreleased modules disabled', function (): void {
     expect(config('modules'))->toBe([
-        'finance' => false,
+        'finance' => true,
         'organizer' => false,
         'asset' => false,
     ]);

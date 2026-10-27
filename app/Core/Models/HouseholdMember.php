@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property MemberRole $role
  * @property int $slot
  * @property string $color
+ * @property \Carbon\CarbonImmutable|null $joined_at
  */
 class HouseholdMember extends Model
 {

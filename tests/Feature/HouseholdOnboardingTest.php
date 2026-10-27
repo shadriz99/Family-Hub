@@ -69,9 +69,9 @@ final class HouseholdOnboardingTest extends TestCase
         // Guest
         $this->get('/')->assertOk();
 
-        // Admin
+        // Admin redirects to admin dashboard, not onboarding
         $admin = $this->createUser(['is_system_admin' => true]);
-        $this->actingAs($admin)->get('/')->assertOk();
+        $this->actingAs($admin)->get('/')->assertRedirect(route('admin.dashboard'));
 
         // Partner
         $owner = $this->createUser();
@@ -257,7 +257,7 @@ final class HouseholdOnboardingTest extends TestCase
             'email' => 'partner@keluarga.test',
         ]);
 
-        Mail::assertSent(HouseholdInvitationMail::class, function (HouseholdInvitationMail $mail): bool {
+        Mail::assertQueued(HouseholdInvitationMail::class, function (HouseholdInvitationMail $mail): bool {
             return $mail->hasTo('partner@keluarga.test');
         });
     }

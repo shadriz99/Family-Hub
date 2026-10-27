@@ -468,25 +468,26 @@ CSV: `accounts.csv`, `categories.csv`, `transactions.csv`, `budgets.csv`, `recur
 
 ## 11. Seed Kategori Default (Indonesia)
 
-**Pengeluaran:**
-| Induk | Sub |
+> [!NOTE] Pembaruan LOG-058 (5 Pos Induk Pengeluaran & Anggaran % Total 100%)
+> Sesuai arahan reviewer pada LOG-058, kategori induk pengeluaran disederhanakan dan dibatasi maksimal **5 Kategori Utama**:
+> 1. **Kebutuhan Pokok** (`needs` / Living)
+> 2. **Lifestyle** (`lifestyle` / Tertiary)
+> 3. **Tabungan** (`savings` / Savings)
+> 4. **Donasi** (`social` / Social)
+> 5. **Hutang** (`loan_installment` / Debt)
+>
+> Seluruh anggaran (Budget) dikonfigurasi menggunakan **persentase (%)** dari keseluruhan pemasukan dengan total wajib tepat 100%, yang langsung tersinkronisasi ke Rencana Alokasi 5 Pos (`fin_allocation_plans`). Sub-kategori dapat diketik manual secara bebas saat transaksi maupun pada menu kategori, dan otomatis dibuat di database jika belum ada.
+>
+> Di bawah ini adalah rujukan seed awal dan sub-kategori default yang disiapkan di bawah 5 pos utama:
+
+**Pengeluaran (5 Kategori Utama):**
+| Induk Utama | Sub-kategori Contoh / Default |
 |---|---|
-| Makan & Minum | Belanja Dapur, Makan di Luar, Jajan & Kopi |
-| Belanja Bulanan *(system: shopping)* | Kebutuhan Rumah, Perlengkapan Mandi |
-| Transportasi | Bensin, Parkir & Tol, Ojek/Taksi Online, Servis Kendaraan |
-| Tagihan Rumah | Listrik, Air (PDAM), Internet & TV, Pulsa & Paket Data, Gas, Iuran Lingkungan/IPL |
-| Cicilan & Pinjaman *(system: loan_installment)* | KPR, Cicilan Kendaraan, Utang Produktif, Utang Lainnya |
-| Pendidikan | SPP, Buku & Seragam, Les/Kursus |
-| Kesehatan | Obat, Dokter/RS, BPJS/Asuransi Kesehatan |
-| Anak | Susu & Popok, Mainan, Uang Saku |
-| Rumah & Perawatan *(system: asset_maintenance)* | Perbaikan, Servis Peralatan, Kebersihan |
-| Keluarga & Sosial | Kiriman Orang Tua, Kondangan, Arisan |
-| Ibadah & Donasi | Zakat, Infaq/Sedekah, Kurban |
-| Pribadi | Pakaian, Skincare, Hobi |
-| Penempatan Dana (expense ke pihak luar saja) | Dana Darurat, Tabungan Masa Depan, Investasi |
-| Hiburan & Liburan | Streaming, Rekreasi, Liburan |
-| Pajak & Administrasi | Pajak Kendaraan, PBB, Biaya Admin Bank *(system: bank_fee)* |
-| Lain-lain | – |
+| Kebutuhan Pokok | Belanja Dapur, Tagihan Rumah, Transportasi & Bensin, Pendidikan, Kesehatan, Kebutuhan Rumah |
+| Lifestyle | Makan di Luar, Hiburan & Streaming, Belanja & Hobi, Liburan |
+| Tabungan | Dana Darurat, Tabungan Masa Depan, Investasi |
+| Donasi | Zakat & Infaq, Sedekah, Sosial & Hadiah, Bantuan Keluarga |
+| Hutang *(system: loan_installment)* | KPR, Cicilan Kendaraan, Pinjaman Bank/KTA, Hutang Lainnya |
 
 **Pemasukan:** Gaji, Bonus & THR, Usaha/Sampingan, Penerimaan Piutang *(system: loan_receipt)*, Pencairan Pinjaman *(system: loan_disbursement_in)*, Hadiah, Bunga/Bagi Hasil, Lain-lain.
 **Sistem tambahan:** Penyesuaian Saldo (income & expense, `balance_adjustment`), Pemberian Pinjaman (expense, `loan_disbursement_out`).

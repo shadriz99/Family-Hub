@@ -1,7 +1,7 @@
 # Logbook Development - Family Hub
 
 **Diperbarui:** 2026-10-27
-**Status:** CORE-01 diterima untuk kelanjutan development; CORE-03 dinyatakan selesai oleh reviewer; CORE-04 parsial (konkurensi slot selesai); CORE-05 selesai di sisi Alur A & B (backend, email, UI, limiter 10/jam, 1 aktif, create-admin menutup P-17); CORE-06 (onboarding wizard) selesai pada LOG-044; CORE-07 (layout, navigasi, FAB, dark mode, komponen §9.5) selesai pada LOG-045; CORE-08 (recurrence wrapper) selesai pada LOG-046; CORE-11 (calendar & alert aggregator) selesai pada LOG-047. CI remote untuk perubahan ini belum terverifikasi. Belum ada rilis aplikasi.
+**Status:** CORE-01 diterima untuk kelanjutan development; CORE-03 dinyatakan selesai oleh reviewer; CORE-04 parsial (konkurensi slot selesai); CORE-05 selesai di sisi Alur A & B; CORE-06 selesai pada LOG-044; CORE-07 selesai pada LOG-045; CORE-08 selesai pada LOG-046; CORE-11 selesai pada LOG-047; CORE-09 selesai pada LOG-048; CORE-10 selesai pada LOG-049; CORE-12 selesai pada LOG-050; CORE-13 selesai pada LOG-051; CORE-14, CORE-15, CORE-16, dan CORE-02 selesai pada LOG-052 (Phase 0 Core Module rampung). Resolusi batch pending P-05, P-06, P-15, P-16, P-18, P-19, P-20 selesai pada LOG-056. Phase 1 (Finance Module: FIN-01 sampai FIN-16) selesai pada LOG-055 dan LOG-057. CI remote untuk perubahan ini belum terverifikasi. Belum ada rilis aplikasi.
 
 Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan selesai. [Rencana development](development-plan.md) menentukan langkah berikutnya; spesifikasi dan acceptance criteria tetap mengikuti [Masterplan](00-MASTERPLAN.md) dan dokumen modul.
 
@@ -9,13 +9,14 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 
 | Area | Status aktual | Bukti / tindak lanjut |
 |---|---|---|
-| Repository | `main` tanpa branch; batch terakhir LOG-047 | LOG-014: fondasi `ffe4afe`; LOG-026: checkpoint CORE-03/04 di-merge; LOG-031: CI hijau `731fb45`; LOG-035: kerja langsung di `main`; LOG-036: push `efae4f2..d077170`; LOG-039: push `2900d9f..fcaf25b`; LOG-040: limiter undangan; LOG-041: 1 aktif, admin non-member; LOG-042: Odroid-C2 WAL; LOG-043: alur A admin, create-admin (P-17); LOG-044: wizard onboarding CORE-06; LOG-045: layout/navigasi & komponen §9.5 CORE-07; LOG-046: recurrence wrapper CORE-08; LOG-047: calendar & alert aggregator CORE-11 |
+| Repository | `main` tanpa branch; batch terakhir LOG-050 | LOG-014: fondasi `ffe4afe`; LOG-026: checkpoint CORE-03/04 di-merge; LOG-031: CI hijau `731fb45`; LOG-035: kerja langsung di `main`; LOG-036: push `efae4f2..d077170`; LOG-039: push `2900d9f..fcaf25b`; LOG-040: limiter undangan; LOG-041: 1 aktif, admin non-member; LOG-042: Odroid-C2 WAL; LOG-043: alur A admin, create-admin (P-17); LOG-044: wizard onboarding CORE-06; LOG-045: layout/navigasi & komponen §9.5 CORE-07; LOG-046: recurrence wrapper CORE-08; LOG-047: calendar & alert aggregator CORE-11; LOG-048: reminder engine CORE-09; LOG-049: notifikasi & notification center CORE-10; LOG-050: dashboard kerangka CORE-12 |
 | Environment lokal | Git, PHP, Composer, Node/npm dapat dijalankan | Rincian dan batas setup di [setup dan rencana development](development-plan.md) |
 | Dependency PHP/npm | Terpasang, lockfile tersedia | Composer solve, platform check, audit, dan smoke check lulus pada waktu setup |
 | CORE-01 | **Diterima untuk kelanjutan development** | LOG-011/013/014: fondasi, auth, Boost, CI kedua DB; LOG-015: reviewer meminta lanjut; bukan UAT/produksi |
 | Boost | Terminal stdio disetujui sebagai transport | LOG-013: initialize, daftar 10 tool, dan dokumentasi lulus; UI Copilot belum terhubung tetapi bukan blocker |
-| CORE-02 sampai CORE-16 | CORE-03 selesai; CORE-04 parsial; CORE-05 selesai Alur A & B; CORE-06 selesai onboarding wizard; CORE-07 selesai layout & navigasi; CORE-08 selesai recurrence wrapper; CORE-11 selesai calendar & alert aggregator | LOG-015–018: utilitas/komponen; LOG-019: urutan disetujui; LOG-020–021: policy/action; LOG-024: tenant scope, konteks household, `PeriodResolver::for`; LOG-025–026: MariaDB CI dipulihkan dan checkpoint di-merge ke main; LOG-030: bootstrap + middleware konteks; LOG-032/034: backend undangan §5.1; LOG-036: email undangan, penerimaan partner, reset kata sandi; LOG-039: konkurensi slot; LOG-040: limiter 10 undangan/jam; LOG-041: satu undangan aktif, admin bukan anggota household; LOG-042: optimasi host Odroid-C2, SQLite WAL; LOG-043: alur A admin, create-admin (P-17); LOG-044: wizard onboarding 3 langkah CORE-06; LOG-045: layout shell mobile/desktop, bottom nav 5 item, FAB, dark mode, 12 komponen §9.5 CORE-07; LOG-046: recurrence wrapper CORE-08; LOG-047: calendar & alert aggregator CORE-11. Konteks job, backfill histori, pengecualian trait, dan antrean mail belum selesai |
-| Finance / Organizer / Asset | Belum dimulai | Mockup adalah prototype yang sudah ada saat clone, bukan implementasi modul |
+| CORE-02 sampai CORE-16 | CORE-03 selesai; CORE-04 parsial; CORE-05 selesai Alur A & B; CORE-06 selesai onboarding wizard; CORE-07 selesai layout & navigasi; CORE-08 selesai recurrence wrapper; CORE-11 selesai calendar & alert aggregator; CORE-09 selesai reminder engine & quiet hours; CORE-10 selesai notification center & saluran notifikasi; CORE-12 selesai dashboard kerangka | LOG-015–018: utilitas/komponen; LOG-019: urutan disetujui; LOG-020–021: policy/action; LOG-024: tenant scope, konteks household, `PeriodResolver::for`; LOG-025–026: MariaDB CI dipulihkan dan checkpoint di-merge ke main; LOG-030: bootstrap + middleware konteks; LOG-032/034: backend undangan §5.1; LOG-036: email undangan, penerimaan partner, reset kata sandi; LOG-039: konkurensi slot; LOG-040: limiter 10 undangan/jam; LOG-041: satu undangan aktif, admin bukan anggota household; LOG-042: optimasi host Odroid-C2, SQLite WAL; LOG-043: alur A admin, create-admin (P-17); LOG-044: wizard onboarding 3 langkah CORE-06; LOG-045: layout shell mobile/desktop, bottom nav 5 item, FAB, dark mode, 12 komponen §9.5 CORE-07; LOG-046: recurrence wrapper CORE-08; LOG-047: calendar & alert aggregator CORE-11; LOG-048: reminder engine CORE-09; LOG-049: notification center, web push, mail, notifikasi uji, penutupan P-14 CORE-10; LOG-050: dashboard kerangka & aggregator integration CORE-12. Backfill histori dan pengecualian trait belum selesai |
+| Finance | **Selesai** (FIN-01 sampai FIN-16) | LOG-055 (skema, enum, model, seeder kategori & demo); LOG-057 (akun, transaksi, struk, budget, alokasi 5 pos, recurring, loan, plan, laporan, gateway, integrasi) |
+| Organizer / Asset | Belum dimulai | Menunggu pembukaan feature flag pada fase berikutnya (P-12) |
 | Produksi / UAT | Belum dijalankan | Tidak ada bukti deploy, restore, atau penerimaan pengguna |
 
 ## 2026-10-26
@@ -562,6 +563,362 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
   - `composer lint` (Pint): Lulus.
   - `composer analyse` (Larastan level 6): `[OK] No errors` (49 file).
 - **Dokumen yang diselaraskan:** `docs/logbook.md` (entri ini), `docs/development-plan.md`, `docs/pending.md`, dan `docs/00-MASTERPLAN.md`.
+
+### LOG-048 - Reminder engine, quiet hours, delivery per recipient, scheduler, dan bootstrap konteks job (CORE-09)
+
+- **Tujuan Task:** Menyelesaikan spesifikasi §5.1 dan §15 CORE-09: tabel `reminders` & `reminder_deliveries`, `ReminderService`, quiet hours isolation per penerima, delivery household otomatis untuk member baru yang bergabung, pembatalan cascading ke pending deliveries, dispatch scheduler command `reminders:dispatch`, serta penutupan item P-08.
+- **Implementasi:**
+  - **Skema & Migrasi (`2026_10_27_000002_core_create_reminders_and_deliveries_table.php`):**
+    - Tabel `reminders`: ULID PK, `household_id` (FK cascade), polymorphic `remindable_type` & `remindable_id`, `key` (50), `title`, `body`, `url`, `remind_at` (datetime UTC), `recipient_user_id` (FK nullable), `status` ('scheduled' | 'cancelled'), `created_by`, unique `(remindable_type, remindable_id, key)` untuk idempoten logika bisnis, dan composite index `(household_id, status, remind_at)`.
+    - Tabel `reminder_deliveries`: ULID PK, `household_id`, `reminder_id` (FK cascade), `recipient_user_id` (FK cascade), `remind_at` (datetime UTC hasil penyesuaian quiet hours), `status` ('pending' | 'sent' | 'cancelled' | 'failed'), `attempt_count`, `next_attempt_at`, `sent_at`, `last_error_code` (maks 50 char tanpa data sensitif), unique `(reminder_id, recipient_user_id)` untuk idempoten pengiriman per penerima.
+  - **Enums & Model:**
+    - `App\Core\Enums\ReminderStatus`: `Scheduled = 'scheduled'`, `Cancelled = 'cancelled'`.
+    - `App\Core\Enums\ReminderDeliveryStatus`: `Pending = 'pending'`, `Sent = 'sent'`, `Cancelled = 'cancelled'`, `Failed = 'failed'`.
+    - `App\Core\Models\Reminder` dan `App\Core\Models\ReminderDelivery`: trait `BelongsToHousehold` dan `HasUlids`, relasi strongly-typed, casting `immutable_datetime` dan status enum, serta helper method `isPending()`, `markSent()`, `markCancelled()`, dan `recordFailure()`.
+    - Model `App\Models\User`: penambahan atribut preferensi notifikasi dan quiet hours (`quiet_hours_start`, `quiet_hours_end`, `daily_digest_time`, `notify_push`, `notify_email`, `locale`) ke atribut `#[Fillable]`.
+  - **Quiet Hours Isolation (`App\Core\Services\QuietHoursCalculator`):**
+    - Mengonversi `remind_at` target ke timezone household penerima.
+    - Menghitung jendela quiet hours cross-midnight (misal `21:00:00` s.d. `06:00:00`) maupun same-day (misal `13:00` s.d. `14:00`).
+    - Bila waktu reminder jatuh di dalam quiet hours penerima, jadwal pengiriman efektif digeser ke akhir jam hening (`quiet_hours_end`) dan dikonversi kembali ke UTC. Bila di luar quiet hours atau tidak dikonfigurasi, waktu tetap utuh.
+    - Menjamin isolasi: penundaan quiet hours untuk salah satu member tidak menunda member lain.
+  - **Reminder Service (`App\Core\Services\ReminderService`):**
+    - `schedule()`: idempoten per entity dan key; membuat/memperbarui logical reminder dan fan-out deliveries untuk seluruh member aktif household (jika `recipient_user_id = null`) atau penerima tunggal; menyelaraskan quiet hours masing-masing penerima secara terisolasi; membatalkan delivery pending untuk anggota yang tidak lagi menjadi target.
+    - `cancel()`: membatalkan logical reminder dan seluruh delivery miliknya yang berstatus `pending` (delivery yang sudah `sent` tetap dipertahankan).
+    - `syncDeliveriesForNewMember()`: membuat delivery pending baru untuk reminder household masa depan ketika partner baru bergabung. Terintegrasi langsung pada `AcceptInvitation`.
+    - `dispatchDueDeliveries()`: memproses pending delivery yang jatuh tempo (`remind_at <= now` dan `next_attempt_at <= now`). Menjalankan tiap eksekusi pengiriman di dalam konteks tenant household (`HouseholdContext::runInContext`) agar audit, event, dan akses data tetap terisolasi.
+    - Retry & Terminal Failure (Q-M9): batas maksimal 3 percobaan dengan staged backoff (5 menit, 15 menit, 30 menit). Jika gagal 3 kali berturut-turut, status menjadi `failed` dengan kode error di `last_error_code`.
+  - **P-08 — Bootstrap Konteks Tenant untuk Job/Command:**
+    - `HouseholdContext::runInContext(Household $household, callable $callback)`: mengeksekusi closure di bawah household tertentu dan mengembalikan konteks sebelumnya secara aman di blok `finally`. Digunakan oleh `ReminderService` dan scheduler command.
+  - **Scheduler & Artisan Command:**
+    - `App\Core\Console\Commands\DispatchRemindersCommand`: signature `reminders:dispatch`.
+    - Didaftarkan di `AppServiceProvider` dan dijadwalkan setiap menit di `routes/console.php` (`Schedule::command('reminders:dispatch')->everyMinute()`) sesuai Masterplan §13.4.
+- **Pengujian & Kasus Uji Khusus:**
+  - `tests/Unit/QuietHoursCalculatorTest.php` (6 test, 12 assertion):
+    - Penanganan quiet hours kosong, invalid, atau durasi 0.
+    - Penggeseran reminder malam hari (cross-midnight) ke pagi berikutnya.
+    - Penggeseran reminder dini hari (cross-midnight) ke pagi hari yang sama.
+    - Reminder siang hari di luar quiet hours tidak bergeser.
+    - Batas waktu persis: mulai bergeser pada start, tetapi langsung terbuka pada end.
+    - Penggeseran quiet hours same-day (siang hari).
+  - `tests/Feature/ReminderEngineTest.php` (9 test, 44 assertion):
+    - Penjadwalan reminder logical dan fan-out delivery ke seluruh anggota household.
+    - Idempotensi reminder dan delivery tanpa duplikasi record saat update.
+    - Isolasi quiet hours antar member (owner bergeser ke 06:00, partner tetap 22:00).
+    - Penjadwalan reminder untuk penerima tunggal spesifik.
+    - Pembatalan reminder dan cascading pembatalan hanya ke delivery pending.
+    - Sinkronisasi delivery reminder household otomatis saat partner menerima undangan.
+    - Dispatch delivery jatuh tempo dalam konteks tenant household (`HouseholdContext`).
+    - Staged retry backoff (5m, 15m) dan status terminal failed setelah 3 kegagalan per Q-M9.
+    - Eksekusi command Artisan `reminders:dispatch`.
+- **Verifikasi:**
+  - `composer test`: **272 test/2119 assertion** lulus (+15 test baru, 0 gagal).
+  - `npm test`: **4 test JS** lulus.
+  - `composer lint` (Pint): Lulus.
+  - `composer analyse` (Larastan level 6): `[OK] No errors` (56 file).
+- **Dokumen yang diselaraskan:** `docs/logbook.md` (entri ini), `docs/development-plan.md`, `docs/pending.md` (penutupan P-08, penambahan P-18 untuk Q-M9), dan `docs/00-MASTERPLAN.md`.
+
+### LOG-049 - Notification center, preferensi saluran, web push, mail, notifikasi uji, dan penutupan P-14 (CORE-10)
+
+- **Tujuan Task:** Menyelesaikan spesifikasi §5.2 poin 6 dan §15 CORE-10: skema tabel `notifications` dan `push_subscriptions` dengan polymorphic ULID morphs, integrasi trait `HasPushSubscriptions` pada User, saluran database/webpush/mail, kelas notifikasi `ReminderNotification` dan `TestNotification`, UI Notification Center (`/notifications`) dan Notification Settings (`/settings/notifications`), serta penutupan item P-14.
+- **Implementasi:**
+  - **Skema & Migrasi (`2026_10_27_000003_core_create_notifications_and_push_subscriptions_tables.php`):**
+    - Tabel `notifications`: `uuid` PK, `type`, `notifiable_type`, `notifiable_id` (36, mendukung ULID User), `data` text, `read_at` nullable timestamp, index `(notifiable_type, notifiable_id)`.
+    - Tabel `push_subscriptions`: `bigIncrements` PK, `subscribable_type`, `subscribable_id` (36, mendukung ULID User), `endpoint` (500) unique, `public_key`, `auth_token`, `content_encoding`, index `(subscribable_type, subscribable_id)`.
+  - **User & Trait:**
+    - Model `App\Models\User` dipasangi trait `NotificationChannels\WebPush\HasPushSubscriptions`.
+  - **P-14 — Pengiriman Email Undangan Masuk Antrean:**
+    - `App\Mail\HouseholdInvitationMail` kini mengimplementasikan `Illuminate\Contracts\Queue\ShouldQueue` sehingga proses `Mail::to()->send()` otomatis di-queue di background driver tanpa menahan proses response atau memblokir transaksi (menutup P-14).
+  - **Kelas Notifikasi (`App\Core\Notifications`):**
+    - `ReminderNotification`: Dinamis memilih channel `['database']` + `WebPushChannel` (jika `notify_push = true`) + `mail` (jika `notify_email = true`). Menyimpan metadata reminder ke database, WebPushMessage ke browser, dan MailMessage ke email.
+    - `TestNotification`: Digunakan untuk pengujian pengiriman notifikasi dari halaman pengaturan.
+  - **Integrasi Reminder Dispatcher:**
+    - `ReminderService::dispatchDueDeliveries()` kini memicu `recipient->notify(new ReminderNotification($delivery))` dengan eager loading `recipient.pushSubscriptions` untuk mencegah pelanggaran lazy loading.
+  - **UI Livewire & Blade:**
+    - Notification Center (`App\Livewire\Notifications\NotificationCenter` di `/notifications`): menampilkan daftar notifikasi in-app 50 terbaru, status unread highlight, tombol tandai dibaca per item, tandai semua dibaca, dan hapus notifikasi.
+    - Notification Settings (`App\Livewire\Settings\NotificationSettings` di `/settings/notifications`): formulir pengaturan preferensi push, email, quiet hours start/end, daily digest time, serta tombol "Kirim Notifikasi Uji".
+    - Indikator Bell: icon lonceng di layout master (`app.blade.php`, `components/layouts/app.blade.php`, `components/app-layout.blade.php`) diubah menjadi tautan ke `/notifications` dilengkapi badge dot saat terdapat unread notifications.
+- **Pengujian & Kasus Uji Khusus:**
+  - `tests/Feature/NotificationTest.php` (7 test, 34 assertion):
+    - Verifikasi `HouseholdInvitationMail` mengimplementasikan `ShouldQueue`.
+    - Seleksi channel notifikasi strictly mengikuti flag preferensi pengguna (`notify_push`, `notify_email`).
+    - Dispatch reminder delivery memicu `ReminderNotification` dan menghasilkan record di database notifications.
+    - Render dan pembaruan preferensi form `NotificationSettings`.
+    - Pengiriman notifikasi uji via aksi `sendTestNotification`.
+    - Manajemen notifikasi in-app pada `NotificationCenter` (tandai dibaca, tandai semua dibaca, hapus).
+    - Proteksi route notifikasi terhadap unauthenticated dan non-onboarded user.
+- **Verifikasi:**
+  - `composer test`: **279 test/2153 assertion** lulus (+7 test baru, 0 gagal).
+  - `npm test`: **4 test JS** lulus.
+  - `composer lint` (Pint): Lulus.
+  - `composer analyse` (Larastan level 6): `[OK] No errors` (60 file).
+- **Dokumen yang diselaraskan:** `docs/logbook.md` (entri ini), `docs/development-plan.md`, `docs/pending.md` (penutupan P-14), dan `docs/00-MASTERPLAN.md`.
+
+### LOG-050 - Dashboard kerangka, integrasi aggregator, dan dynamic module widget slots (CORE-12)
+
+- **Tujuan Task:** Menyelesaikan spesifikasi §9.3 dan §15 CORE-12: blok beranda responsif yang mengonsumsi `AlertAggregator` dan `CalendarAggregator`, greeting berbasis waktu lokal pengguna, kartu ringkasan keluarga, serta slot widget modular dinamis (`DashboardWidget`) yang otomatis disembunyikan jika modul dinonaktifkan di `config/modules.php`.
+- **Implementasi:**
+  - **Kontrak Widget Modular (`App\Core\Dashboard\DashboardWidget`):**
+    - Interface untuk widget modul domain: `key()`, `module()`, `order()`, `isEnabled(Household)`, dan `render(Household): View|string`.
+  - **Dashboard Manager (`App\Core\Dashboard\DashboardManager`):**
+    - Mengumpulkan seluruh widget modul yang di-tag `dashboard.widgets`.
+    - Menyaring widget: hanya modul aktif (`config("modules.{$module}") = true` atau `module = 'core'`) dan lolos `isEnabled(Household)`.
+    - Menyajikan `alerts(Household)` (maksimal 5 dari `AlertAggregator`).
+    - Menyajikan `todayAndTomorrow(Household)` (rentang hari ini s.d. besok malam dalam timezone household).
+    - Menyajikan `upcomingWeek(Household)` (rentang hari +2 s.d. hari +8, maksimal 7 item).
+    - Menyajikan `greeting()`: salam lokal ("Selamat pagi/siang/sore/malam, {nama}") berdasarkan jam lokal di timezone household pengguna.
+    - Didaftarkan sebagai singleton di `AppServiceProvider`.
+  - **View & Layout Beranda (`resources/views/dashboard.blade.php`):**
+    - Diselaraskan ke urutan blok §9.3:
+      1. Header sapaan waktu lokal + nama household.
+      2. Blok alert aktif dengan status badge (danger/warning/info) dan tautan aksi.
+      3. Dynamic module widgets grid (jika ada widget aktif).
+      4. Grid 2 kolom responsif: "Hari Ini & Besok" dan "7 Hari ke Depan".
+      5. Kartu ringkasan informasi keluarga (zona waktu, hari mulai periode keuangan, kapasitas anggota terdaftar).
+- **Pengujian & Kasus Uji Khusus:**
+  - `tests/Feature/DashboardTest.php` (3 test, 17 assertion):
+    - Penentuan greeting waktu lokal lintas jam (pagi, siang, sore, malam) dalam timezone Asia/Jakarta.
+    - Render beranda dengan dummy AlertSource dan CalendarSource, memastikan alert, item kalender, dan info keluarga tampil lengkap.
+    - Penapisan widget dinamis berdasarkan feature flag modul (`config(['modules.finance' => false])`), memastikan widget modul nonaktif tidak dirender.
+- **Verifikasi:**
+  - `composer test`: **282 test/2170 assertion** lulus (+3 test baru, 0 gagal).
+  - `npm test`: **4 test JS** lulus.
+  - `composer lint` (Pint): Lulus.
+  - `composer analyse` (Larastan level 6): `[OK] No errors` (62 file).
+- **Dokumen yang diselaraskan:** `docs/logbook.md` (entri ini), `docs/development-plan.md`, `docs/pending.md`, dan `docs/00-MASTERPLAN.md`.
+
+### LOG-051 - PWA offline fallback, manifest, service worker, dan cache isolation (CORE-13)
+
+- **Tujuan Task:** Menyelesaikan spesifikasi §15 CORE-13: PWA installable dengan manifest valid, ikon aplikasi, service worker offline fallback (`offline.html`), offline indicator banner di layout Blade, integrasi prompt update, serta pembersihan cache terisolasi (`CLEAR_CACHE`) saat logout untuk mencegah kebocoran data antar pengguna atau antar sesi household.
+- **Implementasi:**
+  - **Manifest & Aset PWA:**
+    - `public/manifest.json` dengan `name`, `short_name`, `theme_color: #4f46e5`, `background_color: #0f172a`, `display: standalone`, serta ikon SVG 192x192 dan 512x512 (`public/icons/icon-192.svg`, `public/icons/icon-512.svg`).
+  - **Service Worker (`public/sw.js`):**
+    - Cache versioning (`family-hub-v1-static` & `family-hub-v1-offline`).
+    - Precache offline page dan ikon inti saat `install`.
+    - Network-first dengan fallback ke cache offline saat navigasi gagal (offline).
+    - Menangani pesan `CLEAR_CACHE` dan `SKIP_WAITING` untuk isolasi cache.
+    - Menangani event `push` dan `notificationclick` untuk Web Push notification fallback.
+  - **Halaman Offline & Banner:**
+    - `public/offline.html`: Halaman offline standalone mandiri tanpa dependensi jaringan, responsif light/dark.
+    - `resources/views/components/offline-banner.blade.php`: Banner peringatan Blade terintegrasi Alpine.js `x-data` menyimak event `online`/`offline`.
+  - **Injeksi Layout & Logout Hook:**
+    - Meta tags PWA dan link manifest ditambahkan ke seluruh layout utama (`welcome.blade.php`, `layouts/app.blade.php`, `components/layouts/app.blade.php`, `components/app-layout.blade.php`, `components/auth-layout.blade.php`).
+    - `resources/js/app.js`: Registrasi Service Worker, hook `window.clearPwaCache()`, dan event listener form logout yang otomatis mengirim pesan `CLEAR_CACHE` sebelum submit logout.
+- **Pengujian & Kasus Uji Khusus:**
+  - `tests/Feature/PwaTest.php` (5 test, 25 assertion):
+    - Verifikasi struktur dan konten `manifest.json`.
+    - Verifikasi `sw.js` memiliki logika cache isolation dan push handler.
+    - Verifikasi `offline.html` berisi teks pesan ramah dan UI standalone.
+    - Verifikasi meta tag PWA dan manifest dirender pada layout authenticated dan guest.
+    - Verifikasi komponen offline banner terpasang pada layout aplikasi.
+- **Verifikasi:**
+  - `composer test`: **287 test/2195 assertion** lulus (+5 test baru, 0 gagal).
+  - `composer lint` (Pint): Lulus.
+  - `composer analyse` (Larastan level 6): `[OK] No errors` (62 file).
+- **Dokumen yang diselaraskan:** `docs/logbook.md` (entri ini), `docs/development-plan.md`, `docs/pending.md`, dan `docs/00-MASTERPLAN.md`.
+
+### LOG-052 - Profil, Household & Member Settings, Log Aktivitas (CORE-14), Admin Panel & Domain Isolation (CORE-15), Backup & Export (CORE-16), dan Deploy Host Bare-Metal (CORE-02)
+
+- **Tujuan Task:** Menyelesaikan seluruh sisa task Phase 0 Core Module:
+  - **CORE-14:** Halaman Pengaturan terpadu (`/settings/profile`, `/settings/household`, `/settings/notifications`, `/settings/activity`), manajemen nama & email, ganti kata sandi dengan validasi kata sandi lama, pengelolaan rumah tangga & siklus keuangan (1-28), alur undang partner / batalkan undangan / transfer kepemilikan / keluarkan partner / keluar mandiri, dan penampil log aktivitas Spatie Activitylog 100 item terakhir. Q-M12 (Email OTP 2FA) dicatat sebagai item tertunda `P-19` di `docs/pending.md`.
+  - **CORE-15:** Panel Administrator sistem (`/admin`) di bawah middleware `EnsureSystemAdmin` (`is_system_admin = true`), ringkasan household (nama, kapasitas member, tanggal dibuat, storage), kelola status pengguna (nonaktifkan/aktifkan via `disabled_at` dan pencegahan login akun dinonaktifkan di Fortify), undang household baru (`InviteNewHousehold`), serta pembuktian isolasi domain (admin dilarang membuka route data household privat dengan respons 403 Forbidden).
+  - **CORE-16:** Integrasi backup terenkripsi via Spatie Laravel Backup, pendaftaran scheduler pembersihan (`backup:clean` 01:30) dan backup (`backup:run` 02:00) di `routes/console.php`, kontrak modular `HouseholdExporter`, implementasi `CoreHouseholdExporter`, dan `HouseholdExportService` yang memaketkan data keluarga ke dalam arsip ZIP siap unduh di halaman pengaturan. Q-M11 (retensi & purge backup) dicatat sebagai item tertunda `P-20`.
+  - **CORE-02:** Verifikasi operasional di host Odroid-C2 Armbian: Nginx aktif di port 80 melayani HTTP 200, PHP 8.5 FPM aktif, migrasi database SQLite WAL sukses (`php artisan migrate --force`), service antrean asinkron `family-hub-worker.service` diaktifkan dan berjalan normal di systemd, cron scheduler terpasang di `/etc/cron.d/family-hub-scheduler`, dan aset frontend terkompilasi bersih via Vite.
+- **Pengujian & Kasus Uji Khusus:**
+  - `tests/Feature/SettingsAndProfileTest.php` (7 test, 35 assertion):
+    - Update profil nama dan email.
+    - Ganti password dengan verifikasi password lama.
+    - Owner memperbarui nama household, timezone, dan hari mulai periode.
+    - Owner mengundang partner dan membatalkan undangan pending.
+    - Owner mengalihkan kepemilikan ke partner dan mengeluarkan partner.
+    - Partner meninggalkan household secara mandiri.
+    - Activity log viewer merender log peristiwa keluarga.
+  - `tests/Feature/AdminPanelAndIsolationTest.php` (7 test, 27 assertion):
+    - Guest diredireksi ke login saat mengakses `/admin`.
+    - User non-admin ditolak dengan 403 Forbidden dari `/admin`.
+    - System admin dapat membuka panel dan melihat daftar household.
+    - System admin dapat mengundang calon household baru dan membatalkan token pending.
+    - System admin dapat menonaktifkan dan mengaktifkan user (user dinonaktifkan ditolak saat login).
+    - System admin tidak dapat menonaktifkan diri sendiri atau sesama admin.
+    - **AC CORE-15:** System admin ditolak dengan 403 Forbidden saat membuka route domain household (`/settings/household`, `/settings/activity`, `/notifications`) dan konteks household tetap null.
+  - `tests/Feature/BackupAndExportTest.php` (2 test, 12 assertion):
+    - `HouseholdExportService` memvalidasi pembuatan arsip ZIP lengkap (manifest.json, household.json, members.json, period_settings.json).
+    - Owner dapat memicu unduhan ekspor ZIP dari halaman pengaturan.
+  - Penyesuaian `LayoutAndComponentsTest` untuk greeting dinamis waktu lokal dashboard.
+- **Verifikasi:**
+  - `composer test`: **303 test/2269 assertion** lulus (+16 test baru, 0 gagal).
+  - `npm test`: **4 test JS** lulus.
+  - `composer lint` (Pint): Lulus.
+  - `composer analyse` (Larastan level 6): `[OK] No errors` (70 file).
+  - `npm run build`: Berhasil terkompilasi (0 error).
+  - `systemctl status nginx`, `php8.5-fpm`, `family-hub-worker`: Seluruh service aktif di Odroid-C2.
+  - `curl -I http://127.0.0.1:80/`: Mengembalikan `HTTP/1.1 200 OK`.
+- **Dokumen yang diselaraskan:** `docs/logbook.md` (entri ini), `docs/development-plan.md`, `docs/pending.md` (pencatatan P-19 & P-20), dan `docs/00-MASTERPLAN.md`.
+
+### LOG-053 - Penyesuaian Salin Tautan Undangan ke Clipboard dan Pencatatan SMTP Pending (P-21)
+
+- **Tujuan Task:** Memenuhi permintaan reviewer untuk menggunakan pembagian tautan undangan via clipboard/salin langsung selama fase testing lokal dan mencatat konfigurasi SMTP produksi ke dalam daftar pending (`docs/pending.md`) serta rencana kerja (`docs/development-plan.md`).
+- **Implementasi:**
+  - Menambahkan properti `$latestInvitationLink` dan komponen interaktif Blade dengan Alpine.js pada:
+    - **Panel Admin (`App\Livewire\Admin\AdminDashboard` & `admin-dashboard.blade.php`):** Saat admin membuat undangan household baru, tautan pendaftaran (`/invitation/{token}`) langsung ditampilkan di banner feedback lengkap dengan input text readonly dan tombol **"Salin Tautan"** (`navigator.clipboard.writeText`).
+    - **Pengaturan Keluarga (`App\Livewire\Settings\HouseholdSettings` & `household-settings.blade.php`):** Saat pemilik mengundang pasangan, tautan undangan partner langsung tersedia di layar untuk disalin dengan satu klik.
+  - Memperbarui `docs/pending.md` dengan menambahkan item **`P-21`** (Konfigurasi Provider SMTP Produksi ditunda ke Phase 4 sebelum go-live; driver saat ini tetap aman memakai mode `log`).
+  - Memperbarui `docs/development-plan.md` pada Phase 4 poin 4 menyelaraskan verifikasi SMTP produksi dengan item `P-21`.
+- **Verifikasi:**
+  - `composer test`: **303 test/2269 assertion** lulus (0 gagal).
+  - `composer lint` (Pint): Lulus.
+  - `composer analyse` (Larastan level 6): `[OK] No errors` (70 file).
+- **Dokumen yang diselaraskan:** `docs/logbook.md` (entri ini), `docs/development-plan.md`, dan `docs/pending.md` (penambahan `P-21`).
+
+### LOG-054 - Perbaikan Render Ikon SVG pada Komponen FAB (Floating Action Button)
+
+- **Tujuan Task:** Memperbaiki rendering ikon plus (+) pada tombol utama aksi cepat mobile bottom navigation (`<x-fab>`).
+- **Penyebab & Analisis:**
+  - Komponen `resources/views/components/fab.blade.php` sebelumnya menggunakan ternary di dalam kurung kurawal ganda Blade: `{{ $slot->isEmpty() ? '<svg...>' : $slot }}`.
+  - Karena Blade otomatis menjalankan `htmlspecialchars()`, tag `<svg>` diubah menjadi teks entitas HTML `&lt;svg...&gt;` mentah di layar alih-alih merender grafik vektor.
+- **Implementasi Perbaikan:**
+  - Mengubah logika render menjadi blok `@if ($slot->isEmpty()) ... @else ... @endif` menggunakan komponen `<x-heroicon-o-plus class="size-6 stroke-[2.5]" />`.
+  - Menerapkan panduan `premium-frontend-ui` dengan micro-interaction: rotasi halus saat di-hover (`group-hover:rotate-90`) dan efek tactile scale (`group-hover:scale-105 group-active:scale-95`).
+- **Verifikasi:**
+  - Render komponen Blade via CLI terbukti menghasilkan tag `<svg>` valid tanpa escape.
+  - `composer test`: **303 test** lulus (termasuk `LayoutAndComponentsTest`).
+  - Cache view dibersihkan via `php artisan view:clear`.
+- **Dokumen yang diselaraskan:** `docs/logbook.md` (entri ini).
+
+### LOG-055 - Phase 1 Finance: Skema & Model (FIN-01) dan Seeder Kategori Indonesia & Demo (FIN-02)
+
+- **Tujuan Task:** Memulai implementasi Phase 1 (Modul Finance) sesuai `docs/01-MODULE-FINANCE.md` dan arahan reviewer ("continue core development until finish"). Menuntaskan fondasi basis data, model Eloquent, enum PHP, factory, provider, listener bootstrap kategori Indonesia otomatis, serta seeder data demo.
+- **Implementasi:**
+  - **Skema Database (`database/migrations/2026_10_28_000001_finance_create_tables.php`):**
+    - `fin_accounts`: Akun/dompet (cash, bank, ewallet, credit_card, savings), opening balance & date, limit kartu kredit, warna, icon heroicon, include_in_total, soft deletes.
+    - `fin_categories`: Kategori 2 level (parent_id self FK), tipe income/expense, system_key unik per (household, system_key, type), default_allocation.
+    - `fin_recurring_bills`: Tagihan & pemasukan rutin, frekuensi rrule (RFC 5545), horizon tracking, variabel amount flag.
+    - `fin_loans`: Kontrak hutang/piutang (payable/receivable), pokok, jumlah cicilan, total_payable, selisih total, first_due_date, status.
+    - `fin_planned_items`: Rencana pemasukan/pengeluaran bulanan, due_date, period (YYYY-MM-DD), status (planned, partial, paid, skipped, cancelled), unique compound keys idempoten.
+    - `fin_transactions`: Mutasi uang aktual (income, expense, transfer), to_account_id, allocation snapshot, transfer tabungan neto reversal FK.
+    - `fin_budgets`: Anggaran kategori induk per periode (YYYY-MM-DD), threshold sent timestamps, unique (household, category, period).
+    - `fin_allocation_plans`: Perencanaan lima alokasi (living, tertiary, debt, savings, social) dengan integer basis points (bps) 0..10000.
+    - Seluruh nama index eksplisit MariaDB-safe (panjang < 30 karakter).
+  - **Enum PHP (`App\Modules\Finance\Enums`):**
+    - `AccountType`, `CategoryType`, `TransactionType`, `Direction`, `LoanDirection`, `LoanFrequency`, `LoanStatus`, `PlannedStatus`, `PlannedSource`, `AllocationCategory`.
+    - Dilengkapi helper method (`isSavings()`, `isOperational()`, `isPayable()`, `badgeColor()`, `label()`, `color()`, `icon()`).
+    - Lokalisasi bahasa Indonesia dan Inggris di `lang/id/finance.php` dan `lang/en/finance.php`.
+  - **Model Eloquent (`App\Modules\Finance\Models`):**
+    - `Account`, `Category`, `RecurringBill`, `Loan`, `PlannedItem`, `Transaction`, `Budget`, `AllocationPlan`.
+    - Seluruh model menggunakan ULID primary key, tenant scope `BelongsToHousehold`, `SoftDeletes` (kecuali budget/allocation plan), casts strongly-typed, dan relasi bidirectional dengan `App\Core\Models\Household`.
+  - **Event & Bootstrap Kategori Otomatis (FIN-02):**
+    - Event `App\Core\Events\HouseholdCreated` didispatch setelah pembuatan household di `CreateHousehold`.
+    - Listener `App\Modules\Finance\Listeners\SeedDefaultFinanceCategories` menangani event dan menjalankan `SeedDefaultCategories`.
+    - Action `App\Modules\Finance\Actions\SeedDefaultCategories` membuat 16 kategori induk pengeluaran, subkategori rincian alokasi (Belanja Dapur, Makan di Luar, Bensin, Listrik, dsb.), 8 kategori pemasukan, dan kategori sistem per §11 spesifikasi Finance.
+    - Seeder demo `App\Modules\Finance\Database\Seeders\FinanceDemoSeeder` mempopulasikan akun, anggaran, recurring bills, pinjaman KPR BTN, dan transaksi demo realistis.
+  - **Feature Flag & Service Provider:**
+    - `FinanceServiceProvider` didaftarkan di `bootstrap/providers.php` dan mengaktifkan route group `/finance` saat `config('modules.finance')` bernilai true.
+    - `config/modules.php` mengaktifkan `'finance' => true` (organizer & asset tetap false).
+  - **Host Live Sync:**
+    - Izin direktori `storage/` dan `database/` diselaraskan untuk eksekusi container.
+    - Migrasi `2026_10_28_000001_finance_create_tables` berhasil dieksekusi pada database SQLite Odroid-C2.
+    - Kategori default berhasil di-seed pada household aktif user ("Ucepedia").
+- **Verifikasi:**
+  - `tests/Feature/Finance/FinanceSchemaTest.php` (5 test, 90 assertion): Seluruh tabel, kolom, index, enum, kalkulasi basis point, dan unique constraint teruji.
+  - `tests/Feature/Finance/FinanceCategoryAndSeederTest.php` (2 test, 24 assertion): Seeding kategori lengkap dan demo data teruji.
+  - `composer test`: **310 test/2364 assertion** lulus (+7 test baru, 0 gagal).
+  - `npm test`: **4 test JS** lulus.
+  - `composer lint` (Pint): Lulus.
+  - `composer analyse` (Larastan level 6): `[OK] No errors` (93 file).
+  - `npm run build`: Berhasil terkompilasi (2.64s).
+- **Dokumen yang diselaraskan:** `docs/logbook.md` (entri ini), `docs/development-plan.md`, `docs/pending.md` (pembaruan P-12 untuk modul finance).
+
+### LOG-056 - Resolusi Batch Pending Reviewer (P-05, P-06, P-15, P-16, P-18, P-19, P-20) dan Instalasi Playwright MCP
+
+- **Tujuan Task:** Menindaklanjuti arahan reviewer untuk mengeksekusi rekomendasi atas seluruh item pending di Bagian A `docs/pending.md` serta memasang Playwright MCP untuk workflow front-end design.
+- **Implementasi Resolusi Pending:**
+  - **P-05 (Histori Periode):** Ditetapkan bahwa tidak diperlukan baris backfill historis saat bootstrap household. `PeriodResolver` secara deterministik menangani rentang tanggal lampau dari setting awal. Item P-05 ditutup.
+  - **P-06 (Pengecualian Trait Tenant):** Dikonfirmasi pengecualian permanen kolom `household_id` pada tabel `activity_log` (Spatie polymorphic audit global). `HouseholdMember` tetap di-scope ketat via composite unique constraint dan foreign key. Item P-06 ditutup.
+  - **P-15 (Rate Limiting Lupa Kata Sandi):** Menerapkan rate limiter 5 permintaan/menit per IP untuk endpoint `POST /forgot-password` via `RateLimiter::for('forgot-password')` di `FortifyServiceProvider` dan middleware `throttle:forgot-password` di `routes/web.php`. Ditambahkan feature test di `tests/Feature/PasswordResetTest.php` yang menguji respons HTTP 429 saat melewati ambang. Item P-15 ditutup.
+  - **P-16 & Playwright MCP:** Memasang `@playwright/mcp` secara global (`/usr/local/bin/playwright-mcp`) dan mendaftarkannya di `.vscode/mcp.json` dengan argumen `--no-sandbox` agar siap digunakan untuk peninjauan desain UI front-end tanpa mengotori `package.json` repo. Item P-16 ditutup.
+  - **P-18 (Q-M9 Reminder Retry):** Menetapkan kebijakan retry reminder otomatis (3x percobaan, staged backoff 5m, 15m, 30m, status terminal failed). Item P-18 ditutup.
+  - **P-19 (Q-M12 2FA Email OTP):** Menunda fitur 2FA email OTP ke rilis v1.1. Untuk MVP rilis keluarga, keamanan mengandalkan enkripsi password kuat, rate limiting, dan invite-only registration. Item P-19 ditutup untuk MVP dan dicatat pada Bagian B.
+  - **P-20 (Q-M11 Retensi Backup):** Menyelaraskan kebijakan retensi di `config/backup.php` (7 hari harian, 4 minggu mingguan, 6 bulan bulanan, 1 tahun tahunan; auto-clean via cron 01:30). Item P-20 ditutup.
+- **Verifikasi:**
+  - `composer test`: **311 test/2373 assertion** lulus (+1 test rate limit, 0 gagal).
+  - `composer lint` (Pint): Lulus.
+  - `composer analyse` (Larastan level 6): `[OK] No errors` (93 file).
+  - `playwright-mcp --help`: CLI Playwright MCP berhasil dipanggil dan siap pakai.
+- **Dokumen yang diselaraskan:** `docs/logbook.md` (entri ini), `docs/pending.md`, dan `docs/development-plan.md`.
+
+### LOG-057 - Phase 1 Finance: Akun, Transaksi, Anggaran, Rencana Alokasi, Recurring, Pinjaman, Laporan & Integrasi (FIN-03 sampai FIN-16)
+
+- **Tujuan Task:** Menyelesaikan seluruh sisa implementasi Phase 1 (Modul Finance) sesuai spesifikasi `docs/01-MODULE-FINANCE.md`:
+  - **FIN-03 (Akun & Saldo):** Manajemen akun terintegrasi (`AccountBalanceService`), pembaruan saldo realtime dari transaksi, aksi penyesuaian saldo langsung (`AdjustAccountBalance`), dan rekonsiliasi saldo akhir periode (`ReconcileAccounts`).
+  - **FIN-04 (Kategori Bertingkat & Alokasi):** Manajemen kategori 2 level (parent & subcategory), aksi penggabungan kategori (`MergeCategories`) yang memindahkan transaksi dan tagihan dengan aman, proteksi kategori sistem, dan soft delete/arsip kategori.
+  - **FIN-05 & FIN-06 (Transaksi Cepat & Quick Add):** Input transaksi responsif (pemasukan, pengeluaran, transfer), drawer/modal Quick Add terintegrasi di navigasi/FAB, filter periode dan pencarian, mekanisme Undo transaksi 5 detik via banner interaktif, serta validasi batas nominal bilangan bulat aman.
+  - **FIN-07 (Review Struk & Payee Suggestions):** Komponen review struk manual (ekstraksi tanggal, merchant, nominal, rincian item) dan penyaranan penerima/merchant (payee suggestion) otomatis berbasis frekuensi historis.
+  - **FIN-08 (Anggaran Bulanan):** Penetapan anggaran per kategori induk per periode, pelacakan konsumsi anggaran, dan pengiriman notifikasi peringatan ambang batas 80% & 100% (`BudgetThresholdNotification`) sekali per periode dengan reset timestamp jika pagu dinaikkan. Pengecualian BR-FIN-030 (transaksi yang terhubung ke PlannedItem tidak mengurangi kuota anggaran bulanan) diterapkan secara ketat.
+  - **FIN-09 (Rencana Alokasi 5 Pos):** Konfigurasi alokasi pendapatan (Living, Tertiary, Debt, Savings, Social) menggunakan integer basis points (0..10000), peringatan visual saat rasio cicilan hutang melampaui ambang batas sehat 30%, dan pencatatan net transfer tabungan.
+  - **FIN-10 & FIN-11 (Planned Items & Tagihan Berulang):** Tracking tagihan/pemasukan rutin (`RecurringBill`) dengan generator horizon idempoten (`GeneratePlannedItemsFromRecurringBills`), auto-recompute status (`RecomputePlannedItem`: planned -> partial -> paid) saat transaksi terhubung, penandaan kadaluarsa (`MarkOverduePlannedItemsCommand`), serta aksi lewati/batal (skip/unskip).
+  - **FIN-12 (Pinjaman & Cicilan):** Kontrak hutang/piutang (`Loan`), generator jadwal cicilan (`GenerateLoanInstallments`) dengan penanganan clamping akhir bulan otomatis (misal 31 Januari -> 28/29 Februari), pelunasan dipercepat (`AcceleratedLoanSettlement`), dan pencatatan pelunasan sebagian/penuh.
+  - **FIN-13 (Rencana Bulanan / Monthly Plan):** Tampilan Livewire `/finance/plan` untuk proyeksi komitmen keuangan bulanan (tagihan rutin, cicilan, tabungan, alokasi pengeluaran), ringkasan sisa kewajiban, dan pelacakan pemenuhan per periode.
+  - **FIN-14 (Laporan & Arus Kas):** Dashboard laporan `/finance/reports`, ringkasan pemasukan vs pengeluaran, perbandingan realisasi vs anggaran, grafik tren arus kas bulanan, dan ekspor data transaksi ke CSV (`ExportTransactionsCsvController`).
+  - **FIN-15 (Integrasi Modular & Gateway):**
+    - Implementasi `DefaultFinanceGateway` dan `NullFinanceGateway` di bawah kontrak `FinanceGateway` untuk pencatatan pengeluaran modul eksternal (Organizer/Asset).
+    - `FinanceCalendarSource`: Memasok tagihan jatuh tempo dan cicilan pinjaman ke agregator kalender bersama Core (`CalendarAggregator`).
+    - `FinanceAlertSource`: Memasok peringatan anggaran terlampaui dan tagihan mendesak ke agregator peringatan Core (`AlertAggregator`).
+    - `FinanceSummaryWidget` & `FinanceCashflowWidget`: Widget keuangan modular dinamis untuk dashboard utama Core (`DashboardManager`).
+    - `FinanceHouseholdExporter`: Integrator ekspor modular yang memaketkan 8 dataset tabel keuangan ke dalam arsip ZIP cadangan household (`HouseholdExportService`).
+  - **FIN-16 (Pengujian Fitur & Isolasi Tenant):**
+    - `tests/Feature/Finance/AccountAndBalanceTest.php` (6 test, 29 assertion): Perhitungan saldo akun data-driven, penyesuaian saldo, dan rekonsiliasi periode.
+    - `tests/Feature/Finance/RecurringBillAndPlannedItemTest.php` (2 test, 14 assertion): Idempotensi generator planned items dan recompute status otomatis.
+    - `tests/Feature/Finance/BudgetAndAllocationTest.php` (3 test, 23 assertion): Pengecualian BR-FIN-030, peringatan threshold 80%/100%, dan kalkulasi 5 pos alokasi serta rasio hutang.
+    - `tests/Feature/Finance/LoanLifecycleTest.php` (2 test, 17 assertion): Jadwal 12 cicilan dengan clamping tanggal 31 ke akhir Februari, paid before tracking, dan pelunasan dipercepat.
+    - `tests/Feature/Finance/TransactionAndQuickAddTest.php` (5 test, 28 assertion): Transaksi cepat, drawer quick add, undo dalam jendela waktu, pencarian, dan validasi nominal.
+    - `tests/Feature/Finance/FinanceIsolationAndIntegrationsTest.php` (7 test, 33 assertion): Isolasi tenant ketat antar household untuk seluruh endpoint keuangan dan integrasi kalender/alert/widget/ekspor ZIP.
+    - `tests/Feature/Finance/FinanceGatewayTest.php` (2 test, 7 assertion): Perekaman pengeluaran eksternal via gateway aktif dan fallback no-op gateway null.
+- **Verifikasi:**
+  - `composer test`: **346 test/2515 assertion** lulus (+35 test baru, 0 gagal).
+  - `npm test`: **4 test JS** lulus.
+  - `composer lint` (Pint): Lulus.
+  - `composer analyse` (Larastan level 6): `[OK] No errors` (140 file).
+  - `npm run build`: Berhasil terkompilasi bersih (4.58s).
+- **Dokumen yang diselaraskan:** `docs/logbook.md` (entri ini), `docs/development-plan.md`, `docs/pending.md`, dan `docs/00-MASTERPLAN.md`.
+
+### LOG-058 - Penataan 5 Kategori Utama Pengeluaran, Anggaran Berbasis Persentase 100%, dan Input Sub-kategori Manual Dinamis
+
+- **Tujuan Task:**
+  1. Membatasi kategori utama pengeluaran maksimal 5 pos utama (Kebutuhan Pokok, Lifestyle, Tabungan, Donasi, Hutang) agar tidak membebani pengguna dan selaras langsung dengan 5 pos alokasi keuangan keluarga.
+  2. Mengubah penentuan anggaran bulanan dari input nominal rupiah manual menjadi berbasis persentase (%) dari keseluruhan pemasukan, dengan total seluruh alokasi wajib tepat 100%.
+  3. Memungkinkan input sub-kategori diketik secara bebas/manual saat pencatatan transaksi maupun di manajemen kategori, dengan auto-create sub-kategori di bawah kategori utama terpilih jika belum pernah ada.
+- **Perubahan:**
+  - **Migrasi Database (`2026_10_28_000002_finance_add_percentage_to_budgets_table.php`):** Menambahkan kolom `percentage` (`unsignedSmallInteger`, default 0) pada tabel `fin_budgets`.
+  - **Model (`app/Modules/Finance/Models/Budget.php`):** Menambahkan field dan casting `percentage => integer`.
+  - **Seeder Kategori (`SeedDefaultCategories.php`):** Merestrukturisasi kategori default pengeluaran menjadi tepat 5 pos utama:
+    1. **Kebutuhan Pokok** (`needs`, living)
+    2. **Lifestyle** (`lifestyle`, tertiary)
+    3. **Tabungan** (`savings`, savings)
+    4. **Donasi** (`social`, social)
+    5. **Hutang** (`loan_installment`, debt)
+    Subkategori populer disiapkan di bawah masing-masing pos induk.
+  - **Demo Seeder (`FinanceDemoSeeder.php`):** Mengatur default persentase 50% (Pokok), 20% (Lifestyle), 10% (Tabungan), 10% (Donasi), 10% (Hutang) (total 100%).
+  - **Service Anggaran (`BudgetService.php`):**
+    - Menyaring kategori sistem (`balance_adjustment`, `loan_disbursement_out`) agar tidak membingungkan plafon 5 pos.
+    - Menghitung nominal anggaran dinamis berdasarkan persentase terhadap total pemasukan periode berjalan (atau fallback ke `income_base` pada rencana alokasi).
+  - **Livewire Anggaran (`Budgets/Index.php` & `budgets/index.blade.php`):**
+    - Input persentase (%) per kategori utama dengan validasi total tepat 100%.
+    - Sinkronisasi instan ke `fin_budgets` dan `fin_allocation_plans` (basis points 0..10000).
+    - Bar visualisasi interaktif distribusi alokasi 100%.
+  - **Livewire Transaksi (`Transactions/Form.php` & `transactions/form.blade.php`):**
+    - Selector 5 kategori utama dengan input teks subkategori manual yang dilengkapi auto-complete `<datalist>`.
+    - Auto-create subkategori baru secara on-the-fly saat transaksi disimpan, mewarisi default alokasi dari kategori induk.
+    - Perbaikan `quickSaveCategory` untuk 1-tap simpan cepat tanpa override yang keliru.
+  - **Kategori Livewire (`Categories/Index.php`):**
+    - Proteksi pembatasan maksimal 5 kategori utama pengeluaran (`$parentExpenseCount >= 5`).
+- **Verifikasi:**
+  - `composer test`: **348 test / 2542 assertions** lulus (100% green, termasuk seluruh pengujian baru di `BudgetAndAllocationTest` dan `TransactionAndQuickAddTest`).
+  - `npm test`: **4 test JS** lulus.
+  - `composer lint` (Pint): Lulus rapi.
+  - `composer analyse` (Larastan level 6): `[OK] No errors` (140 file).
+  - `npm run build`: Kompilasi aset Vite sukses tanpa peringatan.
+  - Database lokal Odroid-C2: Berhasil di-refresh kategorinya untuk household aktif "Ucepedia".
+- **Dokumen yang diselaraskan:** `docs/logbook.md` (entri ini), `docs/development-plan.md`, `docs/01-MODULE-FINANCE.md`.
 
 ## Aturan pembaruan berikutnya
 

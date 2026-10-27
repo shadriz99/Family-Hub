@@ -116,3 +116,15 @@ it('requires a matching password confirmation', function (): void {
 
     expect(Hash::check('old-password', (string) $this->user->fresh()?->password))->toBeTrue();
 });
+
+it('limits password reset link requests to five per minute per ip', function (): void {
+    Notification::fake();
+
+    for ($i = 0; $i < 5; $i++) {
+        $this->from('/forgot-password')->post('/forgot-password', ['email' => 'reset@example.test'])
+            ->assertRedirect('/forgot-password');
+    }
+
+    $this->from('/forgot-password')->post('/forgot-password', ['email' => 'reset@example.test'])
+        ->assertStatus(429);
+});

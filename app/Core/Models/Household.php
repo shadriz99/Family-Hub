@@ -66,4 +66,52 @@ class Household extends Model
     {
         return $this->hasMany(HouseholdInvitation::class);
     }
+
+    /** @return HasMany<\App\Modules\Finance\Models\Account, $this> */
+    public function accounts(): HasMany
+    {
+        return $this->hasMany(\App\Modules\Finance\Models\Account::class);
+    }
+
+    /** @return HasMany<\App\Modules\Finance\Models\Category, $this> */
+    public function categories(): HasMany
+    {
+        return $this->hasMany(\App\Modules\Finance\Models\Category::class);
+    }
+
+    /** @return HasMany<\App\Modules\Finance\Models\Transaction, $this> */
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(\App\Modules\Finance\Models\Transaction::class);
+    }
+
+    /** @return HasMany<\App\Modules\Finance\Models\Budget, $this> */
+    public function budgets(): HasMany
+    {
+        return $this->hasMany(\App\Modules\Finance\Models\Budget::class);
+    }
+
+    /** @return HasMany<\App\Modules\Finance\Models\AllocationPlan, $this> */
+    public function allocationPlans(): HasMany
+    {
+        return $this->hasMany(\App\Modules\Finance\Models\AllocationPlan::class);
+    }
+
+    /** @return HasMany<\App\Modules\Finance\Models\RecurringBill, $this> */
+    public function recurringBills(): HasMany
+    {
+        return $this->hasMany(\App\Modules\Finance\Models\RecurringBill::class);
+    }
+
+    /** @return HasMany<\App\Modules\Finance\Models\Loan, $this> */
+    public function loans(): HasMany
+    {
+        return $this->hasMany(\App\Modules\Finance\Models\Loan::class);
+    }
+
+    /** @return HasMany<\App\Modules\Finance\Models\PlannedItem, $this> */
+    public function plannedItems(): HasMany
+    {
+        return $this->hasMany(\App\Modules\Finance\Models\PlannedItem::class);
+    }
 }

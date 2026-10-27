@@ -3,6 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#28543e">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/icon-192.svg">
     <title>Family Hub · Pusat Kendali Keluarga</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script>
@@ -38,10 +44,31 @@
                     <x-heroicon-o-sun class="size-5 inline dark:hidden" />
                 </button>
 
-                <a href="{{ route('login') }}"
-                    class="inline-flex min-h-11 items-center justify-center rounded-2xl bg-[#28543e] px-5 py-2.5 text-sm font-semibold text-white shadow-xs transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current dark:bg-[#bad6ae] dark:text-[#151f1b]">
-                    {{ __('Masuk') }}
-                </a>
+                @auth
+                    @if (auth()->user()?->is_system_admin)
+                        <a href="{{ route('admin.dashboard') }}"
+                            class="inline-flex min-h-11 items-center justify-center rounded-2xl bg-[#28543e] px-4 py-2 text-sm font-semibold text-white shadow-xs transition-opacity hover:opacity-90 dark:bg-[#bad6ae] dark:text-[#151f1b]">
+                            {{ __('Panel Admin') }}
+                        </a>
+                    @else
+                        <a href="{{ url('/') }}"
+                            class="inline-flex min-h-11 items-center justify-center rounded-2xl bg-[#28543e] px-4 py-2 text-sm font-semibold text-white shadow-xs transition-opacity hover:opacity-90 dark:bg-[#bad6ae] dark:text-[#151f1b]">
+                            {{ __('Beranda') }}
+                        </a>
+                    @endif
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                        @csrf
+                        <button type="submit"
+                            class="inline-flex min-h-11 items-center justify-center rounded-2xl border border-current/20 px-3.5 py-2 text-sm font-semibold transition-colors hover:bg-current/5">
+                            {{ __('Keluar') }}
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}"
+                        class="inline-flex min-h-11 items-center justify-center rounded-2xl bg-[#28543e] px-5 py-2.5 text-sm font-semibold text-white shadow-xs transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current dark:bg-[#bad6ae] dark:text-[#151f1b]">
+                        {{ __('Masuk') }}
+                    </a>
+                @endauth
             </div>
         </header>
 
@@ -60,10 +87,24 @@
             </p>
 
             <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                <a href="{{ route('login') }}"
-                    class="flex min-h-12 w-full items-center justify-center rounded-2xl bg-[#28543e] px-7 py-3 text-base font-semibold text-white shadow-sm transition-opacity hover:opacity-95 sm:w-auto dark:bg-[#bad6ae] dark:text-[#151f1b]">
-                    {{ __('Masuk ke Akun Anda') }}
-                </a>
+                @auth
+                    @if (auth()->user()?->is_system_admin)
+                        <a href="{{ route('admin.dashboard') }}"
+                            class="flex min-h-12 w-full items-center justify-center rounded-2xl bg-[#28543e] px-7 py-3 text-base font-semibold text-white shadow-sm transition-opacity hover:opacity-95 sm:w-auto dark:bg-[#bad6ae] dark:text-[#151f1b]">
+                            {{ __('Buka Panel Administrator') }}
+                        </a>
+                    @else
+                        <a href="{{ url('/') }}"
+                            class="flex min-h-12 w-full items-center justify-center rounded-2xl bg-[#28543e] px-7 py-3 text-base font-semibold text-white shadow-sm transition-opacity hover:opacity-95 sm:w-auto dark:bg-[#bad6ae] dark:text-[#151f1b]">
+                            {{ __('Buka Beranda Keluarga') }}
+                        </a>
+                    @endif
+                @else
+                    <a href="{{ route('login') }}"
+                        class="flex min-h-12 w-full items-center justify-center rounded-2xl bg-[#28543e] px-7 py-3 text-base font-semibold text-white shadow-sm transition-opacity hover:opacity-95 sm:w-auto dark:bg-[#bad6ae] dark:text-[#151f1b]">
+                        {{ __('Masuk ke Akun Anda') }}
+                    </a>
+                @endauth
             </div>
 
             <p class="mt-4 text-xs text-[#637067] dark:text-[#b2beb2]">

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="theme-color" content="#28543e">
+    <title>{{ $title ?? __('Admin') }} · Family Hub</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles
+</head>
+<body class="min-h-full bg-[#f6f4ee] text-[#263c32] antialiased dark:bg-[#151f1b] dark:text-[#f3f1e8]">
+    {{-- Header --}}
+    <header class="border-b border-current/10 bg-[#fffefa]/80 backdrop-blur dark:bg-[#1f2c25]/80 sticky top-0 z-20">
+        <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
+            <div class="flex items-center gap-3">
+                <span class="font-serif text-lg font-bold tracking-tight">Family Hub</span>
+                <span class="rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-semibold text-amber-600 dark:text-amber-400">
+                    {{ __('Admin Panel') }}
+                </span>
+            </div>
+
+            <div class="flex items-center gap-4 text-sm">
+                <span class="hidden sm:inline text-xs text-[#637067] dark:text-[#b2beb2]">
+                    {{ auth()->user()?->name }} ({{ auth()->user()?->email }})
+                </span>
+
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit"
+                        class="rounded-xl border border-current/20 px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-current/5">
+                        {{ __('Keluar') }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    {{-- Main Content --}}
+    <main class="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+        {{ $slot }}
+    </main>
+
+    @livewireScripts
+</body>
+</html>

@@ -32,7 +32,7 @@ it('emails the invitation link to the invited address', function (): void {
 
     $issued = app(InviteHouseholdMember::class)->handle($this->owner, $this->household, 'partner@example.test');
 
-    Mail::assertSent(HouseholdInvitationMail::class, function (HouseholdInvitationMail $mail) use ($issued): bool {
+    Mail::assertQueued(HouseholdInvitationMail::class, function (HouseholdInvitationMail $mail) use ($issued): bool {
         return $mail->hasTo('partner@example.test')
             && str_contains($mail->render(), route('invitation.show', $issued->token));
     });

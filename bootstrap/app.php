@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Middleware\EnsureHouseholdOnboarded;
+use App\Http\Middleware\EnsureSystemAdmin;
 use App\Http\Middleware\UseHouseholdContext;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -15,9 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: ['127.0.0.1', '::1']);
         $middleware->web(append: [UseHouseholdContext::class]);
         $middleware->alias([
             'onboarded' => EnsureHouseholdOnboarded::class,
+            'admin' => EnsureSystemAdmin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

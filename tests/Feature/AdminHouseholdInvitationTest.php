@@ -53,7 +53,7 @@ it('allows a system admin to issue a new-household invitation', function (): voi
         ->and($stored->accepted_at)->toBeNull()
         ->and($stored->revoked_at)->toBeNull();
 
-    Mail::assertSent(HouseholdInvitationMail::class, function (HouseholdInvitationMail $mail) use ($issued): bool {
+    Mail::assertQueued(HouseholdInvitationMail::class, function (HouseholdInvitationMail $mail) use ($issued): bool {
         return $mail->hasTo('prospective-owner@example.test')
             && str_contains($mail->render(), route('invitation.show', $issued->token));
     });

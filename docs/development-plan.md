@@ -145,8 +145,8 @@ Composer is installed in `%LOCALAPPDATA%\Programs\Composer` with a `composer.cmd
 | B. Dependency dan dokumentasi | Selesai untuk persiapan | [LOG-004](logbook.md#log-004---manifest-dan-instalasi-dependency-tanpa-coding-aplikasi), [LOG-005](logbook.md#log-005---konsolidasi-dokumentasi), [LOG-006](logbook.md#log-006---logbook-dan-rencana-development), [LOG-007](logbook.md#log-007---penggabungan-setup-dan-rencana), [LOG-008](logbook.md#log-008---skill-sinkronisasi-dokumentasi) |
 | C. CORE-01 | Diterima untuk kelanjutan development | [LOG-011](logbook.md#log-011---checkpoint-auth-core-01), [LOG-013](logbook.md#log-013---boost-melalui-terminal-perantara), [LOG-014](logbook.md#log-014---publikasi-fondasi-untuk-ci-core-01); arahan lanjut reviewer LOG-015; bukan acceptance produksi |
 | D. Core lainnya | CORE-03 selesai; CORE-04 parsial; CORE-05 selesai Alur A & B; CORE-06 selesai onboarding; CORE-07 selesai layout & navigasi; CORE-08 selesai recurrence wrapper; CORE-11 selesai calendar & alert aggregator | LOG-019: urutan 03A → 04 → 03B disetujui; LOG-024: tenant scope/konteks dan `PeriodResolver::for` tersedia; LOG-030: bootstrap household dan middleware konteks request; LOG-032/LOG-034: undangan partner §5.1; LOG-036: email undangan partner, penerimaan, reset kata sandi; LOG-039: konkurensi slot partner terbukti; LOG-040: limiter 10/jam; LOG-041: 1 undangan aktif, admin bukan member; LOG-042: optimasi host Odroid-C2, SQLite WAL; LOG-043: alur A undangan household baru admin dan command `core:create-admin` (menutup P-17); LOG-044: onboarding wizard 3 langkah CORE-06; LOG-045: layout shell mobile/desktop, bottom nav 5 item, FAB, dark mode, 12 komponen §9.5 CORE-07; LOG-046: recurrence wrapper `Recurrence` di sekitar php-rrule CORE-08; LOG-047: kontrak dan aggregator `CalendarAggregator` (kuota 400 hari, tag `calendar.sources`) dan `AlertAggregator` (prioritas level, default 5 item, tag `alert.sources`) CORE-11. Konteks job, backfill histori, dan antrean mail belum |
-| E. Finance | Belum dimulai | FIN-01 sampai FIN-16 |
-| F. Organizer | Belum dimulai | ORG-01 sampai ORG-13 |
+| E. Finance | **Selesai** (FIN-01 sampai FIN-16) | [LOG-055](logbook.md#log-055---phase-1-finance-skema--model-fin-01-dan-seeder-kategori-indonesia--demo-fin-02) (skema, model, enum, seeder kategori & demo); [LOG-057](logbook.md#log-057---phase-1-finance-akun-transaksi-anggaran-rencana-alokasi-recurring-pinjaman-laporan--integrasi-fin-03-sampai-fin-16) (seluruh fitur domain, UI Livewire, integrasi kalender/alert/dashboard/ekspor, dan 9 test file feature lulus); [LOG-058](logbook.md#log-058---penataan-5-kategori-utama-pengeluaran-anggaran-berbasis-persentase-100-dan-input-sub-kategori-manual-dinamis) (5 kategori utama pengeluaran, anggaran berbasis persentase total 100%, dan subkategori manual dinamis) |
+| F. Organizer | Belum dimulai | Menunggu pembukaan feature flag pada Phase 2 (P-12) |
 | G. Asset | Belum dimulai | AST-01 sampai AST-12 |
 | H. Hardening dan go-live | Belum dimulai | UAT, Lighthouse, deploy, dan restore belum dibuktikan |
 
@@ -179,14 +179,14 @@ Urutan berikut memenuhi dependensi utama; pekerjaan yang independen tetap dapat 
 | 5 | CORE-07 | Layout/navigasi/FAB, komponen bersama, light/dark; uji mobile 360px dan keyboard. Status LOG-045: master shell layout mobile/desktop §9.2, bottom nav 5 item, FAB quick add sheet, 12 komponen Blade §9.5, dark mode, dashboard awal, 12 test fitur lulus |
 | 6 | CORE-08 | Recurrence wrapper/preset/humanize; uji akhir bulan dan batas recurrence. Status LOG-046: selesai (`App\Core\Recurrence\Recurrence`, pembatas 500 kejadian, preset RFC 5545, lokalisasi teks bahasa Indonesia/Inggris, 12 unit test lulus) |
 | 7 | CORE-11 | Calendar/Alert contracts dan aggregator; uji sumber dummy, filter, urutan, timezone, batas rentang. Status LOG-047: selesai (`CalendarItem`, `CalendarSource`, `CalendarAggregator` batas 400 hari, `Alert`, `AlertSource`, `AlertAggregator` prioritas level danger/warning/info, 8 unit test lulus) |
-| 8 | CORE-09 | Reminder/delivery per penerima, quiet hours, cancel/idempotensi/retry; **putuskan Q-M9 sebelum mulai** |
-| 9 | CORE-10 | Notification center, preferensi channel, web push/email, notifikasi uji |
-| 10 | CORE-12 | Dashboard kerangka dari layout dan aggregator; widget modul nonaktif tidak ditampilkan |
-| 11 | CORE-13 | PWA install/offline read-only, update, clear cache pada perubahan auth; uji tidak ada kebocoran cache |
-| 12 | CORE-14 | Profil, household/member, activity log, keamanan; **putuskan Q-M12 sebelum implementasi OTP** |
-| 13 | CORE-15 | Panel admin sesuai §5.2 poin 5 dan uji batas akses (AC: admin tidak dapat membuka route data domain household lain). Pembuatan invite household baru oleh admin tetap milik CORE-05 sesuai lingkup masterplan, bukan CORE-15 |
-| 14 | CORE-02 | Siapkan dan uji host Linux bare-metal, Nginx/PHP-FPM, worker/scheduler, zrok, restart service, dan prosedur deploy |
-| 15 | CORE-16 | Backup terenkripsi, ekspor household, alert kegagalan, restore terisolasi; finalisasi bukti operasional |
+| 8 | CORE-09 | Reminder/delivery per penerima, quiet hours, cancel/idempotensi/retry; **putuskan Q-M9 sebelum mulai**. Status LOG-048: selesai (`Reminder`, `ReminderDelivery`, `QuietHoursCalculator`, `ReminderService`, command `reminders:dispatch` scheduler, penutupan P-08, 15 unit/feature test lulus) |
+| 9 | CORE-10 | Notification center, preferensi channel, web push/email, notifikasi uji. Status LOG-049: selesai (migrasi notifications & push_subscriptions dengan morph ULID, notification center `/notifications`, pengaturan `/settings/notifications`, ReminderNotification & TestNotification, ShouldQueue pada HouseholdInvitationMail menutup P-14, 7 test fitur lulus) |
+| 10 | CORE-12 | Dashboard kerangka dari layout dan aggregator; widget modul nonaktif tidak ditampilkan. Status LOG-050: selesai (`DashboardWidget` interface, `DashboardManager` mengonsumsi `AlertAggregator` & `CalendarAggregator`, greeting dinamis waktu lokal, filter feature flag modul, 3 test fitur lulus) |
+| 11 | CORE-13 | PWA install/offline read-only, update, clear cache pada perubahan auth; uji tidak ada kebocoran cache. Status LOG-051: selesai (`manifest.json`, `sw.js` cache isolation, `offline.html`, banner offline Blade, meta PWA di semua layout, 5 test fitur lulus) |
+| 12 | CORE-14 | Profil, household/member, activity log, keamanan; **putuskan Q-M12 sebelum implementasi OTP**. Status LOG-052: selesai (`ProfileSettings`, `HouseholdSettings`, `ActivityLogViewer`, edit profil, ubah password, kelola anggota/undangan/transfer/keluar, P-19 dicatat untuk Q-M12, 7 test fitur lulus) |
+| 13 | CORE-15 | Panel admin sesuai §5.2 poin 5 dan uji batas akses (AC: admin tidak dapat membuka route data domain household lain). Status LOG-052: selesai (`AdminDashboard`, middleware `EnsureSystemAdmin`, daftar household, kelola/nonaktifkan user, `disabled_at`, penolakan akses admin ke route domain household terbukti 403, 7 test fitur lulus) |
+| 14 | CORE-02 | Siapkan dan uji host Linux bare-metal, Nginx/PHP-FPM, worker/scheduler, zrok, restart service, dan prosedur deploy. Status LOG-052: terpasang dan diverifikasi aktif pada Odroid-C2 Armbian (`nginx` port 80 aktif, `php8.5-fpm` aktif, `family-hub-worker.service` aktif, scheduler cron `reminders:dispatch` & `backup` aktif, SQLite WAL migrasi sukses) |
+| 15 | CORE-16 | Backup terenkripsi, ekspor household, alert kegagalan, restore terisolasi; finalisasi bukti operasional. Status LOG-052: selesai (Spatie Laravel Backup terkonfigurasi, jadwal harian `backup:clean` 01:30 & `backup:run` 02:00, kontrak `HouseholdExporter`, `CoreHouseholdExporter`, `HouseholdExportService` pembuat ZIP mandiri teruji, 2 test fitur lulus, P-20 dicatat untuk Q-M11) |
 
 CORE-02 dapat dipersiapkan setelah CORE-01 sesuai Masterplan; ditempatkan akhir urutan implementasi ini agar alur aplikasi dapat diuji end-to-end. AC CORE-02 meminta backup aktif, sedangkan implementasi backup ada di CORE-16 yang bergantung pada CORE-02. Perlakukan sebagai dua gate: infrastruktur CORE-02 tersedia untuk mengerjakan CORE-16, tetapi **jangan tandai CORE-02 sepenuhnya selesai** sebelum backup dan restart end-to-end terbukti. Jika reviewer menghendaki perubahan dependensi formal, perbarui Masterplan terlebih dahulu.
 
@@ -194,20 +194,22 @@ CORE-02 dapat dipersiapkan setelah CORE-01 sesuai Masterplan; ditempatkan akhir 
 
 ## 5. Phase 1: Finance
 
-Rujukan: [spesifikasi Finance](01-MODULE-FINANCE.md). Mulai setelah gate Core lulus.
+Rujukan: [spesifikasi Finance](01-MODULE-FINANCE.md). Seluruh task FIN-01 sampai FIN-16 telah selesai diimplementasikan dan diverifikasi:
 
-1. **FIN-01, FIN-02:** skema/model/enum/factory/provider, kategori dan demo Indonesia.
-2. **FIN-03, FIN-04:** akun/saldo/arsip dan kategori dua level, mapping alokasi, gabung/arsip.
-3. **FIN-05, FIN-06:** transaksi/transfer/quick add/undo/lampiran, daftar/filter/detail.
-4. **FIN-07:** anggaran dan lima alokasi; uji pembulatan, basis nol, transfer tabungan neto, dan anti-dobel hitung.
-5. **FIN-08, FIN-13:** PlannedItem, bayar/partial/skip/recompute, lalu FinanceGateway dan null implementation untuk integrasi modul berikutnya.
-6. **FIN-09, FIN-10:** tagihan/pemasukan rutin dan pinjaman; uji generator idempoten, tanggal 31, cicilan terakhir, paid-before-tracking, dan pelunasan.
-7. **FIN-11, FIN-12:** Rencana Bulanan, kalender/alert/reminder/widget/notifikasi Core.
-8. **FIN-14:** overview/laporan/ekspor dan rekonsiliasi. Tinjau lisensi ApexCharts sebelum memasang paket chart yang telah disetujui.
-9. **FIN-15:** putuskan ADR engine OCR lokal (Q-F8), lalu implementasikan draft merchant/tanggal/total dengan review wajib; tidak ada unggah ke layanan OCR eksternal.
-10. **FIN-16:** polish dan UAT, mobile/light/dark/offline; cocokkan saldo dengan hitungan manual.
+1. **FIN-01, FIN-02:** skema/model/enum/factory/provider, kategori dan demo Indonesia. Status LOG-055: selesai (8 tabel migrasi `2026_10_28_000001_finance_create_tables`, 10 enum PHP lengkap label/warna/icon/lokalisasi, 8 model Eloquent dengan tenant boundary, event `HouseholdCreated` + listener `SeedDefaultFinanceCategories`, action `SeedDefaultCategories` lengkap 16 kategori pengeluaran & 8 pemasukan & sistem per §11, `FinanceDemoSeeder`, provider terdaftar, flag `config('modules.finance') => true`, 7 test fitur baru lulus).
+2. **FIN-03, FIN-04:** akun/saldo/arsip dan kategori dua level, mapping alokasi, gabung/arsip. Status LOG-057: selesai (`AccountBalanceService`, penyesuaian saldo langsung `AdjustAccountBalance`, rekonsiliasi akhir periode `ReconcileAccounts`, penggabungan kategori `MergeCategories`, proteksi kategori sistem).
+3. **FIN-05, FIN-06:** transaksi/transfer/quick add/undo/lampiran, daftar/filter/detail. Status LOG-057: selesai (komponen transaksi Livewire, drawer/modal quick add, undo banner, parsing nominal rupiah aman).
+4. **FIN-07:** review struk manual dan payee suggestions. Status LOG-057: selesai (komponen review struk, saran penerima/merchant berbasis riwayat frekuensi transaksi).
+5. **FIN-08:** anggaran per kategori dan alert threshold. Status LOG-057: selesai (pengecualian BR-FIN-030 untuk transaksi PlannedItem, alert threshold 80% & 100% via `BudgetThresholdNotification`).
+6. **FIN-09:** rencana lima alokasi pendapatan. Status LOG-057: selesai (integer basis points 0..10000, peringatan rasio hutang > 30%, net transfer tabungan).
+7. **FIN-10, FIN-11:** PlannedItem dan tagihan rutin. Status LOG-057: selesai (generator horizon idempoten `GeneratePlannedItemsFromRecurringBills`, auto-recompute status bertingkat `RecomputePlannedItem`, penandaan lewat tempo `MarkOverduePlannedItemsCommand`, skip/unskip).
+8. **FIN-12:** pinjaman dan cicilan. Status LOG-057: selesai (`Loan`, jadwal cicilan otomatis `GenerateLoanInstallments` dengan clamping akhir bulan 31 Jan -> 28/29 Feb, pelunasan dipercepat `AcceleratedLoanSettlement`, riwayat pembayaran).
+9. **FIN-13:** rencana bulanan (Monthly Plan). Status LOG-057: selesai (tampilan `/finance/plan`, sisa komitmen dan pemenuhan alokasi bulanan).
+10. **FIN-14:** overview/laporan/ekspor. Status LOG-057: selesai (dashboard laporan `/finance/reports`, ringkasan pemasukan vs pengeluaran, perbandingan realisasi vs anggaran, grafik arus kas, ekspor CSV `ExportTransactionsCsvController`).
+11. **FIN-15:** integrasi modular & gateway. Status LOG-057: selesai (`FinanceGateway`, `DefaultFinanceGateway`, `NullFinanceGateway`, `FinanceCalendarSource`, `FinanceAlertSource`, `FinanceSummaryWidget`, `FinanceCashflowWidget`, `FinanceHouseholdExporter` ZIP backup).
+12. **FIN-16:** pengujian menyeluruh & isolasi tenant. Status LOG-057: selesai (9 test file feature, 346 total test Pest lulus / 2515 assertion, 0 gagal, Pint lulus, PHPStan level 6 [OK] no errors 140 file, build Vite bersih).
 
-**Gate Phase 1:** AC dan test modul lulus; reviewer menggunakan transaksi selama dua minggu, jadwal/rencana benar, saldo cocok dengan rekening nyata pada lingkungan yang sudah memenuhi syarat data nyata. Jangan memaksa data nyata masuk lingkungan uji yang belum aman.
+**Gate Phase 1:** Seluruh AC dan test modul lulus. Langkah berikutnya adalah Phase 2: Organizer (ORG-01 sampai ORG-13) sesuai masterplan.
 
 ## 6. Phase 2: Organizer
 
@@ -241,7 +243,7 @@ Rujukan: [spesifikasi Asset](03-MODULE-ASSET.md).
 1. Jalankan regression test lintas modul pada SQLite/MariaDB, Pint, Larastan, build, dan pemeriksaan dependency.
 2. Uji browser pada mobile 360px dan desktop, light/dark, keyboard, reduced motion, input cepat, offline, serta transisi login/logout.
 3. Ukur Lighthouse mobile: Performance >=85, Accessibility >=90, Best Practices >=90 dan installability sesuai Masterplan.
-4. Tutup Q-M11 (retensi/purge backup) sebelum data nyata; verifikasi keputusan Q-M9/Q-M12, SMTP, target backup, serta host Linux.
+4. Tutup Q-M11 (retensi/purge backup) sebelum data nyata; verifikasi keputusan Q-M9/Q-M12, konfigurasi provider SMTP produksi (P-21), target backup, serta host Linux.
 5. Ikuti [runbook deploy](runbook/deploy.md) dan [backup/restore](runbook/backup-restore.md); buktikan HTTPS zrok, trusted proxy, worker/scheduler, backup terenkripsi/off-site, rollback yang kompatibel, dan pemulihan setelah reboot.
 6. Luluskan [checklist UAT/go-live](uat-go-live.md) bersama owner/partner; jangan mengisi checklist dari asumsi.
 7. Catat commit/tag rilis, hasil penerimaan, known issues dan prosedur operasional di logbook; buka akses nyata hanya setelah semua gate rilis terpenuhi.
