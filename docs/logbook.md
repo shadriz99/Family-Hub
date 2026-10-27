@@ -920,6 +920,45 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
   - Database lokal Odroid-C2: Berhasil di-refresh kategorinya untuk household aktif "Ucepedia".
 - **Dokumen yang diselaraskan:** `docs/logbook.md` (entri ini), `docs/development-plan.md`, `docs/01-MODULE-FINANCE.md`.
 
+### LOG-059 - Phase 2: Organizer — Fondasi Skema, Model, Enum, Provider & Feature Flag (ORG-01)
+
+- **Konteks:** Reviewer menyetujui kelanjutan development ke Phase 2 (Organizer) dan Phase 3 (Asset). Dimulai dengan task ORG-01 untuk membangun fondasi skema database, model Eloquent, enum domain, registrasi service provider, dan pembukaan feature flag `modules.organizer`.
+- **Perubahan:**
+  - **Feature Flag (`config/modules.php`):** Mengaktifkan `organizer => true`.
+  - **Migrasi Database (`database/migrations/2026_10_29_000001_organizer_create_tables.php`):** Membuat 8 tabel domain Organizer:
+    1. `org_tasks`: ULID, foreign key ke household & users, `series_id` untuk task berulang, `assignee_user_id`, tanggal/jam jatuh tempo, enum priority & status, rrule, rotasi, offset reminder, opsi pencatatan biaya (`expense_on_complete`, `expense_estimate`, `expense_category_id`, `expense_transaction_id`), sort order, soft deletes.
+    2. `org_task_items`: Checklist sub-tugas, FK cascade ke `org_tasks`.
+    3. `org_notes`: Teks dan checklist, warna, array labels, pin, `is_private` (dengan privasi global scope per BR-ORG-010), soft deletes.
+    4. `org_note_items`: Checklist item dalam note, FK cascade ke `org_notes`.
+    5. `org_shopping_lists`: Nama daftar, toko, enum status (`active`, `completed`, `archived`), actual total, link `transaction_id`, soft deletes.
+    6. `org_shopping_items`: FK cascade ke `org_shopping_lists`, nama, kuantitas desimal, satuan, estimasi harga satuan, kelompok belanja (`ShoppingGroup`), status centang, pencentang & waktu centang.
+    7. `org_events`: Kind (`event`, `birthday`, `anniversary`), judul, lokasi, all-day flag, datetime start/end UTC, tanggal lokal start/end, rrule, for_user_id, color, reminder offsets, birth_year, soft deletes.
+    8. `org_event_exceptions`: FK cascade ke `org_events`, `original_date`, flag `is_cancelled`, payload array `override`, unique constraint (`event_id`, `original_date`).
+  - **Enum (`app/Modules/Organizer/Enums/`):**
+    - `TaskPriority`: `Low`, `Normal`, `High` dengan label bahasa Indonesia dan warna badge.
+    - `TaskStatus`: `Open`, `Done`, `Cancelled` dengan label dan warna.
+    - `TaskReminderOffset`: `AtDue`, `OneHourBefore`, `OneDayBefore0800`.
+    - `NoteType`: `Text`, `Checklist`.
+    - `ShoppingListStatus`: `Active`, `Completed`, `Archived`.
+    - `ShoppingGroup`: `Produce`, `MeatSeafood`, `Groceries`, `Spices`, `Beverages`, `Cleaning`, `Baby`, `Other`.
+    - `EventKind`: `Event`, `Birthday`, `Anniversary` dengan icon.
+  - **Model Eloquent (`app/Modules/Organizer/Models/`):**
+    - `Task`, `TaskItem`, `Note`, `NoteItem`, `ShoppingList`, `ShoppingItem`, `Event`, `EventException`.
+    - Semua model tenant menerapkan `BelongsToHousehold` dan `HasUlids`.
+    - Model `Note` mengimplementasikan global scope `privacy` sehingga catatan privat (`is_private = true`) hanya dapat diakses oleh user pembuatnya (`created_by`), memenuhi aturan bisnis BR-ORG-010.
+    - Model `ShoppingList` menyediakan method `estimatedTotal()` untuk menghitung total estimasi dari item belanja.
+  - **Service Provider & Bootstrap:**
+    - `OrganizerServiceProvider` dibuat di `app/Modules/Organizer/Providers/OrganizerServiceProvider.php`.
+    - Didaftarkan ke `bootstrap/providers.php`.
+  - **Testing & Baseline (`tests/Feature/Organizer/OrganizerSchemaAndModelsTest.php`):**
+    - 7 test kasus menguji skema tabel, keutuhan enum, siklus hidup task & checklist, isolasi privasi catatan, perhitungan total daftar belanja, exceptions pada event, dan isolasi tenant antar-household.
+    - Memperbarui `tests/Feature/FoundationTest.php` untuk memvalidasi `organizer => true`.
+- **Verifikasi:**
+  - `php artisan test`: **355 test / 2590 assertions** lulus 100% green.
+  - `vendor/bin/pint`: Lulus rapi.
+  - `vendor/bin/phpstan analyse`: `[OK] No errors` (156 file di level 6).
+- **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`, `docs/pending.md`.
+
 ## Aturan pembaruan berikutnya
 
 1. Tambahkan entri baru dengan tanggal dan ID `LOG-NNN`; sertakan task ID resmi (`CORE-*`, `FIN-*`, `ORG-*`, `AST-*`) jika relevan.

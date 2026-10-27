@@ -22,7 +22,7 @@
 
 | ID | Topik | Status / alasan ditunda | Langkah berikutnya |
 |---|---|---|---|
-| P-12 | Modul Organizer & Asset | `config/modules.php` mengaktifkan `finance` (Phase 1, LOG-055); `organizer` dan `asset` dinonaktifkan menunggu fase berikutnya | Buka feature flag per fase (Phase 2 untuk Organizer, Phase 3 untuk Asset) |
+| P-12 | Modul Asset (Phase 3) | `config/modules.php` mengaktifkan `finance` (Phase 1, LOG-055) dan `organizer` (Phase 2, LOG-059); `asset` dinonaktifkan menunggu fase berikutnya | Buka feature flag `asset` pada Phase 3 |
 | P-21 | Konfigurasi SMTP produksi dan verifikasi pengiriman email fisik | Keputusan LOG-053: driver email memakai mode `log` (`MAIL_MAILER=log`) untuk testing lokal/clipboard dan tautan undangan langsung tersedia di UI. Kredensial SMTP nyata dipasang di Phase 4 sebelum go-live | Masukkan kredensial SMTP produksi pada Phase 4 Hardening |
 | P-19 | Q-M12: 2FA Email OTP | Keputusan LOG-056: ditunda ke rilis v1.1. Untuk rilis awal keluarga (MVP), keamanan mengandalkan password hash Argon2id/Bcrypt, rate limiting per IP/email, dan pendaftaran tertutup via token undangan | Evaluasi implementasi 2FA email OTP pada siklus v1.1 |
 

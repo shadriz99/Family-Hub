@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 return [
     'finance' => true,
-    'organizer' => false,
+    'organizer' => true,
     'asset' => false,
 ];
