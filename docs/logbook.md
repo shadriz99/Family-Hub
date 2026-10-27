@@ -1,7 +1,7 @@
 # Logbook Development - Family Hub
 
 **Diperbarui:** 2026-10-27
-**Status:** CORE-01 diterima untuk kelanjutan development; CORE-03 dinyatakan selesai oleh reviewer; CORE-04 parsial (konkurensi slot selesai); CORE-05 selesai di sisi Alur A & B (backend, email, UI, limiter 10/jam, 1 aktif, create-admin menutup P-17); CORE-06 (onboarding wizard) selesai pada LOG-044; CORE-07 (layout, navigasi, FAB, dark mode, komponen §9.5) selesai pada LOG-045. CI remote untuk perubahan ini belum terverifikasi. Belum ada rilis aplikasi.
+**Status:** CORE-01 diterima untuk kelanjutan development; CORE-03 dinyatakan selesai oleh reviewer; CORE-04 parsial (konkurensi slot selesai); CORE-05 selesai di sisi Alur A & B (backend, email, UI, limiter 10/jam, 1 aktif, create-admin menutup P-17); CORE-06 (onboarding wizard) selesai pada LOG-044; CORE-07 (layout, navigasi, FAB, dark mode, komponen §9.5) selesai pada LOG-045; CORE-08 (recurrence wrapper) selesai pada LOG-046. CI remote untuk perubahan ini belum terverifikasi. Belum ada rilis aplikasi.
 
 Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan selesai. [Rencana development](development-plan.md) menentukan langkah berikutnya; spesifikasi dan acceptance criteria tetap mengikuti [Masterplan](00-MASTERPLAN.md) dan dokumen modul.
 
@@ -9,12 +9,12 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 
 | Area | Status aktual | Bukti / tindak lanjut |
 |---|---|---|
-| Repository | `main` tanpa branch; batch terakhir LOG-045 | LOG-014: fondasi `ffe4afe`; LOG-026: checkpoint CORE-03/04 di-merge; LOG-031: CI hijau `731fb45`; LOG-035: kerja langsung di `main`; LOG-036: push `efae4f2..d077170`; LOG-039: push `2900d9f..fcaf25b`; LOG-040: limiter undangan; LOG-041: 1 aktif, admin non-member; LOG-042: Odroid-C2 WAL; LOG-043: alur A admin, create-admin (P-17); LOG-044: wizard onboarding CORE-06; LOG-045: layout/navigasi & komponen §9.5 CORE-07 |
+| Repository | `main` tanpa branch; batch terakhir LOG-046 | LOG-014: fondasi `ffe4afe`; LOG-026: checkpoint CORE-03/04 di-merge; LOG-031: CI hijau `731fb45`; LOG-035: kerja langsung di `main`; LOG-036: push `efae4f2..d077170`; LOG-039: push `2900d9f..fcaf25b`; LOG-040: limiter undangan; LOG-041: 1 aktif, admin non-member; LOG-042: Odroid-C2 WAL; LOG-043: alur A admin, create-admin (P-17); LOG-044: wizard onboarding CORE-06; LOG-045: layout/navigasi & komponen §9.5 CORE-07; LOG-046: recurrence wrapper CORE-08 |
 | Environment lokal | Git, PHP, Composer, Node/npm dapat dijalankan | Rincian dan batas setup di [setup dan rencana development](development-plan.md) |
 | Dependency PHP/npm | Terpasang, lockfile tersedia | Composer solve, platform check, audit, dan smoke check lulus pada waktu setup |
 | CORE-01 | **Diterima untuk kelanjutan development** | LOG-011/013/014: fondasi, auth, Boost, CI kedua DB; LOG-015: reviewer meminta lanjut; bukan UAT/produksi |
 | Boost | Terminal stdio disetujui sebagai transport | LOG-013: initialize, daftar 10 tool, dan dokumentasi lulus; UI Copilot belum terhubung tetapi bukan blocker |
-| CORE-02 sampai CORE-16 | CORE-03 selesai; CORE-04 parsial; CORE-05 selesai Alur A & B; CORE-06 selesai onboarding wizard; CORE-07 selesai layout & navigasi | LOG-015–018: utilitas/komponen; LOG-019: urutan disetujui; LOG-020–021: policy/action; LOG-024: tenant scope, konteks household, `PeriodResolver::for`; LOG-025–026: MariaDB CI dipulihkan dan checkpoint di-merge ke main; LOG-030: bootstrap + middleware konteks; LOG-032/034: backend undangan §5.1; LOG-036: email undangan, penerimaan partner, reset kata sandi; LOG-039: konkurensi slot; LOG-040: limiter 10 undangan/jam; LOG-041: satu undangan aktif, admin bukan anggota household; LOG-042: optimasi host Odroid-C2, SQLite WAL; LOG-043: alur A admin, create-admin (P-17); LOG-044: wizard onboarding 3 langkah CORE-06; LOG-045: layout shell mobile/desktop, bottom nav 5 item, FAB, dark mode, 12 komponen §9.5 CORE-07. Konteks job, backfill histori, pengecualian trait, dan antrean mail belum selesai |
+| CORE-02 sampai CORE-16 | CORE-03 selesai; CORE-04 parsial; CORE-05 selesai Alur A & B; CORE-06 selesai onboarding wizard; CORE-07 selesai layout & navigasi; CORE-08 selesai recurrence wrapper | LOG-015–018: utilitas/komponen; LOG-019: urutan disetujui; LOG-020–021: policy/action; LOG-024: tenant scope, konteks household, `PeriodResolver::for`; LOG-025–026: MariaDB CI dipulihkan dan checkpoint di-merge ke main; LOG-030: bootstrap + middleware konteks; LOG-032/034: backend undangan §5.1; LOG-036: email undangan, penerimaan partner, reset kata sandi; LOG-039: konkurensi slot; LOG-040: limiter 10 undangan/jam; LOG-041: satu undangan aktif, admin bukan anggota household; LOG-042: optimasi host Odroid-C2, SQLite WAL; LOG-043: alur A admin, create-admin (P-17); LOG-044: wizard onboarding 3 langkah CORE-06; LOG-045: layout shell mobile/desktop, bottom nav 5 item, FAB, dark mode, 12 komponen §9.5 CORE-07; LOG-046: recurrence wrapper CORE-08. Konteks job, backfill histori, pengecualian trait, dan antrean mail belum selesai |
 | Finance / Organizer / Asset | Belum dimulai | Mockup adalah prototype yang sudah ada saat clone, bukan implementasi modul |
 | Produksi / UAT | Belum dijalankan | Tidak ada bukti deploy, restore, atau penerimaan pengguna |
 
@@ -487,6 +487,38 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
   - `composer lint` (Pint): Lulus.
   - `composer analyse` (Larastan level 6): `[OK] No errors` (42 file).
   - `npm run build`: Aset CSS dan JS Vite terkompilasi bersih (86.87 kB CSS, 2.89 kB JS).
+- **Dokumen yang diselaraskan:** `docs/logbook.md` (entri ini), `docs/development-plan.md`, `docs/pending.md`, dan `docs/00-MASTERPLAN.md`.
+
+### LOG-046 - CORE-08 Recurrence Engine Wrapper di Sekitar php-rrule
+
+- **Task ID:** CORE-08 (Recurrence Wrapper)
+- **Komponen & Fungsionalitas:**
+  - `App\Core\Recurrence\Recurrence`:
+    - Wrapper statis di sekitar `rlanvin/php-rrule` (`RRule`).
+    - `occurrencesBetween(string $rrule, DateTimeInterface|string $dtstart, DateTimeInterface|string $from, DateTimeInterface|string $to, int $limit = 500): array<CarbonImmutable>`: Menghasilkan daftar tanggal berulang dalam rentang terikat, aman membatasi kuota maksimal 500 kemunculan per kueri untuk melindungi memori server kecil.
+    - `next(string $rrule, DateTimeInterface|string $dtstart, DateTimeInterface|string $after, bool $inclusive = false): ?CarbonImmutable`: Mengembalikan satu kejadian berikutnya secara strictly after atau inclusive.
+    - `humanize(string $rrule, string $locale = 'id'): string`: Mengubah string RRULE standar RFC 5545 menjadi teks bahasa Indonesia (atau Inggris) yang alami dan mudah dipahami, menangani:
+      - Harian: "Setiap hari", "Setiap N hari"
+      - Mingguan: "Setiap minggu pada hari X", "Setiap N minggu pada hari X, Y"
+      - Bulanan: "Setiap bulan tanggal N", "Setiap bulan (akhir bulan)" (menggunakan `BYMONTHDAY=-1`), "Setiap N bulan..."
+      - Tahunan: "Setiap tahun", "Setiap N tahun"
+      - Pembatas `COUNT`: "sebanyak N kali"
+      - Pembatas `UNTIL`: "sampai d M Y"
+- **Pengujian & Kasus Uji Khusus:**
+  - Unit test `tests/Unit/RecurrenceTest.php` (12 test, 56 assertion) mencakup seluruh preset UI §7.4:
+    - Preset harian (interval 1 dan 2).
+    - Preset mingguan hari tertentu (`BYDAY=MO,WE,FR`).
+    - Preset bulanan tanggal tertentu (`BYMONTHDAY=15`).
+    - Preset akhir bulan (`BYMONTHDAY=-1`) termasuk penanganan tahun kabisat (29 Februari 2028 vs 28 Februari 2026).
+    - Preset hitungan (`COUNT=3`) dan batas tanggal (`UNTIL=...`).
+    - Validasi rentang tanggal (`InvalidArgumentException` jika `$from > $to`).
+    - Kejadian berikutnya strictly after dan inclusive, serta penanganan `null` saat batas tercapai.
+    - Lokalisasi `humanize()` bahasa Indonesia dan bahasa Inggris.
+- **Verifikasi:**
+  - `composer test`: **249 test/2037 assertion** lulus (+12 test baru).
+  - `npm test`: **4 test JS** lulus.
+  - `composer lint` (Pint): Lulus.
+  - `composer analyse` (Larastan level 6): `[OK] No errors` (43 file).
 - **Dokumen yang diselaraskan:** `docs/logbook.md` (entri ini), `docs/development-plan.md`, `docs/pending.md`, dan `docs/00-MASTERPLAN.md`.
 
 ## Aturan pembaruan berikutnya
