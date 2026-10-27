@@ -153,7 +153,7 @@ it('renders the new-household invitation acceptance page and registers owner', f
         ->set('password_confirmation', 'password123')
         ->call('submit')
         ->assertHasNoErrors()
-        ->assertRedirect('/');
+        ->assertRedirect(route('onboarding'));
 
     $user = User::query()->where('email', 'prospective@example.test')->sole();
     expect($user->name)->toBe('Calon Owner');

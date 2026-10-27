@@ -121,6 +121,13 @@ final class AcceptInvitationForm extends Component
 
         Auth::login($user);
         session()->regenerate();
+
+        if ($invitation->type === InvitationType::NewHousehold) {
+            $this->redirect(route('onboarding'));
+
+            return;
+        }
+
         $this->redirect('/');
     }
 

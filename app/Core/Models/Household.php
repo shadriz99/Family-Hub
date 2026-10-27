@@ -10,16 +10,24 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
+ * @property string $name
  * @property string $timezone
  * @property int $finance_period_start_day
  * @property bool $finance_integration_enabled
+ * @property \Carbon\CarbonImmutable|null $onboarded_at
  */
 class Household extends Model
 {
     use HasUlids;
     use SoftDeletes;
 
-    protected $fillable = ['name', 'timezone', 'finance_period_start_day', 'finance_integration_enabled'];
+    protected $fillable = [
+        'name',
+        'timezone',
+        'finance_period_start_day',
+        'finance_integration_enabled',
+        'onboarded_at',
+    ];
 
     protected $attributes = [
         'timezone' => 'Asia/Jakarta',
@@ -29,7 +37,16 @@ class Household extends Model
 
     protected function casts(): array
     {
-        return ['finance_period_start_day' => 'integer', 'finance_integration_enabled' => 'boolean'];
+        return [
+            'finance_period_start_day' => 'integer',
+            'finance_integration_enabled' => 'boolean',
+            'onboarded_at' => 'immutable_datetime',
+        ];
+    }
+
+    public function isOnboarded(): bool
+    {
+        return $this->onboarded_at !== null;
     }
 
     /** @return HasMany<HouseholdMember, $this> */

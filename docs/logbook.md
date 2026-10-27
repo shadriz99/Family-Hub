@@ -1,7 +1,7 @@
 # Logbook Development - Family Hub
 
-**Diperbarui:** 2026-10-26
-**Status:** CORE-01 diterima untuk kelanjutan development; CORE-03 dinyatakan selesai oleh reviewer, CORE-04 masih parsial. LOG-036 menambahkan email undangan, halaman penerimaan partner, dan alur reset kata sandi; LOG-039 membuktikan konkurensi slot partner; LOG-040 membatasi pembuatan undangan 10/jam; LOG-041 menetapkan satu undangan aktif per household dan melarang admin menjadi anggota household. CI remote untuk perubahan ini belum terverifikasi. Belum ada rilis aplikasi.
+**Diperbarui:** 2026-10-27
+**Status:** CORE-01 diterima untuk kelanjutan development; CORE-03 dinyatakan selesai oleh reviewer; CORE-04 parsial (konkurensi slot selesai); CORE-05 selesai di sisi Alur A & B (backend, email, UI, limiter 10/jam, 1 aktif, create-admin menutup P-17); CORE-06 (onboarding wizard) selesai pada LOG-044. CI remote untuk perubahan ini belum terverifikasi. Belum ada rilis aplikasi.
 
 Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan selesai. [Rencana development](development-plan.md) menentukan langkah berikutnya; spesifikasi dan acceptance criteria tetap mengikuti [Masterplan](00-MASTERPLAN.md) dan dokumen modul.
 
@@ -9,12 +9,12 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
 
 | Area | Status aktual | Bukti / tindak lanjut |
 |---|---|---|
-| Repository | `main` tanpa branch; batch terakhir LOG-041 | LOG-014: fondasi `ffe4afe`; LOG-026: checkpoint CORE-03/04 di-merge; LOG-031: CI hijau `731fb45`; LOG-035: kerja langsung di `main`; LOG-036: push `efae4f2..d077170`; LOG-039: push `2900d9f..fcaf25b`; LOG-040: limiter undangan; LOG-041: branch `core-01-foundation`/`core-03-support` dihapus |
+| Repository | `main` tanpa branch; batch terakhir LOG-044 | LOG-014: fondasi `ffe4afe`; LOG-026: checkpoint CORE-03/04 di-merge; LOG-031: CI hijau `731fb45`; LOG-035: kerja langsung di `main`; LOG-036: push `efae4f2..d077170`; LOG-039: push `2900d9f..fcaf25b`; LOG-040: limiter undangan; LOG-041: 1 aktif, admin non-member; LOG-042: Odroid-C2 WAL; LOG-043: alur A admin, create-admin (P-17); LOG-044: wizard onboarding CORE-06 |
 | Environment lokal | Git, PHP, Composer, Node/npm dapat dijalankan | Rincian dan batas setup di [setup dan rencana development](development-plan.md) |
 | Dependency PHP/npm | Terpasang, lockfile tersedia | Composer solve, platform check, audit, dan smoke check lulus pada waktu setup |
 | CORE-01 | **Diterima untuk kelanjutan development** | LOG-011/013/014: fondasi, auth, Boost, CI kedua DB; LOG-015: reviewer meminta lanjut; bukan UAT/produksi |
 | Boost | Terminal stdio disetujui sebagai transport | LOG-013: initialize, daftar 10 tool, dan dokumentasi lulus; UI Copilot belum terhubung tetapi bukan blocker |
-| CORE-02 sampai CORE-16 | CORE-03 dinyatakan selesai reviewer; CORE-04 parsial; CORE-05 punya backend + email/UI partner + limiter undangan + satu undangan aktif | LOG-015–018: utilitas/komponen; LOG-019: urutan disetujui; LOG-020–021: policy/action; LOG-024: tenant scope, konteks household, `PeriodResolver::for`; LOG-025–026: MariaDB CI dipulihkan dan checkpoint di-merge ke main; LOG-030: bootstrap + middleware konteks; LOG-032/034: backend undangan A5.1; LOG-036: email undangan, penerimaan partner, reset kata sandi; LOG-039: konkurensi slot; LOG-040: limiter 10 undangan/jam; LOG-041: satu undangan aktif, admin bukan anggota household. Konteks job, backfill histori, pengecualian trait, Alur A admin, dan antrean mail belum selesai |
+| CORE-02 sampai CORE-16 | CORE-03 selesai; CORE-04 parsial; CORE-05 selesai Alur A & B; CORE-06 selesai onboarding wizard | LOG-015–018: utilitas/komponen; LOG-019: urutan disetujui; LOG-020–021: policy/action; LOG-024: tenant scope, konteks household, `PeriodResolver::for`; LOG-025–026: MariaDB CI dipulihkan dan checkpoint di-merge ke main; LOG-030: bootstrap + middleware konteks; LOG-032/034: backend undangan §5.1; LOG-036: email undangan, penerimaan partner, reset kata sandi; LOG-039: konkurensi slot; LOG-040: limiter 10 undangan/jam; LOG-041: satu undangan aktif, admin bukan anggota household; LOG-042: optimasi host Odroid-C2, SQLite WAL; LOG-043: alur A admin, create-admin (P-17); LOG-044: wizard onboarding 3 langkah CORE-06. Konteks job, backfill histori, pengecualian trait, dan antrean mail belum selesai |
 | Finance / Organizer / Asset | Belum dimulai | Mockup adalah prototype yang sudah ada saat clone, bukan implementasi modul |
 | Produksi / UAT | Belum dijalankan | Tidak ada bukti deploy, restore, atau penerimaan pengguna |
 
@@ -423,6 +423,34 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
   - `npm test` **4 test JS** lulus.
   - `npm run build` berhasil memperbarui aset dan manifest Vite.
 - **Dokumen yang diselaraskan:** `docs/00-MASTERPLAN.md` (§5.1 status implementasi), `docs/development-plan.md` (status, tabel posisi, baris CORE-05), `docs/pending.md` (P-17 ditutup ke riwayat penutupan), dan logbook ini.
+
+### LOG-044 - CORE-06 Onboarding Wizard: Nama Household, Waktu & Periode, Undang Partner
+
+- **Task ID:** CORE-06 (Onboarding Household)
+- **Implementasi Skema & Model:**
+  - Migrasi `database/migrations/2026_10_27_000001_add_onboarded_at_to_households_table.php` menambahkan kolom `onboarded_at` (timestamp, nullable) pada tabel `households`.
+  - Model `App\Core\Models\Household` menambahkan `onboarded_at` ke `$fillable`, cast `immutable_datetime`, dan method pembantu `isOnboarded(): bool`.
+- **Middleware Proteksi Onboarding:**
+  - `App\Http\Middleware\EnsureHouseholdOnboarded` (alias `'onboarded'` di `bootstrap/app.php`) memastikan user berstatus Owner yang belum menyelesaikan onboarding (`onboarded_at === null`) dialihkan ke rute `/onboarding` saat mengakses rute terproteksi aplikasi (seperti `/`).
+  - Partner, guest, dan akun admin sistem dikecualikan dari pengalihan ini.
+- **Komponen Livewire Wizard 3 Langkah:**
+  - `App\Livewire\Onboarding\HouseholdWizard` dan view `resources/views/livewire/onboarding/household-wizard.blade.php`:
+    - **Langkah 1 (Nama Household):** Menampilkan nama household awal (dari proses pendaftaran undangan), validasi 1–100 karakter, tombol "Lanjutkan".
+    - **Langkah 2 (Zona Waktu & Periode):** Pilihan zona waktu dengan grup utama Indonesia (`Asia/Jakarta`, `Asia/Makassar`, `Asia/Jayapura`) serta daftar IANA lengkap; pilihan hari mulai siklus keuangan bulanan 1–28 (default 1). Menyimpan perubahan ke household dan memperbarui baris awal `HouseholdFinancePeriodSetting` dengan batas konteks tenant eksplisit. Tombol "Kembali" dan "Lanjutkan".
+    - **Langkah 3 (Undang Pasangan Opsional):** Input email pasangan dengan penjelasan hak akses Partner. Jika diisi, memanggil aksi `InviteHouseholdMember` (mengirim email undangan dan mencatat log). Jika dikosongkan atau memilih "Lewati untuk sekarang", proses selesai tanpa mengirim undangan.
+    - **Penyelesaian:** Memberi stempel `onboarded_at = now()`, mencatat audit log `core.household.onboarded`, menampilkan flash alert sukses, dan mengarahkan pengguna ke beranda `/`.
+  - Stepper visual progress bar terintegrasi dengan aksesibilitas ARIA, navigasi tombol kembali/lanjut, dan dukungan mode terang/gelap serta responsif 360px mobile hingga 1280px desktop.
+  - Halaman wrapper `resources/views/onboarding.blade.php` menggunakan layout bersama `<x-auth-layout>`.
+  - Komponen `AcceptInvitationForm` diperbarui untuk mengarahkan pengguna pembuat household baru langsung ke `route('onboarding')`.
+  - Teks lokalisasi lengkap ditambahkan pada `lang/id/household.php` dan `lang/en/household.php`.
+- **Verifikasi:**
+  - Test suite baru `tests/Feature/HouseholdOnboardingTest.php` (11 test, 57 assertion) mencakup seluruh alur: pengalihan owner belum onboarding, izin akses owner yang sudah onboarding, guard untuk guest/admin/partner, validasi langkah 1 & 2, navigasi bolak-balik, skip langkah 3 tanpa email, pengiriman undangan partner di langkah 3, dan penanganan validasi email.
+  - `composer test`: **225 test/1927 assertion** lulus (sebelumnya 214/1870).
+  - `npm test`: **4 test JS** lulus.
+  - `composer lint` (Pint): Lulus.
+  - `composer analyse` (Larastan level 6): `[OK] No errors`.
+  - `npm run build`: Aset frontend Vite terkompilasi bersih.
+- **Dokumen yang diselaraskan:** `docs/logbook.md` (entri ini), `docs/development-plan.md`, `docs/pending.md`, dan `docs/00-MASTERPLAN.md`.
 
 ## Aturan pembaruan berikutnya
 

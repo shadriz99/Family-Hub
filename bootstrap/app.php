@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Middleware\EnsureHouseholdOnboarded;
 use App\Http\Middleware\UseHouseholdContext;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -15,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [UseHouseholdContext::class]);
+        $middleware->alias([
+            'onboarded' => EnsureHouseholdOnboarded::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
