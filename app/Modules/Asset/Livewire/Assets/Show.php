@@ -164,6 +164,6 @@ final class Show extends Component
             'asset' => $asset,
             'totalCostAllTime' => $totalCostAllTime,
             'totalCostPastYear' => $totalCostPastYear,
-        ]);
+        ])->layout('layouts.app', ['title' => $asset->name]);
     }
 }

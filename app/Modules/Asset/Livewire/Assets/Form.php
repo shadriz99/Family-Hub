@@ -300,6 +300,6 @@ final class Form extends Component
             'selectedCategory' => $selectedCategory,
             'templates' => $templates,
             'accountOptions' => $accountOptions,
-        ]);
+        ])->layout('layouts.app', ['title' => $this->assetId ? 'Edit Aset' : 'Tambah Aset']);
     }
 }

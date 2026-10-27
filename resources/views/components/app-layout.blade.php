@@ -350,16 +350,23 @@
                     </span>
                     <span>{{ __('Catatan Baru') }}</span>
                 </a>
-                <a href="{{ url('/shopping/create') }}"
+                <a href="{{ url('/shopping') }}"
                     class="flex min-h-12 items-center gap-3.5 rounded-2xl bg-current/5 px-4 py-3 font-semibold transition-colors hover:bg-current/10">
                     <span class="flex size-9 items-center justify-center rounded-xl bg-current/10">
                         <x-heroicon-o-shopping-bag class="size-5" />
                     </span>
-                    <span>{{ __('Item Belanja') }}</span>
+                    <span>{{ __('Daftar Belanja') }}</span>
                 </a>
             @endif
 
             @if ($modules['asset'])
+                <a href="{{ url('/assets/create') }}"
+                    class="flex min-h-12 items-center gap-3.5 rounded-2xl bg-current/5 px-4 py-3 font-semibold transition-colors hover:bg-current/10">
+                    <span class="flex size-9 items-center justify-center rounded-xl bg-[#28543e]/15 text-[#28543e] dark:bg-[#bad6ae]/20 dark:text-[#bad6ae]">
+                        <x-heroicon-o-cube class="size-5" />
+                    </span>
+                    <span>{{ __('Tambah Aset Baru') }}</span>
+                </a>
                 <a href="{{ url('/assets/issues/create') }}"
                     class="flex min-h-12 items-center gap-3.5 rounded-2xl bg-current/5 px-4 py-3 font-semibold transition-colors hover:bg-current/10">
                     <span class="flex size-9 items-center justify-center rounded-xl bg-[#87571f]/15 text-[#87571f] dark:bg-[#edc48b]/20 dark:text-[#edc48b]">

@@ -111,6 +111,6 @@ final class Form extends Component
 
         return view('modules.asset.vendors.form', [
             'serviceOptions' => $serviceOptions,
-        ]);
+        ])->layout('layouts.app', ['title' => $this->vendorId ? 'Edit Vendor' : 'Tambah Vendor']);
     }
 }

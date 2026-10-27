@@ -37,6 +37,6 @@ final class Index extends Component
         return view('modules.asset.vendors.index', [
             'vendors' => $vendors,
             'totalCount' => $vendors->count(),
-        ]);
+        ])->layout('layouts.app', ['title' => 'Daftar Vendor & Bengkel']);
     }
 }

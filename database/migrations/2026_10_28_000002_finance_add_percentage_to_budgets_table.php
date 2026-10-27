@@ -9,9 +9,11 @@ use Illuminate\Support\Facades\Schema;
 return new class () extends Migration {
     public function up(): void
     {
-        Schema::table('fin_budgets', function (Blueprint $table): void {
-            $table->unsignedSmallInteger('percentage')->default(0)->after('amount');
-        });
+        if (! Schema::hasColumn('fin_budgets', 'percentage')) {
+            Schema::table('fin_budgets', function (Blueprint $table): void {
+                $table->unsignedSmallInteger('percentage')->default(0)->after('amount');
+            });
+        }
     }
 
     public function down(): void

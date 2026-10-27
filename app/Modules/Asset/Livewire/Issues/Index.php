@@ -47,6 +47,6 @@ final class Index extends Component
         return view('modules.asset.issues.index', [
             'issues' => $issues,
             'totalCount' => $issues->count(),
-        ]);
+        ])->layout('layouts.app', ['title' => 'Laporan Kerusakan']);
     }
 }

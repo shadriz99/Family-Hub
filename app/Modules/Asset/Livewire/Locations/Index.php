@@ -90,6 +90,6 @@ final class Index extends Component
 
         return view('modules.asset.locations.index', [
             'locations' => $locations,
-        ]);
+        ])->layout('layouts.app', ['title' => 'Kelola Lokasi & Ruangan']);
     }
 }

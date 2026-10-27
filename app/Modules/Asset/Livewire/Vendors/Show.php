@@ -48,6 +48,6 @@ final class Show extends Component
             'totalSpent' => $totalSpent,
             'assets' => $assets,
             'whatsappUrl' => $whatsappUrl,
-        ]);
+        ])->layout('layouts.app', ['title' => $vendor->name]);
     }
 }

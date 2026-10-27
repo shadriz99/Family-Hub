@@ -105,6 +105,6 @@ final class Index extends Component
             'locations' => $locations,
             'totalCount' => $allAssets->count(),
             'favoriteVehicle' => $favoriteVehicle,
-        ]);
+        ])->layout('layouts.app', ['title' => 'Aset & Inventaris']);
     }
 }

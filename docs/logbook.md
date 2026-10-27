@@ -1051,6 +1051,37 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
   - `npm run build`: Berhasil tanpa error dalam 2.71 detik.
 - **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`, `docs/pending.md`.
 
+### LOG-062 - Perbaikan Menu Aset & Shortcut Tambah Cepat 404
+
+- **Konteks:** Menindaklanjuti laporan pengguna bahwa menu Asset belum bisa dibuka (500 error) dan tautan Tambah Cepat (FAB) menghasilkan 404.
+- **Penyebab:**
+  1. File database lokal `database/database.sqlite` belum menjalankan migrasi tabel modul Asset (`ast_*`) dan Organizer (`org_*`), sehingga query pada `/assets` melempar `QueryException: no such table: ast_assets`.
+  2. Household lama di `database.sqlite` belum memiliki data seeder bawaan kategori dan lokasi aset.
+  3. Rute shorthand `/tasks`, `/tasks/create`, `/notes`, `/notes/create`, `/shopping`, `/shopping/create`, dan `/reminders` di template layout belum didaftarkan di `routes/modules/organizer.php` (hanya ada prefix `/organizer/*`), menyebabkan navigasi dan modal Tambah Cepat menghasilkan 404.
+  4. Modal Tambah Cepat belum menyediakan opsi "Tambah Aset Baru" (`/assets/create`), hanya "Laporan Kerusakan".
+  5. Komponen Livewire modul Asset belum menyertakan `->layout('layouts.app', ['title' => '...'])` eksplisit.
+- **Perubahan:**
+  - **Migrasi & Seeder Database Aktif:**
+    - Menjalankan migrasi `php artisan migrate --force` pada `database/database.sqlite` (termasuk guard idempotent pada migrasi persentase anggaran).
+    - Menjalankan seeder `SeedDefaultAssetData` untuk household aktif yang ada di database.
+  - **Routing Shorthand & Normalisasi:**
+    - Di `routes/modules/organizer.php`: Mendaftarkan rute langsung `/tasks`, `/tasks/create`, `/tasks/{id}`, `/notes`, `/notes/create`, `/notes/{id}`, `/shopping`, `/shopping/create` (redirect ke index), `/shopping/{id}`, dan `/reminders` berdampingan dengan rute kanonikal `/organizer/*`.
+  - **Pembaruan Layout & Tambah Cepat:**
+    - Pada `resources/views/layouts/app.blade.php`, `resources/views/components/layouts/app.blade.php`, dan `resources/views/components/app-layout.blade.php`:
+      - Memperbarui item "Item Belanja" menjadi "Daftar Belanja" mengarah ke `url('/shopping')`.
+      - Menambahkan opsi "Tambah Aset Baru" mengarah ke `url('/assets/create')`.
+      - Mempertahankan opsi "Laporan Kerusakan" mengarah ke `url('/assets/issues/create')`.
+  - **Livewire Asset Layout:**
+    - Menambahkan `->layout('layouts.app', ['title' => ...])` ke seluruh 16 komponen Livewire modul Asset.
+- **Verifikasi:**
+  - Simulasi HTTP `GET /assets` menghasilkan status HTTP 200 OK.
+  - Simulasi HTTP `GET /tasks`, `/tasks/create`, `/notes`, `/notes/create`, `/shopping`, `/shopping/create` (302), `/assets/create`, `/assets/issues/create` seluruhnya sukses.
+  - `php artisan test`: **390 test / 2760 assertions** lulus 100% green.
+  - `vendor/bin/phpstan analyse`: `[OK] No errors` (197 file PHPStan level 6).
+  - `vendor/bin/pint --test`: Lulus rapi.
+  - `npm run build`: Vite build sukses 2.53s.
+- **Dokumen yang diselaraskan:** `docs/logbook.md`.
+
 ## Aturan pembaruan berikutnya
 
 1. Tambahkan entri baru dengan tanggal dan ID `LOG-NNN`; sertakan task ID resmi (`CORE-*`, `FIN-*`, `ORG-*`, `AST-*`) jika relevan.

@@ -109,6 +109,6 @@ final class Form extends Component
         return view('modules.asset.issues.form', [
             'assets' => $assets,
             'locations' => $locations,
-        ]);
+        ])->layout('layouts.app', ['title' => $this->issueId ? 'Edit Laporan Kerusakan' : 'Lapor Kerusakan Baru']);
     }
 }

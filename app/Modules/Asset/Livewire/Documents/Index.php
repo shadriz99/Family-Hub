@@ -47,6 +47,6 @@ final class Index extends Component
         return view('modules.asset.documents.index', [
             'documents' => $documents,
             'totalCount' => $documents->count(),
-        ]);
+        ])->layout('layouts.app', ['title' => 'Dokumen Aset']);
     }
 }

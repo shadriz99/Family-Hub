@@ -68,6 +68,6 @@ final class Index extends Component
         return view('modules.asset.maintenance.index', [
             'grouped' => $grouped,
             'totalCount' => $plans->count(),
-        ]);
+        ])->layout('layouts.app', ['title' => 'Jadwal Perawatan']);
     }
 }

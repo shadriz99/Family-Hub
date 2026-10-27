@@ -150,6 +150,6 @@ final class Form extends Component
 
         return view('modules.asset.documents.form', [
             'assets' => $assets,
-        ]);
+        ])->layout('layouts.app', ['title' => $this->documentId ? 'Edit Dokumen' : 'Tambah Dokumen']);
     }
 }

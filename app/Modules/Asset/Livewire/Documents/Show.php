@@ -89,6 +89,6 @@ final class Show extends Component
         return view('modules.asset.documents.show', [
             'doc' => $doc,
             'accountOptions' => $accountOptions,
-        ]);
+        ])->layout('layouts.app', ['title' => $doc->title]);
     }
 }

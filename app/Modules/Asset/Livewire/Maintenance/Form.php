@@ -163,6 +163,6 @@ final class Form extends Component
         return view('modules.asset.maintenance.form', [
             'asset' => $asset,
             'vendors' => $vendors,
-        ]);
+        ])->layout('layouts.app', ['title' => $this->planId ? 'Edit Jadwal Perawatan' : 'Tambah Jadwal Perawatan']);
     }
 }

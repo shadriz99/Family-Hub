@@ -133,6 +133,6 @@ final class Form extends Component
             'vendors' => $vendors,
             'accountOptions' => $accountOptions,
             'categoryOptions' => $categoryOptions,
-        ]);
+        ])->layout('layouts.app', ['title' => 'Catat Riwayat Servis']);
     }
 }

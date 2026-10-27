@@ -114,6 +114,6 @@ final class Show extends Component
         return view('modules.asset.issues.show', [
             'issue' => $issue,
             'vendors' => $vendors,
-        ]);
+        ])->layout('layouts.app', ['title' => $issue->title]);
     }
 }
