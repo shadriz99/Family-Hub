@@ -12,6 +12,12 @@
     @livewireStyles
 </head>
 <body class="min-h-full bg-[#f6f4ee] text-[#263c32] antialiased dark:bg-[#151f1b] dark:text-[#f3f1e8]">
+    {{-- Skip Link for Keyboard Accessibility --}}
+    <a href="#main-content"
+       class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-xl focus:bg-[#28543e] focus:px-4 focus:py-2 focus:text-white focus:shadow-lg dark:focus:bg-[#bad6ae] dark:focus:text-[#151f1b]">
+        {{ __('Lewati ke konten utama') }}
+    </a>
+
     {{-- Header --}}
     <header class="border-b border-current/10 bg-[#fffefa]/80 backdrop-blur dark:bg-[#1f2c25]/80 sticky top-0 z-20">
         <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
@@ -39,7 +45,7 @@
     </header>
 
     {{-- Main Content --}}
-    <main class="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+    <main id="main-content" class="mx-auto max-w-5xl px-4 py-8 sm:px-6">
         {{ $slot }}
     </main>
 

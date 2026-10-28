@@ -26,6 +26,12 @@
     </script>
 </head>
 <body class="min-h-full bg-[#f6f4ee] font-sans text-base text-[#263c32] antialiased transition-colors dark:bg-[#151f1b] dark:text-[#f3f1e8]">
+    {{-- Skip Link for Keyboard Accessibility --}}
+    <a href="#main-content"
+       class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-xl focus:bg-[#28543e] focus:px-4 focus:py-2 focus:text-white focus:shadow-lg dark:focus:bg-[#bad6ae] dark:focus:text-[#151f1b]">
+        {{ __('Lewati ke konten utama') }}
+    </a>
+
     <div class="mx-auto flex min-h-dvh max-w-5xl flex-col px-5 py-6 sm:px-8 sm:py-8">
         {{-- Header --}}
         <header class="flex items-center justify-between border-b border-current/10 pb-5">
@@ -69,7 +75,7 @@
         </header>
 
         {{-- Hero Section --}}
-        <main class="my-auto py-12 text-center sm:py-16">
+        <main id="main-content" class="my-auto py-12 text-center sm:py-16">
             <span class="inline-flex items-center rounded-full border border-current/15 bg-current/5 px-3.5 py-1 text-xs font-semibold tracking-wide">
                 {{ __('Pusat Manajemen Rumah Tangga') }}
             </span>

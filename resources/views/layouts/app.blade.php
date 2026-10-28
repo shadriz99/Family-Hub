@@ -40,6 +40,12 @@
     </script>
 </head>
 <body class="min-h-full bg-[#f6f4ee] font-sans text-base text-[#263c32] antialiased transition-colors dark:bg-[#151f1b] dark:text-[#f3f1e8]">
+    {{-- Skip Link for Keyboard Accessibility --}}
+    <a href="#main-content"
+       class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-xl focus:bg-[#28543e] focus:px-4 focus:py-2 focus:text-white focus:shadow-lg dark:focus:bg-[#bad6ae] dark:focus:text-[#151f1b]">
+        {{ __('Lewati ke konten utama') }}
+    </a>
+
     {{-- Offline alert banner --}}
     <x-offline-banner />
 
@@ -255,7 +261,7 @@
             </header>
 
             {{-- Main Page Body --}}
-            <main class="mx-auto w-full max-w-6xl flex-1 px-4 py-6 pb-28 sm:px-6 lg:px-8 lg:pb-10">
+            <main id="main-content" class="mx-auto w-full max-w-6xl flex-1 px-4 py-6 pb-28 sm:px-6 lg:px-8 lg:pb-10">
                 {{ $slot }}
             </main>
         </div>

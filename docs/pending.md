@@ -10,7 +10,7 @@
 4. Keputusan reviewer dicatat di logbook (`LOG-NNN`), lalu item di sini ditutup atau diubah menjadi pekerjaan tertunda di bagian B.
 5. Jangan menandai item selesai hanya karena kode sudah ada; sertakan bukti verifikasi atau keputusan eksplisit.
 
-**Status:** diperbarui terakhir pada LOG-064 (Langkah 1 Phase 4: penutupan safety net test gap & bugfix streamed context).
+**Status:** diperbarui terakhir pada LOG-065 (Langkah 1 & 2 Phase 4: penutupan safety net test gap & verifikasi browser/aksesibilitas).
 
 ## A. Butuh keputusan reviewer
 

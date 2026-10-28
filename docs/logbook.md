@@ -1140,6 +1140,30 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
   - `npm run build`: Vite build berhasil bersih (9.26s).
 - **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`.
 
+### LOG-065 - Phase 4 Hardening: Verifikasi Browser, Responsivitas Mobile 360px & Aksesibilitas
+
+- **Konteks:** Menindaklanjuti rencana implementasi Phase 4 Langkah 2, yaitu verifikasi browser komprehensif pada viewport mobile (360px) dan desktop (1280px), tema light/dark, navigasi keyboard (WCAG 2.4.1 Skip Link), preferensi reduced motion, serta transisi autentikasi.
+- **Peningkatan Frontend & Aksesibilitas:**
+  1. **Aksesibilitas Keyboard & Skip Link (WCAG 2.4.1):**
+     - Menambahkan tautan ramah pembaca layar/keyboard `"Lewati ke konten utama"` (`#main-content`) pada seluruh master layout ([`resources/views/layouts/app.blade.php`](resources/views/layouts/app.blade.php), [`resources/views/components/layouts/app.blade.php`](resources/views/components/layouts/app.blade.php), [`resources/views/components/app-layout.blade.php`](resources/views/components/app-layout.blade.php), [`resources/views/layouts/admin.blade.php`](resources/views/layouts/admin.blade.php), dan [`resources/views/welcome.blade.php`](resources/views/welcome.blade.php)).
+     - Memberikan atribut `id="main-content"` secara konsisten pada elemen semantik `<main>` di semua layout.
+  2. **Preferensi Reduced Motion (WCAG 2.3.3):**
+     - Menambahkan aturan media query `@media (prefers-reduced-motion: reduce)` pada [`resources/css/app.css`](resources/css/app.css) untuk menonaktifkan durasi animasi dan transisi secara global bagi pengguna dengan sensitivitas vestibular.
+  3. **Automasi Verifikasi Browser & Shell Modul:**
+     - Membuat suite pengujian [`tests/Feature/BrowserVerificationTest.php`](../tests/Feature/BrowserVerificationTest.php) (6 test, 65 assertions):
+       - Verifikasi meta tag responsive viewport (`viewport-fit=cover`), theme-color, manifest PWA, dan tautan skip-link pada landing page (`/`).
+       - Verifikasi form autentikasi yang dapat diakses (keterkaitan `label for` dengan `input id`, status aria-invalid, dan tombol submit).
+       - Verifikasi shell autentikasi: banner offline PWA (`$store.network?.isOffline`), Boxicons logo, dan navigasi mobile 5 item.
+       - Verifikasi CSS guards: ketiadaan overflow horizontal (`overflow-x: hidden`), varian kustom dark mode, dan reduced motion.
+       - Verifikasi transisi autentikasi: perlindungan seluruh rute modul domain dari akses tamu (redirect login).
+       - Verifikasi akses pengguna terotentikasi ke seluruh shell modul (`/`, `/finance`, `/tasks`, `/notes`, `/shopping`, `/calendar`, `/assets`) menghasilkan status 200 OK dengan brand emblem dan target jangkar konten utama.
+- **Verifikasi:**
+  - `php artisan test`: **410 passed, 2.881 assertions** lulus 100% green (+6 test, +65 assertions).
+  - `vendor/bin/pint --test`: Lulus bersih tanpa pelanggaran format.
+  - `vendor/bin/phpstan analyse --memory-limit=1G`: `[OK] No errors` pada seluruh 226 file.
+  - `npm run build`: Vite build berhasil bersih (5.71s).
+- **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`, `docs/pending.md`.
+
 ## Aturan pembaruan berikutnya
 
 1. Tambahkan entri baru dengan tanggal dan ID `LOG-NNN`; sertakan task ID resmi (`CORE-*`, `FIN-*`, `ORG-*`, `AST-*`) jika relevan.
