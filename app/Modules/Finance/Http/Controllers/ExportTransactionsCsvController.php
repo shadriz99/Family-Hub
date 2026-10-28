@@ -46,47 +46,49 @@ final class ExportTransactionsCsvController
 
         $filename = 'transaksi-' . now()->format('Ymd-His') . '.csv';
 
-        return response()->streamDownload(function () use ($query): void {
-            $handle = fopen('php://output', 'w');
-            if ($handle === false) {
-                return;
-            }
-
-            // UTF-8 BOM for Excel compatibility
-            fputs($handle, "\xEF\xBB\xBF");
-
-            // CSV Header
-            fputcsv($handle, [
-                'Tanggal',
-                'Tipe',
-                'Akun Sumber',
-                'Akun Tujuan',
-                'Kategori',
-                'Alokasi',
-                'Penerima/Pemberi',
-                'Catatan',
-                'Nominal (Rp)',
-                'Pencatat',
-            ]);
-
-            $query->chunk(500, function ($transactions) use ($handle): void {
-                foreach ($transactions as $tx) {
-                    fputcsv($handle, [
-                        $tx->occurred_on->toDateString(),
-                        $tx->type->label(),
-                        $tx->account->name,
-                        $tx->toAccount !== null ? $tx->toAccount->name : '-',
-                        $tx->category !== null ? $tx->category->name : '-',
-                        $tx->allocation?->label() ?? '-',
-                        $tx->payee ?? '-',
-                        $tx->note ?? '-',
-                        $tx->amount,
-                        $tx->creator !== null ? $tx->creator->name : '-',
-                    ]);
+        return response()->streamDownload(function () use ($query, $context, $household): void {
+            $context->runInContext($household, function () use ($query): void {
+                $handle = fopen('php://output', 'w');
+                if ($handle === false) {
+                    return;
                 }
-            });
 
-            fclose($handle);
+                // UTF-8 BOM for Excel compatibility
+                fputs($handle, "\xEF\xBB\xBF");
+
+                // CSV Header
+                fputcsv($handle, [
+                    'Tanggal',
+                    'Tipe',
+                    'Akun Sumber',
+                    'Akun Tujuan',
+                    'Kategori',
+                    'Alokasi',
+                    'Penerima/Pemberi',
+                    'Catatan',
+                    'Nominal (Rp)',
+                    'Pencatat',
+                ]);
+
+                $query->chunk(500, function ($transactions) use ($handle): void {
+                    foreach ($transactions as $tx) {
+                        fputcsv($handle, [
+                            $tx->occurred_on->toDateString(),
+                            $tx->type->label(),
+                            $tx->account->name,
+                            $tx->toAccount !== null ? $tx->toAccount->name : '-',
+                            $tx->category !== null ? $tx->category->name : '-',
+                            $tx->allocation?->label() ?? '-',
+                            $tx->payee ?? '-',
+                            $tx->note ?? '-',
+                            $tx->amount,
+                            $tx->creator !== null ? $tx->creator->name : '-',
+                        ]);
+                    }
+                });
+
+                fclose($handle);
+            });
         }, $filename, [
             'Content-Type' => 'text/csv; charset=UTF-8',
             'Content-Disposition' => "attachment; filename=\"{$filename}\"",

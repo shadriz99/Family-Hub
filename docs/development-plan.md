@@ -148,7 +148,7 @@ Composer is installed in `%LOCALAPPDATA%\Programs\Composer` with a `composer.cmd
 | E. Finance | **Selesai** (FIN-01 sampai FIN-16) | [LOG-055](logbook.md#log-055---phase-1-finance-skema--model-fin-01-dan-seeder-kategori-indonesia--demo-fin-02) (skema, model, enum, seeder kategori & demo); [LOG-057](logbook.md#log-057---phase-1-finance-akun-transaksi-anggaran-rencana-alokasi-recurring-pinjaman-laporan--integrasi-fin-03-sampai-fin-16) (seluruh fitur domain, UI Livewire, integrasi kalender/alert/dashboard/ekspor, dan 9 test file feature lulus); [LOG-058](logbook.md#log-058---penataan-5-kategori-utama-pengeluaran-anggaran-berbasis-persentase-100-dan-input-sub-kategori-manual-dinamis) (5 kategori utama pengeluaran, anggaran berbasis persentase total 100%, dan subkategori manual dinamis) |
 | F. Organizer | **Selesai** (Phase 2) | [LOG-059](logbook.md#log-059---phase-2-organizer--fondasi-skema-model-enum-provider--feature-flag-org-01), [LOG-060](logbook.md#log-060---phase-2-organizer-selesai-org-02-sampai-org-13) (ORG-01 sampai ORG-13 selesai: tasks & recurrence & undo & rotasi & expense, notes & markdown & multi-color & conflict, collaborative shopping & parser & real-time & FinanceGateway expense, calendar month & agenda & unified sources, ICS export RFC 5545, reminders page, dashboard widget, household backup exporter, 19 feature test lulus) |
 | G. Asset | **Selesai** (Phase 3) | [LOG-061](logbook.md#log-061---phase-3-asset-selesai-ast-01-sampai-ast-12) (AST-01 sampai AST-12 selesai: skema 9 tabel, UpdateMeter monotonik & offset kumulatif reset, WhatsApp link generator normalisasi 62xxx & pesan template, RecordService/RenewDocument/DisposeAsset dengan sinkronisasi Finance expense & PlannedItem, UI Livewire aset/perawatan/dokumen/kerusakan/vendor/lokasi, sumber kalender/alert, widget dashboard, backup exporter, artisan commands, 23 feature test modul Asset lulus, total 390 test green) |
-| H. Hardening dan go-live | Belum dimulai | UAT, Lighthouse, deploy, dan restore belum dibuktikan |
+| H. Hardening dan go-live | Parsial (Langkah 1 selesai) | [LOG-064](logbook.md#log-064---phase-4-hardening-penutupan-safety-net-test-gap--bugfix-streamed-context) (penutupan safety net test gap ekspor CSV transaksi, guard hapus lokasi aset, isolasi privasi catatan backup, bugfix runtime streamed context, 404 test green, Pint rapi, Larastan level 6 bersih, Vite build berhasil. UAT, Lighthouse, deploy, dan restore berikutnya) |
 
 ## 3. Langkah berikutnya: selesaikan CORE-01
 
@@ -240,7 +240,7 @@ Rujukan: [spesifikasi Asset](03-MODULE-ASSET.md).
 
 ## 8. Phase 4: Hardening, UAT, dan rilis
 
-1. Jalankan regression test lintas modul pada SQLite/MariaDB, Pint, Larastan, build, dan pemeriksaan dependency.
+1. **Regression test & hardening (Status LOG-064: selesai langkah 1):** penutupan safety net test gap (ekspor CSV transaksi, guard hapus lokasi aset, isolasi privasi catatan backup), perbaikan bug context pada `StreamedResponse`, 404 test Pest/PHPUnit lulus (2816 assertions), Pint bersih, Larastan Level 6 tanpa error (226 file), dan Vite build produksi sukses.
 2. Uji browser pada mobile 360px dan desktop, light/dark, keyboard, reduced motion, input cepat, offline, serta transisi login/logout.
 3. Ukur Lighthouse mobile: Performance >=85, Accessibility >=90, Best Practices >=90 dan installability sesuai Masterplan.
 4. Tutup Q-M11 (retensi/purge backup) sebelum data nyata; verifikasi keputusan Q-M9/Q-M12, konfigurasi provider SMTP produksi (P-21), target backup, serta host Linux.

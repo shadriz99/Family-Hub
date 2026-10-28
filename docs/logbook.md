@@ -1107,6 +1107,39 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
   - `npm run build`: Vite build sukses dalam 4.37s.
 - **Dokumen yang diselaraskan:** `docs/logbook.md`.
 
+### LOG-064 - Phase 4 Hardening: Penutupan Safety Net Test Gap & Bugfix Streamed Context
+
+- **Konteks:** Menindaklanjuti arahan reviewer untuk mengeksekusi Opsi 1 pada awal Phase 4 (Hardening), yaitu mengimplementasikan test safety net dari temuan `/test-gap-audit` guna memperkuat perlindungan regresi sebelum UAT dan rilis.
+- **Perubahan & Perbaikan Bug:**
+  1. **Bugfix Runtime Streamed Context Ekspor CSV:**
+     - Pada `app/Modules/Finance/Http/Controllers/ExportTransactionsCsvController.php`: Ditemukan bug potensial di mana middleware `UseHouseholdContext` menjalankan blok `finally { $context->forget(); }` sebelum payload `StreamedResponse` mulai dialirkan ke klien, menyebabkan `HouseholdScope` melempar `LogicException: No household context is active` saat memanggil `$query->chunk()`.
+     - Memperbaiki controller dengan membungkus eksekusi stream di dalam `$context->runInContext($household, ...)` sehingga konteks tenant household tetap aktif dan terisolasi secara benar selama seluruh baris CSV dialirkan.
+  2. **Feature Test Ekspor CSV Transaksi:**
+     - Membuat [`tests/Feature/Finance/TransactionCsvExportTest.php`](../tests/Feature/Finance/TransactionCsvExportTest.php) (4 test):
+       - Proteksi akses tamu (redirect login).
+       - Header valid `text/csv`, nama file `transaksi-*.csv`, dan UTF-8 BOM untuk kompatibilitas Excel.
+       - Isolasi tenant: transaksi household lain tidak pernah bocor ke file ekspor.
+       - Dukungan filter query: filter tipe (`type=expense`) dan filter rentang tanggal (`from`/`to`).
+  3. **Feature Test Guard Hapus Lokasi Aset:**
+     - Membuat [`tests/Feature/Asset/LocationManagementTest.php`](../tests/Feature/Asset/LocationManagementTest.php) (7 test):
+       - Render daftar lokasi aset.
+       - Tambah lokasi baru dengan ikon dan validasi nama wajib.
+       - Edit/pembaruan nama lokasi.
+       - Guard proteksi integritas data: penolakan hapus lokasi jika masih digunakan oleh satu atau lebih aset (`assets_count > 0`).
+       - Hapus lokasi (soft delete) saat tidak ada aset yang terkait.
+       - Isolasi tenant: penolakan edit/hapus lokasi milik household lain (404).
+  4. **Feature Test Isolasi Privasi Catatan Backup:**
+     - Membuat [`tests/Feature/Organizer/OrganizerHouseholdExporterTest.php`](../tests/Feature/Organizer/OrganizerHouseholdExporterTest.php) (3 test):
+       - Identifikasi modul exporter `organizer`.
+       - Pengujian ketat privasi catatan BR-ORG-010: ekspor oleh Owner hanya membawa catatan publik dan catatan privat Owner (catatan privat Partner dikecualikan); ekspor oleh Partner hanya membawa catatan publik dan catatan privat Partner; ekspor otomatis tanpa autentikasi (sistem backup) hanya membawa catatan publik.
+       - Isolasi tenant lintas modul organizer: tugas, catatan, daftar belanja, dan agenda acara dari household lain tidak pernah ikut diekspor.
+- **Verifikasi:**
+  - `php artisan test`: **404 passed, 2,816 assertions** lulus 100% green (+14 test baru).
+  - `vendor/bin/pint --test`: Lulus rapi tanpa pelanggaran PSR-12.
+  - `vendor/bin/phpstan analyse --memory-limit=1G`: `[OK] No errors` pada seluruh 226 file (PHPStan Level 6).
+  - `npm run build`: Vite build berhasil bersih (9.26s).
+- **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`.
+
 ## Aturan pembaruan berikutnya
 
 1. Tambahkan entri baru dengan tanggal dan ID `LOG-NNN`; sertakan task ID resmi (`CORE-*`, `FIN-*`, `ORG-*`, `AST-*`) jika relevan.
