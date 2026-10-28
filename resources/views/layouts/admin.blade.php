@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="theme-color" content="#28543e">
+    <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg">
+    <link rel="apple-touch-icon" href="/icons/icon-192.svg">
     <title>{{ $title ?? __('Admin') }} · Family Hub</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
@@ -14,7 +16,7 @@
     <header class="border-b border-current/10 bg-[#fffefa]/80 backdrop-blur dark:bg-[#1f2c25]/80 sticky top-0 z-20">
         <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
             <div class="flex items-center gap-3">
-                <span class="font-serif text-lg font-bold tracking-tight">Family Hub</span>
+                <x-app-logo size="xs" with-text subtitle="Panel Manajemen" />
                 <span class="rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-semibold text-amber-600 dark:text-amber-400">
                     {{ __('Admin Panel') }}
                 </span>

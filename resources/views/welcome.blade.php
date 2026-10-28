@@ -8,6 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg">
     <link rel="apple-touch-icon" href="/icons/icon-192.svg">
     <title>Family Hub · Pusat Kendali Keluarga</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -28,12 +29,7 @@
     <div class="mx-auto flex min-h-dvh max-w-5xl flex-col px-5 py-6 sm:px-8 sm:py-8">
         {{-- Header --}}
         <header class="flex items-center justify-between border-b border-current/10 pb-5">
-            <div class="flex items-center gap-3">
-                <span class="flex size-10 items-center justify-center rounded-2xl bg-[#28543e] text-white shadow-xs dark:bg-[#bad6ae] dark:text-[#151f1b]">
-                    <x-heroicon-s-home class="size-5" />
-                </span>
-                <span class="font-serif text-2xl font-bold tracking-tight">Family Hub</span>
-            </div>
+            <x-app-logo size="md" with-text subtitle="Pusat Kendali Keluarga" />
 
             <div class="flex items-center gap-2 sm:gap-3">
                 <button type="button"

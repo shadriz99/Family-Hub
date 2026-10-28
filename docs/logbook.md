@@ -1082,6 +1082,31 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
   - `npm run build`: Vite build sukses 2.53s.
 - **Dokumen yang diselaraskan:** `docs/logbook.md`.
 
+### LOG-063 - Peningkatan Frontend & Integrasi Logo Boxicons
+
+- **Konteks:** Menindaklanjuti permintaan reviewer untuk meninjau frontend menggunakan skills (`premium-frontend-ui`, `web-design-reviewer`, `webapp-testing`) dan memperbarui logo aplikasi agar tidak generik menggunakan pustaka ikon eksternal Boxicons (`bxicon`).
+- **Perubahan:**
+  - **Pustaka Ikon & Aset:**
+    - Memasang dependensi npm `boxicons` (`v2.1.4`) dan mengimpor stylesheet `boxicons/css/boxicons.min.css` ke dalam `resources/css/app.css`.
+    - Bundling aset font Boxicons (`woff2`, `ttf`, `woff`) melalui Vite.
+  - **Komponen Brand Logo (`<x-app-logo>`):**
+    - Membuat komponen Blade baru [`resources/views/components/app-logo.blade.php`](resources/views/components/app-logo.blade.php) yang mengadopsi lambang `bxs-home-heart` dari Boxicons (rumah dengan simbol hati di tengah, melambangkan kehangatan keluarga) dengan latar gradien emerald elegan (`from-[#2e5e46] to-[#1c3e2e]`), sudut kurva halus, hover micro-interaction, dan tipografi serif `Family Hub`.
+    - Mendukung varian ukuran (`xs`, `sm`, `md`, `lg`, `xl`) dan opsi teks/subtitle.
+  - **Penerapan Terpadu:**
+    - Desktop Sidebar & Mobile Topbar Header pada `resources/views/layouts/app.blade.php`, `resources/views/components/layouts/app.blade.php`, dan `resources/views/components/app-layout.blade.php`.
+    - Halaman Landing Welcome (`resources/views/welcome.blade.php`).
+    - Seluruh layout otentikasi login, reset kata sandi, dan undangan (`resources/views/components/auth-layout.blade.php`).
+    - Header Admin Panel (`resources/views/layouts/admin.blade.php`).
+    - Ikon PWA & Favicon: Memperbarui `public/icons/icon-192.svg` dan `public/icons/icon-512.svg` dengan siluet `bxs-home-heart` dan gradien brand, serta menambahkan `public/favicon.svg` dan link favicon SVG di semua layout.
+    - Bottom Nav Mobile: Memperbarui ikon Beranda aktif/inaktif menggunakan Boxicons `bxs-home-heart` / `bx-home-heart`.
+- **Verifikasi:**
+  - Seluruh 12 halaman utama diuji render (`GET /`, `/finance`, `/tasks`, `/notes`, `/shopping`, `/calendar`, `/assets`, `/assets/create`, `/assets/issues/create`, `/assets/maintenance`, `/assets/documents`, `/assets/vendors`) menghasilkan status HTTP 200 OK dengan logo brand baru.
+  - `php artisan test`: **390 test / 2760 assertions** lulus 100% green (termasuk 5 test PWA).
+  - `vendor/bin/phpstan analyse`: `[OK] No errors` (197 file di level 6).
+  - `vendor/bin/pint --test`: Lulus rapi tanpa perbaikan format.
+  - `npm run build`: Vite build sukses dalam 4.37s.
+- **Dokumen yang diselaraskan:** `docs/logbook.md`.
+
 ## Aturan pembaruan berikutnya
 
 1. Tambahkan entri baru dengan tanggal dan ID `LOG-NNN`; sertakan task ID resmi (`CORE-*`, `FIN-*`, `ORG-*`, `AST-*`) jika relevan.

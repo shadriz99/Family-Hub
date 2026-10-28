@@ -20,6 +20,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg">
     <link rel="apple-touch-icon" href="/icons/icon-192.svg">
     <title>{{ $pageTitle }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -47,15 +48,9 @@
         <aside class="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-current/10 bg-[#fffefa] px-6 py-6 transition-colors lg:flex dark:bg-[#1f2c25]"
             aria-label="Navigasi Utama">
             {{-- Brand --}}
-            <div class="flex items-center gap-3">
-                <span class="flex size-10 items-center justify-center rounded-2xl bg-[#28543e] text-white shadow-xs dark:bg-[#bad6ae] dark:text-[#151f1b]">
-                    <x-heroicon-s-home class="size-5" />
-                </span>
-                <div>
-                    <span class="font-serif text-xl font-bold tracking-tight">Family Hub</span>
-                    <span class="block text-[11px] font-medium text-[#637067] dark:text-[#b2beb2]">{{ config('app.version', 'v0.1') }}</span>
-                </div>
-            </div>
+            <a href="{{ url('/') }}" class="group transition-opacity hover:opacity-90">
+                <x-app-logo with-text :subtitle="config('app.version', 'v0.1')" />
+            </a>
 
             {{-- Household Card --}}
             @if ($household)
@@ -209,9 +204,12 @@
             {{-- Top Bar Header --}}
             <header class="sticky top-0 z-20 flex min-h-16 items-center justify-between border-b border-current/10 bg-[#fffefa]/90 px-4 backdrop-blur-md transition-colors sm:px-6 lg:px-8 dark:bg-[#1f2c25]/90">
                 <div class="flex items-center gap-3">
-                    <span class="font-serif text-lg font-bold sm:text-xl lg:hidden">
-                        {{ $household?->name ?? 'Family Hub' }}
-                    </span>
+                    <a href="{{ url('/') }}" class="flex items-center gap-2.5 lg:hidden group">
+                        <x-app-logo size="xs" />
+                        <span class="font-serif text-lg font-bold sm:text-xl">
+                            {{ $household?->name ?? 'Family Hub' }}
+                        </span>
+                    </a>
                     @if ($title)
                         <span class="hidden font-serif text-lg font-bold sm:inline">
                             {{ $title }}
@@ -271,7 +269,7 @@
         <a href="{{ url('/') }}"
             class="flex min-h-12 flex-1 flex-col items-center justify-center gap-1 text-[11px] font-medium transition-colors
                 {{ request()->is('/') ? 'font-bold text-[#28543e] dark:text-[#bad6ae]' : 'text-[#637067] dark:text-[#b2beb2]' }}">
-            <x-heroicon-o-home class="size-5" />
+            <i class="bx {{ request()->is('/') ? 'bxs-home-heart' : 'bx-home-heart' }} text-2xl leading-none"></i>
             <span>{{ __('Beranda') }}</span>
         </a>
 
