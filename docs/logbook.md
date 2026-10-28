@@ -1,7 +1,7 @@
 # Logbook Development - Family Hub
 
-**Diperbarui:** 2026-10-27
-**Status:** CORE-01 diterima untuk kelanjutan development; CORE-03 dinyatakan selesai oleh reviewer; CORE-04 parsial (konkurensi slot selesai); CORE-05 selesai di sisi Alur A & B; CORE-06 selesai pada LOG-044; CORE-07 selesai pada LOG-045; CORE-08 selesai pada LOG-046; CORE-11 selesai pada LOG-047; CORE-09 selesai pada LOG-048; CORE-10 selesai pada LOG-049; CORE-12 selesai pada LOG-050; CORE-13 selesai pada LOG-051; CORE-14, CORE-15, CORE-16, dan CORE-02 selesai pada LOG-052 (Phase 0 Core Module rampung). Resolusi batch pending P-05, P-06, P-15, P-16, P-18, P-19, P-20 selesai pada LOG-056. Phase 1 (Finance Module: FIN-01 sampai FIN-16) selesai pada LOG-055 dan LOG-057. CI remote untuk perubahan ini belum terverifikasi. Belum ada rilis aplikasi.
+**Diperbarui:** 2026-10-28
+**Status:** CORE-01 diterima untuk kelanjutan development; CORE-03 dinyatakan selesai oleh reviewer; CORE-04 parsial (konkurensi slot selesai); CORE-05 selesai di sisi Alur A & B; CORE-06 selesai pada LOG-044; CORE-07 selesai pada LOG-045; CORE-08 selesai pada LOG-046; CORE-11 selesai pada LOG-047; CORE-09 selesai pada LOG-048; CORE-10 selesai pada LOG-049; CORE-12 selesai pada LOG-050; CORE-13 selesai pada LOG-051; CORE-14, CORE-15, CORE-16, dan CORE-02 selesai pada LOG-052 (Phase 0 Core Module rampung). Resolusi batch pending P-05, P-06, P-15, P-16, P-18, P-19, P-20 selesai pada LOG-056. Phase 1 (Finance Module: FIN-01 sampai FIN-16) selesai pada LOG-055 dan LOG-057. Phase 2 (Organizer: ORG-01 sampai ORG-13) selesai pada LOG-059 dan LOG-060. Phase 3 (Asset: AST-01 sampai AST-12) selesai pada LOG-061. Phase 4 Hardening Langkah 1, 2, 3, 4 selesai pada LOG-064, LOG-065, dan LOG-066. P-21 ditutup. Belum ada rilis aplikasi.
 
 Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan selesai. [Rencana development](development-plan.md) menentukan langkah berikutnya; spesifikasi dan acceptance criteria tetap mengikuti [Masterplan](00-MASTERPLAN.md) dan dokumen modul.
 
@@ -1162,6 +1162,34 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
   - `vendor/bin/pint --test`: Lulus bersih tanpa pelanggaran format.
   - `vendor/bin/phpstan analyse --memory-limit=1G`: `[OK] No errors` pada seluruh 226 file.
   - `npm run build`: Vite build berhasil bersih (5.71s).
+- **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`, `docs/pending.md`.
+
+### LOG-066 - Phase 4 Hardening: Audit Lighthouse PWA, Penutupan P-21 Uji SMTP, dan Verifikasi Q-M11 Retensi Backup
+
+- **Konteks:** Menindaklanjuti rencana implementasi Phase 4 Langkah 3 & 4:
+  1. Pengukuran kriteria Lighthouse Mobile (Performance, PWA installability, best practices budget) tanpa menginstal paket GUI heavy X11/Mesa/LLVM pada host Odroid-C2 2GB Armbian.
+  2. Penutupan item tertunda P-21: menyediakan perintah verifikasi fisik pengiriman email SMTP produksi.
+  3. Verifikasi kebijakan retensi backup terenkripsi (Q-M11) pada `config/backup.php` dan crontab scheduler.
+- **Perubahan & Implementasi:**
+  1. **Penutupan P-21 & Command Uji SMTP (`core:send-test-email`):**
+     - Membuat [`app/Core/Console/Commands/SendTestEmailCommand.php`](../app/Core/Console/Commands/SendTestEmailCommand.php): Perintah artisan `php artisan core:send-test-email {email}` untuk memvalidasi konfigurasi driver mailer aktif (`log`, `smtp`, dll.), menampilkan konfigurasi host/port/sender, mengirim email pengujian fisik end-to-end, dan menampilkan diagnostik koneksi lengkap.
+     - Membuat Mailable [`app/Core/Mail/TestEmailMail.php`](../app/Core/Mail/TestEmailMail.php) dengan template pengujian berstandar profesional.
+     - Mendaftarkan command di [`app/Providers/AppServiceProvider.php`](../app/Providers/AppServiceProvider.php).
+     - Menulis feature test [`tests/Feature/SendTestEmailCommandTest.php`](../tests/Feature/SendTestEmailCommandTest.php) (2 test): verifikasi validasi input format email (RFC) dan verifikasi sukses pengiriman via Mail fake.
+  2. **Audit Kesiapan Lighthouse Mobile & PWA Installability:**
+     - Membuat suite pengujian [`tests/Feature/LighthouseReadinessTest.php`](../tests/Feature/LighthouseReadinessTest.php) (3 test, 30 assertions):
+       - Verifikasi Web App Manifest PWA: nama aplikasi, short_name, `start_url`, `display: standalone`, `theme_color: #0d9488`, `background_color`, serta keberadaan aset ikon 192x192 dan 512x512 maskable.
+       - Verifikasi Service Worker `sw.js`: lifecycle caching, cache isolation, network-first fallback, dan kesiapan fallback offline `offline.html` mandiri (dilengkapi Boxicons inline & dark mode).
+       - Verifikasi Budget Aset Produksi (Lighthouse Performance Budget): ukuran bundle CSS produksi < 200 KB (aktual: 193 KB) dan total JS vendor/runtime minimalis (< 5 KB), memastikan beban transfer optimal untuk jaringan mobile dan hardware hemat daya.
+  3. **Verifikasi Kebijakan Retensi Backup Q-M11:**
+     - Mengaudit [`config/backup.php`](../config/backup.php): strategi pembersihan Spatie Backup terkonfigurasi dengan retensi 7 hari harian, 4 minggu mingguan, 6 bulan bulanan, 1 tahun tahunan, dan batas ukuran agregat 5000 MB.
+     - Memverifikasi scheduler harian di `routes/console.php`: `backup:clean` dijadwalkan otomatis pukul 01:30 dan `backup:run` pukul 02:00.
+- **Verifikasi:**
+  - `php artisan test`: **415 passed, 2,917 assertions** lulus 100% green (+5 test, +36 assertions).
+  - `vendor/bin/pint --test`: Lulus bersih tanpa pelanggaran format.
+  - `vendor/bin/phpstan analyse --memory-limit=1G`: `[OK] No errors` pada seluruh 228 file (PHPStan Level 6).
+  - `npm run build`: Vite build berhasil bersih (6.38s).
+  - `php artisan core:send-test-email test@example.com`: Berhasil mengirim email uji ke driver aktif (`log`).
 - **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`, `docs/pending.md`.
 
 ## Aturan pembaruan berikutnya

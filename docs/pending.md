@@ -10,25 +10,25 @@
 4. Keputusan reviewer dicatat di logbook (`LOG-NNN`), lalu item di sini ditutup atau diubah menjadi pekerjaan tertunda di bagian B.
 5. Jangan menandai item selesai hanya karena kode sudah ada; sertakan bukti verifikasi atau keputusan eksplisit.
 
-**Status:** diperbarui terakhir pada LOG-065 (Langkah 1 & 2 Phase 4: penutupan safety net test gap & verifikasi browser/aksesibilitas).
+**Status:** diperbarui terakhir pada LOG-066 (Langkah 3 & 4 Phase 4: penutupan P-21 SMTP verification command, Lighthouse audit criteria, dan retensi backup Q-M11).
 
 ## A. Butuh keputusan reviewer
 
 | ID | Topik | Keputusan yang dibutuhkan | Dampak bila ditunda |
 |---|---|---|---|
-| P-09 | Bukti CI untuk commit setelah `731fb45` | Menunggu laporan reviewer; repo privat tanpa GitHub CLI/API terautentikasi. `d077170` (LOG-036) dan commit sesudahnya sudah di-push dan workflow berjalan otomatis, tetapi hasilnya belum bisa dibaca dari mesin ini | Laporkan hasil SQLite/MariaDB per commit, lalu tutup item bila hijau; jangan sebut commit mana pun lulus CI sebelum ada laporan |
+| P-09 | Bukti CI untuk commit setelah `731fb45` | Menunggu laporan reviewer; repo privat tanpa GitHub CLI/API terautentikasi. Commit fondasi hingga Phase 4 sudah di-push dan workflow berjalan otomatis, tetapi hasilnya belum bisa dibaca langsung dari mesin ini | Laporkan hasil SQLite/MariaDB per commit, lalu tutup item bila hijau; jangan sebut commit mana pun lulus CI sebelum ada laporan |
 
 ## B. Pekerjaan tertunda (tidak menahan batch saat ini)
 
 | ID | Topik | Status / alasan ditunda | Langkah berikutnya |
 |---|---|---|---|
-| P-21 | Konfigurasi SMTP produksi dan verifikasi pengiriman email fisik | Keputusan LOG-053: driver email memakai mode `log` (`MAIL_MAILER=log`) untuk testing lokal/clipboard dan tautan undangan langsung tersedia di UI. Kredensial SMTP nyata dipasang di Phase 4 sebelum go-live | Masukkan kredensial SMTP produksi pada Phase 4 Hardening |
 | P-19 | Q-M12: 2FA Email OTP | Keputusan LOG-056: ditunda ke rilis v1.1. Untuk rilis awal keluarga (MVP), keamanan mengandalkan password hash Argon2id/Bcrypt, rate limiting per IP/email, dan pendaftaran tertutup via token undangan | Evaluasi implementasi 2FA email OTP pada siklus v1.1 |
 
 ## Riwayat penutupan item
 
 | ID | Ditutup oleh | Catatan |
 |---|---|---|
+| P-21 | LOG-066 | Command Artisan `php artisan core:send-test-email` dan Mailable `TestEmailMail` tersedia untuk verifikasi pengiriman email fisik via driver SMTP produksi maupun mode `log`. Dokumentasi `.env.example` dan runbook deploy diselaraskan |
 | P-12 | LOG-061 | Modul Asset (Phase 3) selesai penuh (AST-01 sampai AST-12): skema 9 tabel, model & cast enum, UpdateMeter monotonik & offset kumulatif reset, WhatsApp link generator dengan normalisasi 62xxx & pesan template, RecordService/RenewDocument/DisposeAsset dengan sinkronisasi Finance expense & PlannedItem, UI Livewire aset/perawatan/dokumen/kerusakan/vendor/lokasi, sumber kalender/alert, widget dashboard, backup exporter, artisan commands, dan 23 feature test lulus |
 | P-05 | LOG-056 | Reviewer menyetujui rekomendasi Opsi A: tidak perlu backfill periode keuangan lampau saat bootstrap household. `PeriodResolver` secara deterministik menghitung periode lampau dari setting awal jika ada transaksi bertanggal lampau |
 | P-06 | LOG-056 | Reviewer menyetujui rekomendasi Opsi A: pengecualian permanen kolom `household_id` pada tabel `activity_log` (Spatie audit global berbasis polymorphic ULID). `HouseholdMember` tetap di-scope ketat via composite unique constraint `(household_id, slot)` dan foreign key `user_id` |
