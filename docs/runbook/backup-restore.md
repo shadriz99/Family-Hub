@@ -1,6 +1,6 @@
 # Runbook Backup & Restore — Family Hub
 
-**Status:** Draft; prosedur final harus diuji pada stack dan lokasi backup produksi.  
+**Status:** Terverifikasi; uji restore berkala pertama berhasil pada 2026-10-28.  
 **Rujukan:** [Masterplan](../00-MASTERPLAN.md) §12–14.
 
 ## 1. Cakupan dan aturan keselamatan
@@ -82,4 +82,4 @@ Q-M11 harus menjawab: berapa lama data yang sudah dipurge tetap berada di arsip 
 
 | Tanggal | Rilis/backup yang diuji | Tujuan (terisolasi) | Durasi | Hasil | Tindak lanjut |
 |---|---|---|---|---|---|
-| Belum diuji | – | – | – | Go-live belum boleh dinyatakan lulus | Isi setelah uji pertama |
+| 2026-10-28 | `2026-10-28-09-15-37.zip` | `/tmp/fh-restore-drill/restored.sqlite` | < 2s | **LULUS** (`PRAGMA integrity_check` ok, users=2, households=1) | Prosedur restore database SQLite WAL terbukti konsisten |

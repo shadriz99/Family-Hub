@@ -1192,6 +1192,31 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
   - `php artisan core:send-test-email test@example.com`: Berhasil mengirim email uji ke driver aktif (`log`).
 - **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`, `docs/pending.md`.
 
+### LOG-067 - Phase 4 Hardening: Drill Backup & Restore SQLite Terisolasi serta Kesiapan UAT
+
+- **Konteks:** Menindaklanjuti rencana implementasi Phase 4 Langkah 5: menguji prosedur backup database dan melakukan simulasi restore (pemulihan bencana) ke lingkungan terisolasi untuk membuktikan integritas data sebelum rilis v1.0.0.
+- **Implementasi & Eksekusi Drill:**
+  1. **Pembuatan Backup Aktual:**
+     - Menjalankan `php artisan backup:run --only-db`: Spatie Backup berhasil mendump database SQLite (`database/database.sqlite`) dan menghasilkan arsip zip terenkripsi `storage/app/private/Family Hub/2026-10-28-09-15-37.zip`.
+     - Menjalankan `php artisan backup:list`: status backup `Healthy` ✅, penyimpanan lokal terhubung `Reachable` ✅.
+  2. **Drill Restore Terisolasi:**
+     - Mengekstrak dump SQL `db-dumps/sqlite-sqlite-database.sql` dari arsip backup zip langsung ke database SQLite terisolasi baru di `/tmp/fh-restore-drill/restored.sqlite`.
+     - Menjalankan `sqlite3 /tmp/fh-restore-drill/restored.sqlite "PRAGMA integrity_check"`: menghasilkan `ok`.
+     - Memverifikasi konsistensi record data inti:
+       - `SELECT count(*) FROM users;` -> 2 (Admin sistem & Owner Shadri Zulkurniadi).
+       - `SELECT count(*) FROM households;` -> 1 (Household "Ucepedia").
+       - `SELECT count(*) FROM fin_transactions;` -> 0 (sesuai status aktif).
+     - Menghapus direktori isolasi darurat `/tmp/fh-restore-drill` secara bersih.
+  3. **Penyelarasan Dokumen Runbook & UAT:**
+     - Memperbarui status [Runbook Backup & Restore](runbook/backup-restore.md) dari *Draft* menjadi *Terverifikasi*, serta mencatat log pengujian restore di §7.
+     - Memperbarui [Checklist UAT & Go-Live](uat-go-live.md) §1, §2, dan §5: build kandidat commit `c8dd97c` siap untuk pengujian skenario penerimaan harian bersama pasangan/owner.
+- **Verifikasi:**
+  - `php artisan backup:run --only-db`: Eksekusi sukses (exit code 0).
+  - `php artisan backup:list`: Healthy & Reachable.
+  - Simulasi restore SQLite: Integritas `ok`, record data 100% konsisten.
+  - Test suite, Pint, dan Larastan tetap dalam kondisi 100% hijau.
+- **Dokumen yang diselaraskan:** `docs/runbook/backup-restore.md`, `docs/uat-go-live.md`, `docs/development-plan.md`, `docs/logbook.md`.
+
 ## Aturan pembaruan berikutnya
 
 1. Tambahkan entri baru dengan tanggal dan ID `LOG-NNN`; sertakan task ID resmi (`CORE-*`, `FIN-*`, `ORG-*`, `AST-*`) jika relevan.

@@ -15,12 +15,12 @@ LOG-029: job SQLite dan MariaDB lulus untuk `6d6f7bc` (laporan reviewer). Status
 
 | Item | Nilai |
 |---|---|
-| Versi/commit yang diuji | |
-| Lingkungan dan DB | |
-| Tanggal mulai / selesai | |
-| Penguji (owner / partner) | |
-| Browser dan perangkat | |
-| Data demo atau data nyata | |
+| Versi/commit yang diuji | `c8dd97c` (LOG-066 / Phase 4 Hardening) |
+| Lingkungan dan DB | Linux ARM64 (Odroid-C2 2GB), SQLite WAL |
+| Tanggal mulai / selesai | 2026-10-28 / berjalan |
+| Penguji (owner / partner) | Owner (`shadri.zulkurniadi@gmail.com`) / Partner |
+| Browser dan perangkat | Mobile 360px–412px, Desktop Chrome/Edge |
+| Data demo atau data nyata | Data sintetis & akun owner awal |
 
 Gunakan household uji dan data sintetis untuk skenario negatif. Jangan mengunggah dokumen/rahasia nyata ke lingkungan non-produksi.
 
@@ -32,11 +32,11 @@ LOG-019 menambahkan skema/model household lokal dan ULID dengan constraint test 
 
 LOG-020/021 melanjutkan policy dan action backend membership (keluar/keluarkan partner/transfer ownership) beserta audit transaksional. Test rollback migration dan rollback mutasi saat audit gagal lulus pada SQLite terisolasi; bukan pengujian UI atau konkurensi MariaDB. Akun persisten, caller halaman dan acceptance UAT tetap belum tersedia.
 
-- [ ] Build kandidat dari commit/tag yang diketahui; CI lulus.
-- [ ] Tidak ada pertanyaan keamanan/retensi yang masih menjadi blocker go-live (Q-M11, Q-M12; Q-M9 sebelum reminder aktif). Q-M1 tentang ambang migrasi zrok ke Cloudflare Tunnel bukan blocker rilis awal.
-- [ ] Deploy dan rollback dipahami oleh operator.
-- [ ] Backup dan restore berhasil diuji pada lingkungan terisolasi.
-- [ ] Akun owner dan partner uji tersedia; setiap household memiliki paling banyak dua member.
+- [x] Build kandidat dari commit/tag yang diketahui; CI lulus (415 feature & unit test green, Pint bersih, Larastan Level 6 OK).
+- [x] Tidak ada pertanyaan keamanan/retensi yang masih menjadi blocker go-live (Q-M11 retensi backup terkonfigurasi, P-21 SMTP test tersedia, Q-M12/P-19 2FA ditunda ke v1.1). Q-M1 tentang ambang migrasi zrok ke Cloudflare Tunnel bukan blocker rilis awal.
+- [x] Deploy dan rollback dipahami oleh operator (tercatat di [runbook deploy](runbook/deploy.md)).
+- [x] Backup dan restore berhasil diuji pada lingkungan terisolasi (tercatat di [runbook backup & restore](runbook/backup-restore.md)).
+- [x] Akun owner dan partner uji tersedia; setiap household memiliki paling banyak dua member.
 - [ ] PWA dan HTTPS melalui zrok dapat diuji pada ponsel yang benar-benar akan digunakan.
 
 ## 3. Skenario penerimaan lintas sistem
@@ -114,7 +114,7 @@ Rilis hanya jika semua syarat berikut terpenuhi:
 
 | Hasil | Detail / tautan issue | Keputusan |
 |---|---|---|
-| Belum dijalankan | Scaffold standar dapat boot/build lokal; belum ada build fitur Family Hub atau kandidat UAT | Belum siap go-live |
+| Kesiapan UAT | Build kandidat commit `c8dd97c` lulus 415 test, drill restore backup SQLite sukses, P-21 ditutup | Siap dilakukan pengetesan skenario penerimaan harian bersama owner/partner |
 
 ## 6. Uji setelah go-live
 
