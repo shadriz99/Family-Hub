@@ -96,17 +96,21 @@ final class HouseholdWizard extends Component
         $context->use($household);
 
         try {
+            $now = \Carbon\CarbonImmutable::now($this->timezone);
+            $initialPeriod = (new \App\Core\Support\PeriodResolver([['effective_on' => '2020-01-01', 'start_day' => (int) $this->startDay]], $this->timezone))->forDate($now);
             $setting = $household->financePeriodSettings()->first();
 
             if ($setting !== null) {
                 $setting->update([
                     'start_day' => (int) $this->startDay,
-                    'effective_on' => now($this->timezone)->toDateString(),
+                    'effective_on' => $initialPeriod->start->toDateString(),
+                    'ends_on' => $initialPeriod->end->toDateString(),
                 ]);
             } else {
                 $household->financePeriodSettings()->create([
                     'start_day' => (int) $this->startDay,
-                    'effective_on' => now($this->timezone)->toDateString(),
+                    'effective_on' => $initialPeriod->start->toDateString(),
+                    'ends_on' => $initialPeriod->end->toDateString(),
                 ]);
             }
         } finally {

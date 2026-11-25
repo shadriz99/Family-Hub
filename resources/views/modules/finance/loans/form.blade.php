@@ -177,7 +177,7 @@
             <a href="{{ route('finance.loans.index') }}" class="rounded-xl px-4 py-2 text-xs font-bold text-current/70 hover:bg-current/10">
                 Batal
             </a>
-            <button type="submit"
+            <button type="submit" wire:loading.attr="disabled" x-bind:disabled="$store.network?.isOffline"
                     class="rounded-xl bg-[#28543e] px-6 py-2.5 text-xs sm:text-sm font-bold text-white dark:bg-[#bad6ae] dark:text-[#151f1b] shadow-sm hover:opacity-90 active:scale-95">
                 Simpan & Bentuk Jadwal
             </button>

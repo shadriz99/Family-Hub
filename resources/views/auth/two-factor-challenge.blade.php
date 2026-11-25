@@ -1,6 +1,6 @@
 <x-auth-layout :title="__('Verifikasi Dua Faktor')" :intro="__('Amankan akun Anda dengan verifikasi tambahan.')">
     @if (session('status'))
-        <div role="status" class="mb-5 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-sm text-emerald-800 dark:text-emerald-300">
+        <div role="status" class="mb-5 rounded-xl border border-[#28543e]/25 bg-[#28543e]/10 p-3 text-sm text-[#28543e] dark:border-[#bad6ae]/25 dark:bg-[#bad6ae]/15 dark:text-[#bad6ae]">
             {{ session('status') }}
         </div>
     @endif
@@ -15,11 +15,11 @@
                 @csrf
 
                 <div>
-                    <label for="code" class="block text-sm font-medium text-[#131d15] dark:text-[#edf3ee]">
+                    <label for="code" class="block text-sm font-medium text-[#263c32] dark:text-[#f3f1e8]">
                         {{ __('Kode Verifikasi (OTP)') }}
                     </label>
                     <input id="code" type="text" inputmode="numeric" name="code" autofocus autocomplete="one-time-code" maxlength="6"
-                        class="mt-1 block w-full rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-4 py-2.5 text-center font-mono text-2xl font-semibold tracking-[0.3em] text-[#131d15] dark:text-[#edf3ee] shadow-sm focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600"
+                        class="mt-1 block w-full rounded-xl border border-current/20 bg-[#fffefa] dark:bg-[#1f2c25] px-4 py-2.5 text-center font-mono text-2xl font-semibold tracking-[0.3em] text-[#263c32] dark:text-[#f3f1e8] shadow-sm focus:border-[#28543e] focus:outline-none focus:ring-1 focus:ring-[#28543e] dark:focus:border-[#bad6ae] dark:focus:ring-[#bad6ae]"
                         placeholder="······" />
                     @error('code')
                         <p class="mt-1.5 text-sm text-rose-600 dark:text-rose-400 font-medium">{{ $message }}</p>
@@ -27,7 +27,7 @@
                 </div>
 
                 <button type="submit"
-                    class="w-full inline-flex justify-center items-center rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 transition">
+                    class="w-full inline-flex justify-center items-center rounded-xl bg-[#28543e] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#28543e] dark:bg-[#bad6ae] dark:text-[#151f1b] dark:focus-visible:outline-[#bad6ae] transition">
                     {{ __('Verifikasi & Masuk') }}
                 </button>
             </form>
@@ -55,11 +55,11 @@
                 @csrf
 
                 <div>
-                    <label for="recovery_code" class="block text-sm font-medium text-[#131d15] dark:text-[#edf3ee]">
+                    <label for="recovery_code" class="block text-sm font-medium text-[#263c32] dark:text-[#f3f1e8]">
                         {{ __('Kode Pemulihan') }}
                     </label>
                     <input id="recovery_code" type="text" name="recovery_code" autocomplete="off"
-                        class="mt-1 block w-full rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-4 py-2.5 text-center font-mono text-lg font-semibold tracking-wider uppercase text-[#131d15] dark:text-[#edf3ee] shadow-sm focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600"
+                        class="mt-1 block w-full rounded-xl border border-current/20 bg-[#fffefa] dark:bg-[#1f2c25] px-4 py-2.5 text-center font-mono text-lg font-semibold tracking-wider uppercase text-[#263c32] dark:text-[#f3f1e8] shadow-sm focus:border-[#28543e] focus:outline-none focus:ring-1 focus:ring-[#28543e] dark:focus:border-[#bad6ae] dark:focus:ring-[#bad6ae]"
                         placeholder="XXXXX-XXXXX" />
                     @error('recovery_code')
                         <p class="mt-1.5 text-sm text-rose-600 dark:text-rose-400 font-medium">{{ $message }}</p>
@@ -67,7 +67,7 @@
                 </div>
 
                 <button type="submit"
-                    class="w-full inline-flex justify-center items-center rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 transition">
+                    class="w-full inline-flex justify-center items-center rounded-xl bg-[#28543e] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#28543e] dark:bg-[#bad6ae] dark:text-[#151f1b] dark:focus-visible:outline-[#bad6ae] transition">
                     {{ __('Gunakan Pemulihan & Masuk') }}
                 </button>
             </form>

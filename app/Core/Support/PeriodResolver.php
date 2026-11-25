@@ -13,11 +13,11 @@ use InvalidArgumentException;
 
 final class PeriodResolver
 {
-    /** @var list<array{effective_on: CarbonImmutable, start_day: int}> */
+    /** @var list<array{effective_on: CarbonImmutable, start_day: int, ends_on: CarbonImmutable|null}> */
     private array $settings = [];
 
     /**
-     * @param list<array{effective_on: string, start_day: int}> $history
+     * @param list<array{effective_on: string, start_day: int, ends_on?: string|null}> $history
      */
     public function __construct(array $history, private readonly string $timezone)
     {
@@ -29,18 +29,31 @@ final class PeriodResolver
 
         foreach ($history as $row) {
             $effective = $this->date($row['effective_on']);
+            $endsOn = isset($row['ends_on']) && $row['ends_on'] !== null ? $this->date($row['ends_on']) : null;
             $previous = $this->settings === [] ? null : $this->settings[array_key_last($this->settings)];
 
             if ($row['start_day'] < 1 || $row['start_day'] > 28) {
                 throw new InvalidArgumentException('Finance period start day must be between 1 and 28.');
             }
 
-            if ($previous !== null && ($effective <= $previous['effective_on']
-                || $effective->day !== $previous['start_day'])) {
+            if ($endsOn !== null && $endsOn < $effective) {
+                throw new InvalidArgumentException('Finance period end date must not precede start date.');
+            }
+
+            if ($previous !== null && $effective <= $previous['effective_on']) {
+                throw new InvalidArgumentException('History must be chronological.');
+            }
+
+            if ($previous !== null && $previous['ends_on'] === null && $endsOn === null
+                && $effective->day !== $previous['start_day']) {
                 throw new InvalidArgumentException('History must be chronological and changes must start on an existing period boundary.');
             }
 
-            $this->settings[] = ['effective_on' => $effective, 'start_day' => $row['start_day']];
+            $this->settings[] = [
+                'effective_on' => $effective,
+                'start_day' => $row['start_day'],
+                'ends_on' => $endsOn,
+            ];
         }
     }
 
@@ -62,6 +75,7 @@ final class PeriodResolver
             ->map(static fn (HouseholdFinancePeriodSetting $setting): array => [
                 'effective_on' => $setting->effective_on->toDateString(),
                 'start_day' => $setting->start_day,
+                'ends_on' => $setting->ends_on?->toDateString(),
             ])
             ->values()
             ->all();
@@ -83,6 +97,16 @@ final class PeriodResolver
     public function forDate(DateTimeInterface $date): Period
     {
         $date = CarbonImmutable::instance($date)->setTimezone($this->timezone)->startOfDay();
+
+        // Check explicit start/end period definitions first.
+        foreach ($this->settings as $setting) {
+            if ($setting['ends_on'] !== null
+                && $setting['effective_on'] <= $date
+                && $setting['ends_on'] >= $date) {
+                return new Period($setting['effective_on'], $setting['ends_on']->endOfDay());
+            }
+        }
+
         $index = 0;
 
         foreach ($this->settings as $candidate => $setting) {

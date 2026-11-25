@@ -11,16 +11,21 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property int $start_day
  * @property \Carbon\CarbonImmutable $effective_on
+ * @property \Carbon\CarbonImmutable|null $ends_on
  */
 class HouseholdFinancePeriodSetting extends Model
 {
     use BelongsToHousehold;
     use HasUlids;
 
-    protected $fillable = ['start_day', 'effective_on'];
+    protected $fillable = ['start_day', 'effective_on', 'ends_on'];
 
     protected function casts(): array
     {
-        return ['start_day' => 'integer', 'effective_on' => 'immutable_date'];
+        return [
+            'start_day' => 'integer',
+            'effective_on' => 'immutable_date',
+            'ends_on' => 'immutable_date',
+        ];
     }
 }

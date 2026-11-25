@@ -84,6 +84,7 @@ final class FinanceSummaryWidget implements DashboardWidget
 
             return view('finance::widgets.summary', [
                 'household' => $household,
+                'financeLocked' => ! $household->hasActiveFinancePeriod(),
                 'operationalBalance' => $operationalBalance,
                 'savingsBalance' => $savingsBalance,
                 'totalCombined' => $totalCombined,

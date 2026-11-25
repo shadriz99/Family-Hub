@@ -41,7 +41,7 @@
         <div class="leading-tight">
             <span class="font-serif {{ $titleSize }} font-bold tracking-tight block text-[#263c32] dark:text-[#f3f1e8]">Family Hub</span>
             @if ($subtitle)
-                <span class="block text-[11px] font-medium text-[#637067] dark:text-[#b2beb2]">{{ $subtitle }}</span>
+                <span class="block text-xs font-medium text-[#637067] dark:text-[#b2beb2]">{{ $subtitle }}</span>
             @endif
         </div>
     @endif

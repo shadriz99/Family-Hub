@@ -196,7 +196,7 @@
             <a href="{{ route('organizer.tasks.index') }}" class="min-h-[44px] inline-flex items-center px-4 py-2 text-sm text-[#637067] dark:text-[#637067] hover:bg-current/5 rounded-xl">
                 Batal
             </a>
-            <button type="submit" class="min-h-[44px] px-5 py-2.5 bg-[#28543e] hover:opacity-90 text-white dark:bg-[#bad6ae] dark:text-[#151f1b] text-sm font-semibold rounded-xl shadow-sm transition">
+            <button type="submit" wire:loading.attr="disabled" x-bind:disabled="$store.network?.isOffline" class="min-h-[44px] px-5 py-2.5 bg-[#28543e] hover:opacity-90 text-white dark:bg-[#bad6ae] dark:text-[#151f1b] text-sm font-semibold rounded-xl shadow-sm transition">
                 Simpan Tugas
             </button>
         </div>

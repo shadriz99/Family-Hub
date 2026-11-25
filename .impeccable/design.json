@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-25T04:02:30Z",
+  "title": "Design System: Family Hub",
+  "extensions": {
+    "colorMeta": {
+      "forest-canopy": {
+        "role": "primary",
+        "displayName": "Forest Canopy",
+        "canonical": "#28543e",
+        "tonalRamp": ["#11241a", "#1a3628", "#28543e", "#396e53", "#528a6d", "#7aa88f", "#b0ceb9", "#e9efe4"]
+      },
+      "forest-sage": {
+        "role": "primary",
+        "displayName": "Forest Sage",
+        "canonical": "#bad6ae",
+        "tonalRamp": ["#1f2c25", "#304233", "#49634d", "#6a8a6f", "#8eb093", "#bad6ae", "#d8e9d0", "#eef6ea"]
+      },
+      "warm-linen": {
+        "role": "neutral",
+        "displayName": "Warm Linen",
+        "canonical": "#f6f4ee",
+        "tonalRamp": ["#2c2a25", "#4a473f", "#6b675c", "#8f8a7d", "#b5b0a2", "#d8d4c8", "#ece9df", "#f6f4ee"]
+      },
+      "paper-cream": {
+        "role": "neutral",
+        "displayName": "Paper Cream",
+        "canonical": "#fffefa",
+        "tonalRamp": ["#2b2a27", "#474641", "#68665f", "#8d8b82", "#b3b1a7", "#d9d7cd", "#f2f0e8", "#fffefa"]
+      },
+      "pine-ink": {
+        "role": "neutral",
+        "displayName": "Pine Ink",
+        "canonical": "#263c32",
+        "tonalRamp": ["#151f1b", "#1f2c25", "#263c32", "#3b5449", "#557064", "#799186", "#a8bab1", "#dce5e0"]
+      },
+      "terracotta-danger": {
+        "role": "semantic",
+        "displayName": "Terracotta Danger",
+        "canonical": "#ad3f45",
+        "tonalRamp": ["#3b1215", "#611f23", "#872e33", "#ad3f45", "#c75d63", "#de878c", "#ffafb1", "#ffe3e4"]
+      },
+      "ochre-warning": {
+        "role": "semantic",
+        "displayName": "Ochre Warning",
+        "canonical": "#87571f",
+        "tonalRamp": ["#2e1d09", "#4d3110", "#6b4417", "#87571f", "#a87335", "#cc9656", "#edc48b", "#faebd4"]
+      },
+      "fjord-info": {
+        "role": "semantic",
+        "displayName": "Fjord Info",
+        "canonical": "#386578",
+        "tonalRamp": ["#13232a", "#1f3a46", "#2b5060", "#386578", "#518195", "#73a0b3", "#a7cad6", "#dfeef3"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Page-level greeting and primary H1 headings." },
+      "headline": { "displayName": "Headline", "purpose": "Dialog/bottom-sheet titles and mobile bar headers." },
+      "title": { "displayName": "Title", "purpose": "Card header titles and section subheadings." },
+      "body": { "displayName": "Body", "purpose": "Default readable prose, descriptions, and form inputs." },
+      "label": { "displayName": "Label", "purpose": "Badges, filter chips, form labels, and navigation captions." }
+    },
+    "shadows": [
+      { "name": "card-ambient", "value": "0 1px 2px 0 rgba(0, 0, 0, 0.05)", "purpose": "Subtle rest-state lift on cards and primary buttons." },
+      { "name": "fab-prominence", "value": "0 4px 6px -1px rgba(0, 0, 0, 0.1)", "purpose": "Lifts the center mobile [+] FAB above the bottom navigation bar." },
+      { "name": "dialog-overlay", "value": "0 25px 50px -12px rgba(0, 0, 0, 0.25)", "purpose": "Separates native dialog modals and bottom sheets above the backdrop." }
+    ],
+    "motion": [
+      { "name": "transition-standard", "value": "150ms cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Color, border, and opacity transitions on buttons, links, and cards." },
+      { "name": "fab-press", "value": "200ms cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Scale feedback on the center mobile [+] FAB." }
+    ],
+    "breakpoints": [
+      { "name": "mobile-base", "value": "360px" },
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Primary thumb-friendly action button for saving forms or starting quick capture.",
+      "html": "<button type=\"button\" class=\"ds-btn-primary\"><svg class=\"ds-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 4.5v15m7.5-7.5h-15\"/></svg><span>Catat Transaksi</span></button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 44px; padding: 10px 16px; border: none; border-radius: 1rem; background: var(--color-brand, #28543e); color: #ffffff; font-family: Inter, system-ui, sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); transition: opacity 150ms ease, transform 150ms ease; } .ds-btn-primary:hover { opacity: 0.9; } .ds-btn-primary:active { transform: scale(0.95); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-brand, #28543e); outline-offset: 2px; } .ds-icon { width: 1rem; height: 1rem; flex-shrink: 0; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Low-emphasis secondary or cancel action paired alongside primary buttons.",
+      "html": "<button type=\"button\" class=\"ds-btn-secondary\">Batal</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 44px; padding: 10px 16px; border: 1px solid rgba(38,60,50,0.2); border-radius: 1rem; background: transparent; color: var(--color-ink, #263c32); font-family: Inter, system-ui, sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background-color 150ms ease; } .ds-btn-secondary:hover { background: rgba(38,60,50,0.05); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--color-ink, #263c32); outline-offset: 2px; }"
+    },
+    {
+      "name": "Paper Card",
+      "kind": "card",
+      "refersTo": "card-surface",
+      "description": "Standard <x-card> container for dashboard widgets, agenda lists, and module panels.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-head\"><h2 class=\"ds-card-title\">Hari Ini &amp; Besok</h2><span class=\"ds-card-badge\">2 item</span></div><p class=\"ds-card-body\">Ringkasan agenda dan tagihan rumah tangga tampil rapi di atas permukaan kertas hangat.</p></div>",
+      "css": ".ds-card { border-radius: 1.5rem; border: 1px solid rgba(38,60,50,0.1); background: var(--bg-surface, #fffefa); color: var(--color-ink, #263c32); padding: 20px; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); font-family: Inter, system-ui, sans-serif; } .ds-card-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 1rem; } .ds-card-title { margin: 0; font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; } .ds-card-badge { border-radius: 9999px; background: rgba(38,60,50,0.1); padding: 2px 10px; font-size: 0.75rem; font-weight: 500; } .ds-card-body { margin: 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-muted, #637067); }"
+    },
+    {
+      "name": "Text & Money Input",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Accessible 44px form input with top label and tabular numerals for Rupiah entry.",
+      "html": "<div class=\"ds-field\"><label class=\"ds-label\" for=\"ds-amt\">Nominal</label><input id=\"ds-amt\" class=\"ds-input\" type=\"text\" value=\"Rp 250.000\" /></div>",
+      "css": ".ds-field { font-family: Inter, system-ui, sans-serif; color: var(--color-ink, #263c32); } .ds-label { display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; } .ds-input { width: 100%; min-height: 44px; padding: 8px 12px; border-radius: 0.75rem; border: 1px solid rgba(38,60,50,0.25); background: transparent; color: inherit; font-size: 1rem; font-variant-numeric: tabular-nums; transition: border-color 150ms ease; } .ds-input:focus { outline: 2px solid var(--color-brand, #28543e); outline-offset: 2px; }"
+    },
+    {
+      "name": "Filter Chips",
+      "kind": "chip",
+      "refersTo": "chip-active",
+      "description": "Horizontally scrollable pill filters (<x-filter-chips>) for mobile lists.",
+      "html": "<div class=\"ds-chips\"><button type=\"button\" class=\"ds-chip ds-chip-active\">Semua</button><button type=\"button\" class=\"ds-chip\">Pengeluaran</button><button type=\"button\" class=\"ds-chip\">Pemasukan</button></div>",
+      "css": ".ds-chips { display: flex; align-items: center; gap: 0.5rem; font-family: Inter, system-ui, sans-serif; } .ds-chip { min-height: 36px; padding: 6px 14px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; cursor: pointer; border: 1px solid rgba(38,60,50,0.15); background: rgba(38,60,50,0.05); color: rgba(38,60,50,0.8); transition: background-color 150ms ease; } .ds-chip:hover { background: rgba(38,60,50,0.1); } .ds-chip-active { border-color: transparent; background: var(--color-brand, #28543e); color: #ffffff; }"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "description": "Semantic due-date and alert status pill (<x-badge-status>).",
+      "html": "<div class=\"ds-badges\"><span class=\"ds-badge ds-badge-danger\">Terlambat</span><span class=\"ds-badge ds-badge-warning\">Hari ini</span><span class=\"ds-badge ds-badge-info\">Segera</span><span class=\"ds-badge ds-badge-done\">Selesai</span></div>",
+      "css": ".ds-badges { display: flex; flex-wrap: wrap; gap: 0.5rem; font-family: Inter, system-ui, sans-serif; } .ds-badge { display: inline-flex; align-items: center; border-radius: 9999px; padding: 2px 10px; font-size: 0.75rem; font-weight: 600; } .ds-badge-danger { background: rgba(173,63,69,0.15); color: #ad3f45; border: 1px solid rgba(173,63,69,0.2); } .ds-badge-warning { background: rgba(135,87,31,0.15); color: #87571f; border: 1px solid rgba(135,87,31,0.2); } .ds-badge-info { background: rgba(56,101,120,0.15); color: #386578; border: 1px solid rgba(56,101,120,0.2); } .ds-badge-done { background: rgba(40,84,62,0.15); color: #28543e; border: 1px solid rgba(40,84,62,0.2); }"
+    },
+    {
+      "name": "Mobile Bottom Navigation",
+      "kind": "nav",
+      "description": "Fixed 5-slot mobile bottom bar with elevated center [+] FAB.",
+      "html": "<nav class=\"ds-bnav\"><a href=\"#\" class=\"ds-bnav-item ds-bnav-active\"><svg class=\"ds-nav-icon\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06l8.69-8.689Z\"/><path d=\"m12 5.432 8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198a2.29 2.29 0 0 0 .091-.086L12 5.432Z\"/></svg><span>Beranda</span></a><button type=\"button\" class=\"ds-fab\" aria-label=\"Tambah\"><svg class=\"ds-fab-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 4.5v15m7.5-7.5h-15\"/></svg></button><a href=\"#\" class=\"ds-bnav-item\"><svg class=\"ds-nav-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5\"/></svg><span>Kalender</span></a></nav>",
+      "css": ".ds-bnav { display: flex; align-items: center; justify-content: space-around; min-height: 72px; padding: 6px 12px; border-top: 1px solid rgba(38,60,50,0.1); background: rgba(255,254,250,0.95); font-family: Inter, system-ui, sans-serif; } .ds-bnav-item { display: flex; flex: 1; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 48px; text-decoration: none; font-size: 11px; font-weight: 500; color: var(--color-muted, #637067); } .ds-bnav-active { font-weight: 700; color: var(--color-brand, #28543e); } .ds-nav-icon { width: 20px; height: 20px; } .ds-fab { display: flex; align-items: center; justify-content: center; width: 52px; height: 52px; margin-top: -16px; border: none; border-radius: 1rem; background: var(--color-brand, #28543e); color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); cursor: pointer; transition: transform 200ms ease; } .ds-fab:hover { transform: scale(1.05); } .ds-fab-icon { width: 24px; height: 24px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Warm Household Ledger",
+    "overview": "Family Hub is designed as a calm, organic, paper-and-ink workspace for couples managing daily home life together. Rather than feeling like an enterprise dashboard or a generic SaaS template, the interface pairs warm linen surfaces with deep forest-green anchors and classic bookish serif headings. Every screen is built mobile-first from `360px` upward so capturing an expense, checking off a chore, or reviewing a bill takes minimal taps with one thumb.\n\nThe aesthetic relies on tonal layering, generous corner radii, and clear semantic restraint. Generic SaaS blues and cool slates, heavy 3D drop shadows, and raw Unicode emojis as UI icons are explicitly rejected in favor of warm neutrals, subtle hairline borders, and inline Heroicons SVGs.",
+    "keyCharacteristics": [
+      "Warm linen canvas (`#f6f4ee`) and paper-cream cards (`#fffefa`) in light mode; deep pine (`#151f1b`) and moss surface (`#1f2c25`) in dark mode",
+      "Forest Canopy (`#28543e`) and Forest Sage (`#bad6ae`) as disciplined primary action and active-state anchors",
+      "Local serif display headings paired with clean sans-serif UI copy and `tabular-nums` for all currency figures",
+      "Mobile-first `44px` touch targets, bottom navigation with a center `[+]` FAB, and responsive bottom sheets"
+    ],
+    "rules": [
+      {
+        "name": "The Single Canopy Accent Rule",
+        "body": "Reserve Forest Canopy (`#28543e` / `#bad6ae`) for primary actions, active navigation, and positive progress; never introduce competing brand hues (`indigo-*`, `emerald-600`, `blue-600`) for primary chrome.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Currency Rule",
+        "body": "Every Rupiah (`Rp`) amount rendered via `<x-money>` or `<x-input-money>` must use `tabular-nums` so columns of figures align cleanly across mobile cards and reports.",
+        "section": "typography"
+      },
+      {
+        "name": "The Quiet Surface Rule",
+        "body": "Cards and list rows stay flat at rest with hairline borders (`border-current/10`) and `shadow-xs`; reserve deeper shadows exclusively for floating FABs and modal dialogs.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do reuse Core Blade primitives (`<x-card>`, `<x-badge-status>`, `<x-empty-state>`, `<x-filter-chips>`, `<x-money>`, `<x-date>`, `<x-bottom-sheet>`, `<x-confirm>`) across every module.",
+      "Do enforce minimum `44px` (`min-h-11`) touch targets on interactive mobile buttons, links, and list checkboxes.",
+      "Do use Heroicons SVG (`<x-heroicon-o-*>` / `<x-heroicon-s-*>`) consistently for all UI iconography and keep all UI copy in Indonesian.",
+      "Do pair `prefers-reduced-motion` support with lightweight `transform`/`opacity` transitions (`150–200ms`)."
+    ],
+    "donts": [
+      "Don't introduce off-system palettes (`slate-*`, `stone-*`, `indigo-*`, `bg-white`, `emerald-600`) or Boxicons (`<i class='bx ...'>`) in application views.",
+      "Don't use raw Unicode emojis (`📋`, `🛒`, `⚠️`, `🛠️`) as UI icons.",
+      "Don't load external font or CSS CDNs, or add heavy 3D shadows and layout-shifting hover scales."
+    ]
+  }
+}

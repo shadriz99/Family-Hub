@@ -11,10 +11,17 @@
                 @endif
             </div>
         </div>
-        <a href="{{ route('finance.transactions.create') }}" class="inline-flex min-h-9 items-center gap-1.5 rounded-2xl bg-[#28543e] px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs transition-opacity hover:opacity-90 active:scale-95 dark:bg-[#bad6ae] dark:text-[#151f1b]">
-            <x-heroicon-o-plus class="size-4" />
-            <span>{{ __('Catat') }}</span>
-        </a>
+        @if ($financeLocked ?? false)
+            <a href="{{ route('finance.period.setup') }}" class="inline-flex min-h-9 items-center gap-1.5 rounded-2xl bg-[#87571f] px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs transition-opacity hover:opacity-90 dark:bg-[#edc48b] dark:text-[#151f1b]">
+                <x-heroicon-o-lock-closed class="size-4" />
+                <span>{{ __('Buka Periode') }}</span>
+            </a>
+        @else
+            <a href="{{ route('finance.transactions.create') }}" class="inline-flex min-h-9 items-center gap-1.5 rounded-2xl bg-[#28543e] px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs transition-opacity hover:opacity-90 active:scale-95 dark:bg-[#bad6ae] dark:text-[#151f1b]">
+                <x-heroicon-o-plus class="size-4" />
+                <span>{{ __('Catat') }}</span>
+            </a>
+        @endif
     </div>
 
     {{-- Saldo Cards --}}

@@ -40,13 +40,13 @@
                 readonly
                 value="{{ $value }}"
                 x-on:click="$el.select()"
-                class="w-full rounded-xl border border-current/15 bg-white/80 px-3.5 py-2.5 font-mono text-xs text-current shadow-xs transition-colors focus:border-[#28543e] focus:outline-hidden dark:bg-[#151f1b] dark:focus:border-[#bad6ae]" />
+                class="w-full rounded-xl border border-current/15 bg-[#fffefa]/80 px-3.5 py-2.5 font-mono text-xs text-current shadow-xs transition-colors focus:border-[#28543e] focus:outline-hidden dark:bg-[#151f1b] dark:focus:border-[#bad6ae]" />
         </div>
 
         <div class="flex items-center gap-2">
             <button type="button"
                 x-on:click="copy()"
-                class="flex-1 sm:flex-initial inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-[#28543e] px-4 py-2 text-xs font-semibold text-white shadow-xs transition-all hover:opacity-90 active:scale-95 dark:bg-[#bad6ae] dark:text-[#151f1b]">
+                class="flex-1 sm:flex-initial inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#28543e] px-4 py-2 text-xs font-semibold text-white shadow-xs transition-all hover:opacity-90 active:scale-95 dark:bg-[#bad6ae] dark:text-[#151f1b]">
                 <span x-show="!copied" class="inline-flex items-center gap-1.5">
                     <x-heroicon-o-clipboard-document class="size-4" />
                     <span>{{ __('Salin Tautan') }}</span>
@@ -61,14 +61,14 @@
                 target="_blank"
                 rel="noopener"
                 title="{{ __('Buka tautan di tab baru') }}"
-                class="inline-flex min-h-10 size-10 items-center justify-center rounded-xl border border-current/20 text-current transition-colors hover:bg-current/5">
+                class="inline-flex min-h-11 size-11 items-center justify-center rounded-xl border border-current/20 text-current transition-colors hover:bg-current/5">
                 <x-heroicon-o-arrow-top-right-on-square class="size-4" />
             </a>
         </div>
     </div>
 
     @if ($helper)
-        <p class="mt-2 text-[11px] text-[#637067] dark:text-[#b2beb2] leading-relaxed">
+        <p class="mt-2 text-xs text-[#637067] dark:text-[#b2beb2] leading-relaxed">
             {{ $helper }}
         </p>
     @endif

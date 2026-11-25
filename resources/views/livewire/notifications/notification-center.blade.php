@@ -13,7 +13,7 @@
             <div>
                 <button type="button"
                     wire:click="markAllAsRead"
-                    class="inline-flex items-center gap-2 rounded-2xl border border-current/15 bg-white/70 px-4 py-2 text-sm font-medium transition-colors hover:bg-white dark:bg-[#1f2c25] dark:hover:bg-[#283830]">
+                    class="inline-flex items-center gap-2 rounded-2xl border border-current/15 bg-[#fffefa]/80 px-4 py-2 text-sm font-medium transition-colors hover:bg-[#fffefa] dark:bg-[#1f2c25] dark:hover:bg-[#283830]">
                     <x-heroicon-o-check-circle class="size-4" />
                     <span>{{ __('Tandai Semua Dibaca') }}</span>
                 </button>
@@ -35,11 +35,11 @@
                     $body = $data['body'] ?? null;
                     $url = $data['url'] ?? null;
                 @endphp
-                <div class="group relative flex items-start justify-between gap-4 rounded-2xl border p-4 transition-all {{ $isUnread ? 'border-[#059669]/30 bg-[#059669]/5 dark:border-[#10b981]/30 dark:bg-[#10b981]/10' : 'border-current/10 bg-[#fffefa] dark:bg-[#1f2c25]' }}">
+                <div class="group relative flex items-start justify-between gap-4 rounded-2xl border p-4 transition-all {{ $isUnread ? 'border-[#28543e]/30 bg-[#28543e]/5 dark:border-[#bad6ae]/30 dark:bg-[#bad6ae]/10' : 'border-current/10 bg-[#fffefa] dark:bg-[#1f2c25]' }}">
                     <div class="flex-1 space-y-1">
                         <div class="flex items-center gap-2">
                             @if ($isUnread)
-                                <span class="size-2 rounded-full bg-[#059669] dark:bg-[#10b981]" aria-label="{{ __('Belum dibaca') }}"></span>
+                                <span class="size-2 rounded-full bg-[#28543e] dark:bg-[#bad6ae]" aria-label="{{ __('Belum dibaca') }}"></span>
                             @endif
                             <h2 class="font-medium text-sm sm:text-base {{ $isUnread ? 'font-semibold text-current' : 'text-current/80' }}">
                                 {{ $title }}
@@ -59,7 +59,7 @@
                             <div class="pt-1">
                                 <a href="{{ $url }}"
                                     wire:click="markAsRead('{{ $notification->id }}')"
-                                    class="inline-flex items-center gap-1 text-xs font-semibold text-[#059669] hover:underline dark:text-[#10b981]">
+                                    class="inline-flex items-center gap-1 text-xs font-semibold text-[#28543e] hover:underline dark:text-[#bad6ae]">
                                     <span>{{ __('Lihat detail') }}</span>
                                     <x-heroicon-m-arrow-top-right-on-square class="size-3.5" />
                                 </a>

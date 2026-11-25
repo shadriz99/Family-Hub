@@ -11,7 +11,7 @@
             <h2 id="{{ $id }}-title" class="font-serif text-xl font-bold">{{ $title }}</h2>
             <button type="button"
                 onclick="document.getElementById('{{ $id }}').close()"
-                class="flex size-9 items-center justify-center rounded-xl transition-colors hover:bg-current/10 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-current"
+                class="flex size-11 items-center justify-center rounded-xl transition-colors hover:bg-current/10 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-current"
                 aria-label="Tutup">
                 <x-heroicon-o-x-mark class="size-5" />
             </button>

@@ -11,7 +11,7 @@
     @include('livewire.settings.partials.navigation')
 
     @if ($feedbackMessage)
-        <div class="rounded-2xl border border-[#059669]/30 bg-[#059669]/10 p-3.5 text-sm font-medium text-[#059669] dark:text-[#10b981]" role="alert">
+        <div class="rounded-2xl border border-[#28543e]/30 bg-[#28543e]/10 p-3.5 text-sm font-medium text-[#28543e] dark:text-[#bad6ae]" role="alert">
             {{ $feedbackMessage }}
         </div>
     @endif
@@ -41,7 +41,7 @@
                     wire:model="household_name"
                     @disabled(! $isOwner)
                     required
-                    class="mt-1 w-full rounded-2xl border border-current/15 bg-white/70 px-3 py-2 text-sm text-current disabled:opacity-60 disabled:cursor-not-allowed dark:bg-[#151f1b]" />
+                    class="mt-1 w-full rounded-2xl border border-current/15 bg-[#fffefa]/80 px-3 py-2 text-sm text-current disabled:opacity-60 disabled:cursor-not-allowed dark:bg-[#151f1b]" />
                 @error('household_name') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
             </div>
 
@@ -53,7 +53,7 @@
                     <select id="timezone"
                         wire:model="timezone"
                         @disabled(! $isOwner)
-                        class="mt-1 w-full rounded-2xl border border-current/15 bg-white/70 px-3 py-2 text-sm text-current disabled:opacity-60 disabled:cursor-not-allowed dark:bg-[#151f1b]">
+                        class="mt-1 w-full rounded-2xl border border-current/15 bg-[#fffefa]/80 px-3 py-2 text-sm text-current disabled:opacity-60 disabled:cursor-not-allowed dark:bg-[#151f1b]">
                         @foreach ($timezones as $tz)
                             <option value="{{ $tz }}">{{ $tz }}</option>
                         @endforeach
@@ -68,7 +68,7 @@
                     <select id="finance_period_start_day"
                         wire:model="finance_period_start_day"
                         @disabled(! $isOwner)
-                        class="mt-1 w-full rounded-2xl border border-current/15 bg-white/70 px-3 py-2 text-sm text-current disabled:opacity-60 disabled:cursor-not-allowed dark:bg-[#151f1b]">
+                        class="mt-1 w-full rounded-2xl border border-current/15 bg-[#fffefa]/80 px-3 py-2 text-sm text-current disabled:opacity-60 disabled:cursor-not-allowed dark:bg-[#151f1b]">
                         @for ($day = 1; $day <= 28; $day++)
                             <option value="{{ $day }}">{{ __('Tanggal :day', ['day' => $day]) }}</option>
                         @endfor
@@ -80,7 +80,7 @@
             @if ($isOwner)
                 <div class="flex justify-end pt-2">
                     <button type="submit"
-                        class="inline-flex items-center justify-center rounded-2xl bg-[#059669] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#047857] dark:bg-[#10b981] dark:hover:bg-[#059669]">
+                        class="inline-flex items-center justify-center rounded-2xl bg-[#28543e] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90 dark:bg-[#bad6ae] dark:text-[#151f1b]">
                         {{ __('Simpan Perubahan') }}
                     </button>
                 </div>
@@ -98,7 +98,7 @@
                         <div>
                             <div class="font-semibold text-current flex items-center gap-2">
                                 <span>{{ $member->user->name }}</span>
-                                <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold {{ $member->role->value === 'owner' ? 'bg-[#059669]/10 text-[#059669] dark:text-[#10b981]' : 'bg-blue-500/10 text-blue-600 dark:text-blue-400' }}">
+                                <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold {{ $member->role->value === 'owner' ? 'bg-[#28543e]/10 text-[#28543e] dark:text-[#bad6ae]' : 'bg-blue-500/10 text-blue-600 dark:text-blue-400' }}">
                                     {{ $member->role->value === 'owner' ? __('Pemilik (Owner)') : __('Pasangan (Partner)') }}
                                 </span>
                             </div>
@@ -160,13 +160,13 @@
                         wire:model="partner_email"
                         required
                         placeholder="contoh: pasangan@keluarga.com"
-                        class="mt-1 w-full rounded-2xl border border-current/15 bg-white/70 px-3 py-2 text-sm text-current dark:bg-[#151f1b]" />
+                        class="mt-1 w-full rounded-2xl border border-current/15 bg-[#fffefa]/80 px-3 py-2 text-sm text-current dark:bg-[#151f1b]" />
                     @error('partner_email') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="flex justify-end pt-2">
                     <button type="submit"
-                        class="inline-flex items-center justify-center rounded-2xl bg-[#059669] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#047857] dark:bg-[#10b981] dark:hover:bg-[#059669]">
+                        class="inline-flex items-center justify-center rounded-2xl bg-[#28543e] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90 dark:bg-[#bad6ae] dark:text-[#151f1b]">
                         {{ __('Kirim Undangan') }}
                     </button>
                 </div>

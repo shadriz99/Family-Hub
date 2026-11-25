@@ -9,7 +9,9 @@ use App\Core\Events\HouseholdCreated;
 use App\Core\Models\Household;
 use App\Core\Models\HouseholdMember;
 use App\Core\Support\HouseholdContext;
+use App\Core\Support\PeriodResolver;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -74,9 +76,13 @@ final class CreateHousehold
             $context->use($household);
 
             try {
+                $now = CarbonImmutable::now($timezone);
+                $initialPeriod = (new PeriodResolver([['effective_on' => '2020-01-01', 'start_day' => $startDay]], $timezone))->forDate($now);
+
                 $household->financePeriodSettings()->create([
                     'start_day' => $startDay,
-                    'effective_on' => now($timezone)->toDateString(),
+                    'effective_on' => $initialPeriod->start->toDateString(),
+                    'ends_on' => $initialPeriod->end->toDateString(),
                 ]);
             } finally {
                 if ($previous === null) {

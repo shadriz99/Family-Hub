@@ -92,7 +92,8 @@
                     <button 
                         type="button" 
                         wire:click="toggleItem('{{ $item->id }}')" 
-                        class="w-8 h-8 rounded-lg border-2 border-current/15 hover:border-[#28543e] dark:border-[#bad6ae] flex items-center justify-center text-transparent hover:text-[#637067] transition"
+                        aria-label="{{ __('Tandai sudah dibeli') }}"
+                        class="w-11 h-11 shrink-0 rounded-xl border-2 border-current/15 hover:border-[#28543e] dark:border-[#bad6ae] flex items-center justify-center text-transparent hover:text-[#637067] transition"
                     >
                         <svg class="w-5 h-5 stroke-current stroke-2 fill-none" viewBox="0 0 24 24">
                             <polyline points="20 6 9 17 4 12" />
@@ -140,7 +141,8 @@
                         <button 
                             type="button" 
                             wire:click="toggleItem('{{ $item->id }}')" 
-                            class="w-8 h-8 rounded-lg bg-[#28543e] dark:bg-[#bad6ae] border-2 border-[#28543e] dark:border-[#bad6ae] text-white flex items-center justify-center transition"
+                            aria-label="{{ __('Batal centang') }}"
+                            class="w-11 h-11 shrink-0 rounded-xl bg-[#28543e] dark:bg-[#bad6ae] border-2 border-[#28543e] dark:border-[#bad6ae] text-white dark:text-[#151f1b] flex items-center justify-center transition"
                         >
                             <svg class="w-5 h-5 stroke-current stroke-2 fill-none" viewBox="0 0 24 24">
                                 <polyline points="20 6 9 17 4 12" />

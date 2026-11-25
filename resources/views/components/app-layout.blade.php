@@ -8,6 +8,7 @@
     $user = auth()->user();
     $pageTitle = $title ? "$title · Family Hub" : ($household ? "{$household->name} · Family Hub" : 'Family Hub');
     $modules = config('modules', ['finance' => false, 'organizer' => false, 'asset' => false]);
+    $financeLocked = $modules['finance'] && $household && ! $household->hasActiveFinancePeriod();
 @endphp
 
 <!DOCTYPE html>
@@ -78,16 +79,21 @@
                     <span>{{ __('Beranda') }}</span>
                 </a>
 
-                <a href="{{ $modules['finance'] ? url('/finance') : '#' }}"
+                <a href="{{ $modules['finance'] ? ($financeLocked ? route('finance.period.setup') : url('/finance')) : '#' }}"
                     class="flex min-h-11 items-center justify-between gap-3 rounded-2xl px-3.5 py-2.5 text-sm font-medium transition-colors
                         {{ request()->is('finance*') ? 'bg-[#28543e] text-white dark:bg-[#bad6ae] dark:text-[#151f1b]' : 'text-current/80 hover:bg-current/5' }}
-                        {{ ! $modules['finance'] ? 'opacity-70' : '' }}">
+                        {{ (! $modules['finance'] || $financeLocked) ? 'opacity-70' : '' }}">
                     <span class="flex items-center gap-3">
                         <x-heroicon-o-wallet class="size-5 shrink-0" />
                         <span>{{ __('Keuangan') }}</span>
                     </span>
                     @if (! $modules['finance'])
-                        <span class="rounded-full bg-current/10 px-2 py-0.5 text-[10px] font-bold">{{ __('Segera') }}</span>
+                        <span class="rounded-full bg-current/10 px-2 py-0.5 text-xs font-bold">{{ __('Segera') }}</span>
+                    @elseif ($financeLocked)
+                        <span class="inline-flex items-center gap-1 rounded-full bg-[#87571f]/15 px-2 py-0.5 text-xs font-bold text-[#87571f] dark:bg-[#edc48b]/20 dark:text-[#edc48b]">
+                            <x-heroicon-o-lock-closed class="size-3" />
+                            <span>{{ __('Terkunci') }}</span>
+                        </span>
                     @endif
                 </a>
 
@@ -100,7 +106,7 @@
                         <span>{{ __('Kalender') }}</span>
                     </span>
                     @if (! $modules['organizer'])
-                        <span class="rounded-full bg-current/10 px-2 py-0.5 text-[10px] font-bold">{{ __('Segera') }}</span>
+                        <span class="rounded-full bg-current/10 px-2 py-0.5 text-xs font-bold">{{ __('Segera') }}</span>
                     @endif
                 </a>
 
@@ -113,7 +119,7 @@
                         <span>{{ __('Tugas') }}</span>
                     </span>
                     @if (! $modules['organizer'])
-                        <span class="rounded-full bg-current/10 px-2 py-0.5 text-[10px] font-bold">{{ __('Segera') }}</span>
+                        <span class="rounded-full bg-current/10 px-2 py-0.5 text-xs font-bold">{{ __('Segera') }}</span>
                     @endif
                 </a>
 
@@ -126,7 +132,7 @@
                         <span>{{ __('Catatan') }}</span>
                     </span>
                     @if (! $modules['organizer'])
-                        <span class="rounded-full bg-current/10 px-2 py-0.5 text-[10px] font-bold">{{ __('Segera') }}</span>
+                        <span class="rounded-full bg-current/10 px-2 py-0.5 text-xs font-bold">{{ __('Segera') }}</span>
                     @endif
                 </a>
 
@@ -139,7 +145,7 @@
                         <span>{{ __('Belanja') }}</span>
                     </span>
                     @if (! $modules['organizer'])
-                        <span class="rounded-full bg-current/10 px-2 py-0.5 text-[10px] font-bold">{{ __('Segera') }}</span>
+                        <span class="rounded-full bg-current/10 px-2 py-0.5 text-xs font-bold">{{ __('Segera') }}</span>
                     @endif
                 </a>
 
@@ -152,7 +158,7 @@
                         <span>{{ __('Aset') }}</span>
                     </span>
                     @if (! $modules['asset'])
-                        <span class="rounded-full bg-current/10 px-2 py-0.5 text-[10px] font-bold">{{ __('Segera') }}</span>
+                        <span class="rounded-full bg-current/10 px-2 py-0.5 text-xs font-bold">{{ __('Segera') }}</span>
                     @endif
                 </a>
             </nav>
@@ -183,12 +189,12 @@
                         <x-heroicon-o-sun class="size-4 inline dark:hidden" />
                         <span>{{ __('Mode Tampilan') }}</span>
                     </span>
-                    <span class="capitalize text-[11px] opacity-75">{{ __('Ganti') }}</span>
+                    <span class="capitalize text-xs opacity-75">{{ __('Ganti') }}</span>
                 </button>
 
                 @if ($user)
                     <div class="flex items-center justify-between gap-2 pt-1">
-                        <div class="flex items-center gap-2.5 truncate">
+                        <div class="flex min-w-0 items-center gap-2.5">
                             <x-member-avatar :name="$user->name" size="xs" />
                             <span class="truncate text-xs font-semibold">{{ $user->name }}</span>
                         </div>
@@ -228,7 +234,8 @@
                     {{-- Quick Action Button (Desktop Only) --}}
                     <button type="button"
                         onclick="document.getElementById('quick-add-sheet').showModal()"
-                        class="hidden lg:inline-flex min-h-10 items-center gap-2 rounded-2xl bg-[#28543e] px-4 py-2 text-xs font-semibold text-white shadow-xs transition-opacity hover:opacity-90 dark:bg-[#bad6ae] dark:text-[#151f1b]">
+                        x-bind:disabled="$store.network?.isOffline"
+                        class="hidden lg:inline-flex min-h-10 items-center gap-2 rounded-2xl bg-[#28543e] px-4 py-2 text-xs font-semibold text-white shadow-xs transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed dark:bg-[#bad6ae] dark:text-[#151f1b]">
                         <x-heroicon-s-plus class="size-4" />
                         <span>{{ __('Tambah Cepat') }}</span>
                     </button>
@@ -237,7 +244,7 @@
                     <button type="button"
                         onclick="window.toggleDarkMode()"
                         aria-label="{{ __('Ganti tema') }}"
-                        class="flex size-10 items-center justify-center rounded-2xl border border-current/15 text-current/80 transition-colors hover:bg-current/5 lg:hidden">
+                        class="flex size-11 items-center justify-center rounded-2xl border border-current/15 text-current/80 transition-colors hover:bg-current/5 lg:hidden">
                         <x-heroicon-o-moon class="size-5 hidden dark:inline" />
                         <x-heroicon-o-sun class="size-5 inline dark:hidden" />
                     </button>
@@ -245,10 +252,10 @@
                     {{-- Notification Bell --}}
                     <a href="{{ route('notifications.index') }}"
                         aria-label="{{ __('Notifikasi') }}"
-                        class="relative flex size-10 items-center justify-center rounded-2xl border border-current/15 text-current/80 transition-colors hover:bg-current/5">
+                        class="relative flex size-11 items-center justify-center rounded-2xl border border-current/15 text-current/80 transition-colors hover:bg-current/5">
                         <x-heroicon-o-bell class="size-5" />
                         @if ($user && $user->unreadNotifications()->count() > 0)
-                            <span class="absolute top-2 right-2 size-2 rounded-full bg-[#28543e] ring-2 ring-white dark:bg-[#bad6ae] dark:ring-[#1f2c25]"></span>
+                            <span class="absolute top-2.5 right-2.5 size-2 rounded-full bg-[#28543e] ring-2 ring-white dark:bg-[#bad6ae] dark:ring-[#1f2c25]"></span>
                         @endif
                     </a>
 
@@ -256,7 +263,7 @@
                     @if ($user)
                         <a href="{{ route('settings.profile') }}"
                            aria-label="{{ __('Profil & Pengaturan Akun') }}"
-                           class="lg:hidden flex size-9 items-center justify-center rounded-full transition-transform active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current">
+                           class="lg:hidden flex size-11 items-center justify-center rounded-full transition-transform active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current">
                             <x-member-avatar :name="$user->name" size="sm" />
                         </a>
                     @endif
@@ -276,7 +283,7 @@
         aria-label="{{ __('Navigasi Mobile') }}">
         {{-- 1. Beranda --}}
         <a href="{{ url('/') }}"
-            class="flex min-h-12 flex-1 flex-col items-center justify-center gap-1 text-[11px] font-medium transition-colors
+            class="flex min-h-12 flex-1 flex-col items-center justify-center gap-1 text-xs font-medium transition-colors
                 {{ request()->is('/') ? 'font-bold text-[#28543e] dark:text-[#bad6ae]' : 'text-[#637067] dark:text-[#b2beb2]' }}">
             @if(request()->is('/'))
                 <x-heroicon-s-home class="size-5" />
@@ -287,11 +294,15 @@
         </a>
 
         {{-- 2. Keuangan --}}
-        <a href="{{ $modules['finance'] ? url('/finance') : '#' }}"
-            class="flex min-h-12 flex-1 flex-col items-center justify-center gap-1 text-[11px] font-medium transition-colors
+        <a href="{{ $modules['finance'] ? ($financeLocked ? route('finance.period.setup') : url('/finance')) : '#' }}"
+            class="relative flex min-h-12 flex-1 flex-col items-center justify-center gap-1 text-xs font-medium transition-colors
                 {{ request()->is('finance*') ? 'font-bold text-[#28543e] dark:text-[#bad6ae]' : 'text-[#637067] dark:text-[#b2beb2]' }}
-                {{ ! $modules['finance'] ? 'opacity-60' : '' }}">
-            <x-heroicon-o-wallet class="size-5" />
+                {{ (! $modules['finance'] || $financeLocked) ? 'opacity-60' : '' }}">
+            @if ($financeLocked)
+                <x-heroicon-o-lock-closed class="size-5" />
+            @else
+                <x-heroicon-o-wallet class="size-5" />
+            @endif
             <span>{{ __('Keuangan') }}</span>
         </a>
 
@@ -302,7 +313,7 @@
 
         {{-- 4. Kalender --}}
         <a href="{{ $modules['organizer'] ? url('/calendar') : '#' }}"
-            class="flex min-h-12 flex-1 flex-col items-center justify-center gap-1 text-[11px] font-medium transition-colors
+            class="flex min-h-12 flex-1 flex-col items-center justify-center gap-1 text-xs font-medium transition-colors
                 {{ request()->is('calendar*') ? 'font-bold text-[#28543e] dark:text-[#bad6ae]' : 'text-[#637067] dark:text-[#b2beb2]' }}
                 {{ ! $modules['organizer'] ? 'opacity-60' : '' }}">
             <x-heroicon-o-calendar-days class="size-5" />
@@ -312,7 +323,7 @@
         {{-- 5. Lainnya --}}
         <button type="button"
             onclick="document.getElementById('more-sheet').showModal()"
-            class="flex min-h-12 flex-1 flex-col items-center justify-center gap-1 text-[11px] font-medium text-[#637067] transition-colors dark:text-[#b2beb2]">
+            class="flex min-h-12 flex-1 flex-col items-center justify-center gap-1 text-xs font-medium text-[#637067] transition-colors dark:text-[#b2beb2]">
             <x-heroicon-o-squares-2x2 class="size-5" />
             <span>{{ __('Lainnya') }}</span>
         </button>
@@ -321,7 +332,7 @@
     {{-- FAB [+] Quick Add Bottom Sheet / Dialog --}}
     <x-bottom-sheet id="quick-add-sheet" :title="__('Tambah Cepat')">
         <div class="space-y-2 py-1">
-            @if ($modules['finance'])
+            @if ($modules['finance'] && ! $financeLocked)
                 <a href="{{ url('/finance/transactions/create?type=expense') }}"
                     class="flex min-h-12 items-center gap-3.5 rounded-2xl bg-current/5 px-4 py-3 font-semibold transition-colors hover:bg-current/10">
                     <span class="flex size-9 items-center justify-center rounded-xl bg-[#ad3f45]/15 text-[#ad3f45] dark:bg-[#ffafb1]/20 dark:text-[#ffafb1]">
@@ -342,6 +353,14 @@
                         <x-heroicon-o-arrows-right-left class="size-5" />
                     </span>
                     <span>{{ __('Transfer Saldo') }}</span>
+                </a>
+            @elseif ($financeLocked)
+                <a href="{{ route('finance.period.setup') }}"
+                    class="flex min-h-12 items-center gap-3.5 rounded-2xl border border-[#87571f]/25 bg-[#87571f]/10 px-4 py-3 font-semibold text-[#87571f] transition-colors hover:bg-[#87571f]/15 dark:border-[#edc48b]/30 dark:bg-[#edc48b]/10 dark:text-[#edc48b]">
+                    <span class="flex size-9 items-center justify-center rounded-xl bg-[#87571f]/15 dark:bg-[#edc48b]/20">
+                        <x-heroicon-o-lock-closed class="size-5" />
+                    </span>
+                    <span>{{ __('Keuangan Terkunci · Tetapkan Periode') }}</span>
                 </a>
             @endif
 
@@ -404,7 +423,7 @@
                     <x-heroicon-o-check-circle class="size-5" />
                     <span>{{ __('Tugas') }}</span>
                 </span>
-                @if (! $modules['organizer']) <span class="rounded-full bg-current/10 px-2 py-0.5 text-[10px] font-bold">{{ __('Segera') }}</span> @endif
+                @if (! $modules['organizer']) <span class="rounded-full bg-current/10 px-2 py-0.5 text-xs font-bold">{{ __('Segera') }}</span> @endif
             </a>
 
             <a href="{{ $modules['organizer'] ? url('/notes') : '#' }}"
@@ -413,7 +432,7 @@
                     <x-heroicon-o-document-text class="size-5" />
                     <span>{{ __('Catatan') }}</span>
                 </span>
-                @if (! $modules['organizer']) <span class="rounded-full bg-current/10 px-2 py-0.5 text-[10px] font-bold">{{ __('Segera') }}</span> @endif
+                @if (! $modules['organizer']) <span class="rounded-full bg-current/10 px-2 py-0.5 text-xs font-bold">{{ __('Segera') }}</span> @endif
             </a>
 
             <a href="{{ $modules['organizer'] ? url('/shopping') : '#' }}"
@@ -422,7 +441,7 @@
                     <x-heroicon-o-shopping-bag class="size-5" />
                     <span>{{ __('Belanja') }}</span>
                 </span>
-                @if (! $modules['organizer']) <span class="rounded-full bg-current/10 px-2 py-0.5 text-[10px] font-bold">{{ __('Segera') }}</span> @endif
+                @if (! $modules['organizer']) <span class="rounded-full bg-current/10 px-2 py-0.5 text-xs font-bold">{{ __('Segera') }}</span> @endif
             </a>
 
             <a href="{{ $modules['asset'] ? url('/assets') : '#' }}"
@@ -431,7 +450,7 @@
                     <x-heroicon-o-cube class="size-5" />
                     <span>{{ __('Aset') }}</span>
                 </span>
-                @if (! $modules['asset']) <span class="rounded-full bg-current/10 px-2 py-0.5 text-[10px] font-bold">{{ __('Segera') }}</span> @endif
+                @if (! $modules['asset']) <span class="rounded-full bg-current/10 px-2 py-0.5 text-xs font-bold">{{ __('Segera') }}</span> @endif
             </a>
 
             <div class="my-2 border-t border-current/10"></div>

@@ -11,7 +11,7 @@
     @include('livewire.settings.partials.navigation')
 
     @if ($feedbackMessage)
-        <div class="rounded-2xl border border-[#059669]/30 bg-[#059669]/10 p-4 text-sm font-medium text-[#059669] dark:text-[#10b981]" role="alert">
+        <div class="rounded-2xl border border-[#28543e]/30 bg-[#28543e]/10 p-4 text-sm font-medium text-[#28543e] dark:text-[#bad6ae]" role="alert">
             {{ $feedbackMessage }}
         </div>
     @endif
@@ -23,7 +23,7 @@
                 <label class="flex items-start gap-3 cursor-pointer">
                     <input type="checkbox"
                         wire:model="notify_push"
-                        class="mt-1 size-4 rounded border-current/20 text-[#059669] focus:ring-[#059669]" />
+                        class="mt-1 size-4 rounded border-current/20 text-[#28543e] focus:ring-[#28543e]" />
                     <div class="space-y-0.5">
                         <span class="text-sm font-semibold text-current">{{ __('Notifikasi Web Push') }}</span>
                         <p class="text-xs text-[#637067] dark:text-[#b2beb2]">
@@ -35,7 +35,7 @@
                 <label class="flex items-start gap-3 cursor-pointer">
                     <input type="checkbox"
                         wire:model="notify_email"
-                        class="mt-1 size-4 rounded border-current/20 text-[#059669] focus:ring-[#059669]" />
+                        class="mt-1 size-4 rounded border-current/20 text-[#28543e] focus:ring-[#28543e]" />
                     <div class="space-y-0.5">
                         <span class="text-sm font-semibold text-current">{{ __('Notifikasi Email') }}</span>
                         <p class="text-xs text-[#637067] dark:text-[#b2beb2]">
@@ -59,7 +59,7 @@
                     <input type="time"
                         id="quiet_hours_start"
                         wire:model="quiet_hours_start"
-                        class="mt-1 w-full rounded-2xl border border-current/15 bg-white/70 px-3 py-2 text-sm text-current dark:bg-[#151f1b]" />
+                        class="mt-1 w-full rounded-2xl border border-current/15 bg-[#fffefa]/80 px-3 py-2 text-sm text-current dark:bg-[#151f1b]" />
                     @error('quiet_hours_start') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                 </div>
 
@@ -70,7 +70,7 @@
                     <input type="time"
                         id="quiet_hours_end"
                         wire:model="quiet_hours_end"
-                        class="mt-1 w-full rounded-2xl border border-current/15 bg-white/70 px-3 py-2 text-sm text-current dark:bg-[#151f1b]" />
+                        class="mt-1 w-full rounded-2xl border border-current/15 bg-[#fffefa]/80 px-3 py-2 text-sm text-current dark:bg-[#151f1b]" />
                     @error('quiet_hours_end') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                 </div>
             </div>
@@ -85,7 +85,7 @@
                 <input type="time"
                     id="daily_digest_time"
                     wire:model="daily_digest_time"
-                    class="w-full sm:w-48 rounded-2xl border border-current/15 bg-white/70 px-3 py-2 text-sm text-current dark:bg-[#151f1b]" />
+                    class="w-full sm:w-48 rounded-2xl border border-current/15 bg-[#fffefa]/80 px-3 py-2 text-sm text-current dark:bg-[#151f1b]" />
                 @error('daily_digest_time') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
             </div>
         </x-card>
@@ -99,7 +99,7 @@
             </button>
 
             <button type="submit"
-                class="inline-flex items-center justify-center rounded-2xl bg-[#059669] px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#047857] dark:bg-[#10b981] dark:hover:bg-[#059669]">
+                class="inline-flex items-center justify-center rounded-2xl bg-[#28543e] px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90 dark:bg-[#bad6ae] dark:text-[#151f1b]">
                 {{ __('Simpan Pengaturan') }}
             </button>
         </div>

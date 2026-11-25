@@ -116,19 +116,19 @@
             {{-- Feature Pillars --}}
             <div class="mt-14 grid grid-cols-1 gap-5 text-left sm:grid-cols-3">
                 <x-card :title="__('Keuangan Rumah Tangga')">
-                    <p class="text-sm leading-relaxed text-[#637067] dark:text-[#b2beb2]">
+                    <p class="text-pretty text-sm leading-relaxed text-[#637067] dark:text-[#b2beb2]">
                         {{ __('Pencatatan pengeluaran cepat, alokasi anggaran, pemisahan tabungan operasional, dan laporan bulanan transparan.') }}
                     </p>
                 </x-card>
 
                 <x-card :title="__('Agenda & Kolaborasi')">
-                    <p class="text-sm leading-relaxed text-[#637067] dark:text-[#b2beb2]">
+                    <p class="text-pretty text-sm leading-relaxed text-[#637067] dark:text-[#b2beb2]">
                         {{ __('Kalender bersama, tugas rutin bergantian, catatan penting, dan daftar belanja yang sinkron secara real-time.') }}
                     </p>
                 </x-card>
 
                 <x-card :title="__('Aset & Inventaris')">
-                    <p class="text-sm leading-relaxed text-[#637067] dark:text-[#b2beb2]">
+                    <p class="text-pretty text-sm leading-relaxed text-[#637067] dark:text-[#b2beb2]">
                         {{ __('Pencatatan dokumen penting, garansi barang, jadwal pemeliharaan rumah, dan kontak teknisi darurat.') }}
                     </p>
                 </x-card>

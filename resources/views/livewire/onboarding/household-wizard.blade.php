@@ -6,7 +6,7 @@
             <li class="flex flex-1 items-center">
                 <div class="flex items-center gap-2">
                     <span class="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-colors
-                        {{ $step === 1 ? 'bg-[#28543e] text-white dark:bg-[#bad6ae] dark:text-[#151f1b]' : ($step > 1 ? 'bg-[#28543e]/20 text-[#28543e] dark:bg-[#bad6ae]/30 dark:text-[#bad6ae]' : 'border border-current/25 text-current/50') }}"
+ {{ $step === 1 ? 'bg-[#28543e] text-white dark:bg-[#bad6ae] dark:text-[#151f1b]' : ($step > 1 ? 'bg-[#28543e]/20 text-[#28543e] dark:bg-[#bad6ae]/30 dark:text-[#bad6ae]' : 'border border-current/25 text-current/50') }}"
                         @if ($step === 1) aria-current="step" @endif>
                         @if ($step > 1)
                             <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
@@ -25,7 +25,7 @@
             <li class="flex flex-1 items-center">
                 <div class="flex items-center gap-2">
                     <span class="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-colors
-                        {{ $step === 2 ? 'bg-[#28543e] text-white dark:bg-[#bad6ae] dark:text-[#151f1b]' : ($step > 2 ? 'bg-[#28543e]/20 text-[#28543e] dark:bg-[#bad6ae]/30 dark:text-[#bad6ae]' : 'border border-current/25 text-current/50') }}"
+ {{ $step === 2 ? 'bg-[#28543e] text-white dark:bg-[#bad6ae] dark:text-[#151f1b]' : ($step > 2 ? 'bg-[#28543e]/20 text-[#28543e] dark:bg-[#bad6ae]/30 dark:text-[#bad6ae]' : 'border border-current/25 text-current/50') }}"
                         @if ($step === 2) aria-current="step" @endif>
                         @if ($step > 2)
                             <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
@@ -44,7 +44,7 @@
             <li class="flex items-center">
                 <div class="flex items-center gap-2">
                     <span class="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-colors
-                        {{ $step === 3 ? 'bg-[#28543e] text-white dark:bg-[#bad6ae] dark:text-[#151f1b]' : 'border border-current/25 text-current/50' }}"
+ {{ $step === 3 ? 'bg-[#28543e] text-white dark:bg-[#bad6ae] dark:text-[#151f1b]' : 'border border-current/25 text-current/50' }}"
                         @if ($step === 3) aria-current="step" @endif>
                         3
                     </span>

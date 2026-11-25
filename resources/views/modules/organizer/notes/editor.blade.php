@@ -95,7 +95,7 @@
                         placeholder="+ Ketik item baru lalu tekan Enter..." 
                         class="flex-1 px-3 py-2 bg-black/5 dark:bg-[#fffefa]/5 border border-black/10 dark:border-white/10 rounded-xl text-sm focus:outline-none text-[#263c32] dark:text-[#f3f1e8]"
                     />
-                    <button type="submit" class="px-3.5 py-2 bg-[#28543e] text-white dark:bg-[#bad6ae] text-xs font-semibold rounded-xl">
+                    <button type="submit" wire:loading.attr="disabled" x-bind:disabled="$store.network?.isOffline" class="px-3.5 py-2 bg-[#28543e] text-white dark:bg-[#bad6ae] text-xs font-semibold rounded-xl">
                         Tambah
                     </button>
                 </form>

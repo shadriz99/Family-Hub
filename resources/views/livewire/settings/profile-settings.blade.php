@@ -13,7 +13,7 @@
     {{-- Profil Pengguna --}}
     <x-card :title="__('Informasi Akun')">
         @if ($profileMessage)
-            <div class="mb-4 rounded-2xl border border-[#059669]/30 bg-[#059669]/10 p-3 text-sm font-medium text-[#059669] dark:text-[#10b981]" role="alert">
+            <div class="mb-4 rounded-2xl border border-[#28543e]/30 bg-[#28543e]/10 p-3 text-sm font-medium text-[#28543e] dark:text-[#bad6ae]" role="alert">
                 {{ $profileMessage }}
             </div>
         @endif
@@ -27,7 +27,7 @@
                     id="name"
                     wire:model="name"
                     required
-                    class="mt-1 w-full rounded-2xl border border-current/15 bg-white/70 px-3 py-2 text-sm text-current dark:bg-[#151f1b]" />
+                    class="mt-1 w-full rounded-2xl border border-current/15 bg-[#fffefa]/80 px-3 py-2 text-sm text-current dark:bg-[#151f1b]" />
                 @error('name') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
             </div>
 
@@ -39,13 +39,13 @@
                     id="email"
                     wire:model="email"
                     required
-                    class="mt-1 w-full rounded-2xl border border-current/15 bg-white/70 px-3 py-2 text-sm text-current dark:bg-[#151f1b]" />
+                    class="mt-1 w-full rounded-2xl border border-current/15 bg-[#fffefa]/80 px-3 py-2 text-sm text-current dark:bg-[#151f1b]" />
                 @error('email') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
             </div>
 
             <div class="flex justify-end pt-2">
                 <button type="submit"
-                    class="inline-flex items-center justify-center rounded-2xl bg-[#059669] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#047857] dark:bg-[#10b981] dark:hover:bg-[#059669]">
+                    class="inline-flex items-center justify-center rounded-2xl bg-[#28543e] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90 dark:bg-[#bad6ae] dark:text-[#151f1b]">
                     {{ __('Simpan Profil') }}
                 </button>
             </div>
@@ -55,7 +55,7 @@
     {{-- Ubah Kata Sandi --}}
     <x-card :title="__('Ubah Kata Sandi')">
         @if ($passwordMessage)
-            <div class="mb-4 rounded-2xl border border-[#059669]/30 bg-[#059669]/10 p-3 text-sm font-medium text-[#059669] dark:text-[#10b981]" role="alert">
+            <div class="mb-4 rounded-2xl border border-[#28543e]/30 bg-[#28543e]/10 p-3 text-sm font-medium text-[#28543e] dark:text-[#bad6ae]" role="alert">
                 {{ $passwordMessage }}
             </div>
         @endif
@@ -69,7 +69,7 @@
                     id="current_password"
                     wire:model="current_password"
                     required
-                    class="mt-1 w-full rounded-2xl border border-current/15 bg-white/70 px-3 py-2 text-sm text-current dark:bg-[#151f1b]" />
+                    class="mt-1 w-full rounded-2xl border border-current/15 bg-[#fffefa]/80 px-3 py-2 text-sm text-current dark:bg-[#151f1b]" />
                 @error('current_password') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
             </div>
 
@@ -82,7 +82,7 @@
                         id="password"
                         wire:model="password"
                         required
-                        class="mt-1 w-full rounded-2xl border border-current/15 bg-white/70 px-3 py-2 text-sm text-current dark:bg-[#151f1b]" />
+                        class="mt-1 w-full rounded-2xl border border-current/15 bg-[#fffefa]/80 px-3 py-2 text-sm text-current dark:bg-[#151f1b]" />
                     @error('password') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                 </div>
 
@@ -94,13 +94,13 @@
                         id="password_confirmation"
                         wire:model="password_confirmation"
                         required
-                        class="mt-1 w-full rounded-2xl border border-current/15 bg-white/70 px-3 py-2 text-sm text-current dark:bg-[#151f1b]" />
+                        class="mt-1 w-full rounded-2xl border border-current/15 bg-[#fffefa]/80 px-3 py-2 text-sm text-current dark:bg-[#151f1b]" />
                 </div>
             </div>
 
             <div class="flex justify-end pt-2">
                 <button type="submit"
-                    class="inline-flex items-center justify-center rounded-2xl bg-[#059669] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#047857] dark:bg-[#10b981] dark:hover:bg-[#059669]">
+                    class="inline-flex items-center justify-center rounded-2xl bg-[#28543e] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90 dark:bg-[#bad6ae] dark:text-[#151f1b]">
                     {{ __('Perbarui Kata Sandi') }}
                 </button>
             </div>
@@ -110,7 +110,7 @@
     {{-- Status Keamanan (2FA & OTP) --}}
     <x-card :title="__('Keamanan Akun (2FA & OTP)')">
         @if ($twoFactorMessage)
-            <div class="mb-4 rounded-2xl border border-[#059669]/30 bg-[#059669]/10 p-3 text-sm font-medium text-[#059669] dark:text-[#10b981]" role="alert">
+            <div class="mb-4 rounded-2xl border border-[#28543e]/30 bg-[#28543e]/10 p-3 text-sm font-medium text-[#28543e] dark:text-[#bad6ae]" role="alert">
                 {{ $twoFactorMessage }}
             </div>
         @endif
@@ -131,7 +131,7 @@
 
                 <div class="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-xs font-semibold text-center py-2">
                     @foreach ($plainRecoveryCodes as $code)
-                        <div class="rounded-xl border border-current/15 bg-white/90 dark:bg-neutral-800 px-2 py-1.5 shadow-sm select-all">
+                        <div class="rounded-xl border border-current/15 bg-[#fffefa]/90 dark:bg-neutral-800 px-2 py-1.5 shadow-sm select-all">
                             {{ $code }}
                         </div>
                     @endforeach
@@ -149,7 +149,7 @@
 
                     <button type="button"
                         wire:click="closeRecoveryModal"
-                        class="rounded-xl bg-emerald-600 px-4 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-emerald-500 transition">
+                        class="min-h-11 rounded-xl bg-[#28543e] px-4 py-1.5 text-xs font-semibold text-white shadow-sm hover:opacity-90 transition dark:bg-[#bad6ae] dark:text-[#151f1b]">
                         {{ __('Saya Sudah Menyimpan Kode') }}
                     </button>
                 </div>
@@ -165,18 +165,18 @@
                     </div>
                 </div>
                 @if ($twoFactorEnabled)
-                    <span class="inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                    <span class="inline-flex items-center rounded-full bg-[#28543e]/10 px-2.5 py-0.5 text-xs font-semibold text-[#28543e] dark:bg-[#bad6ae]/15 dark:text-[#bad6ae]">
                         {{ __('Aktif') }}
                     </span>
                 @else
-                    <span class="inline-flex items-center rounded-full bg-stone-500/10 px-2.5 py-0.5 text-xs font-semibold text-stone-600 dark:text-stone-400">
+                    <span class="inline-flex items-center rounded-full bg-current/10 px-2.5 py-0.5 text-xs font-semibold text-[#637067] dark:text-[#b2beb2]">
                         {{ __('Nonaktif') }}
                     </span>
                 @endif
             </div>
 
             @if ($twoFactorEnabled)
-                <div class="rounded-2xl border border-current/10 bg-white/40 dark:bg-white/5 p-4 space-y-3">
+                <div class="rounded-2xl border border-current/10 bg-[#fffefa]/40 dark:bg-[#fffefa]/5 p-4 space-y-3">
                     <p class="text-xs text-[#637067] dark:text-[#b2beb2] leading-relaxed">
                         {{ __('Akun Anda terlindungi dengan 2FA Email OTP. Untuk menonaktifkan fitur ini, masukkan kata sandi Anda saat ini.') }}
                     </p>
@@ -186,7 +186,7 @@
                             <input type="password"
                                 wire:model="twoFactorPasswordConfirm"
                                 placeholder="{{ __('Kata sandi saat ini') }}"
-                                class="w-full rounded-xl border border-current/15 bg-white/70 px-3 py-2 text-xs text-current dark:bg-[#151f1b]" />
+                                class="w-full rounded-xl border border-current/15 bg-[#fffefa]/80 px-3 py-2 text-xs text-current dark:bg-[#151f1b]" />
                             @error('twoFactorPasswordConfirm') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                         </div>
 
@@ -198,7 +198,7 @@
                     </div>
                 </div>
             @else
-                <div class="rounded-2xl border border-current/10 bg-white/40 dark:bg-white/5 p-4 space-y-3">
+                <div class="rounded-2xl border border-current/10 bg-[#fffefa]/40 dark:bg-[#fffefa]/5 p-4 space-y-3">
                     <p class="text-xs text-[#637067] dark:text-[#b2beb2] leading-relaxed">
                         {{ __('Aktifkan 2FA Email OTP untuk perlindungan maksimal. Sistem akan menghasilkan 8 kode pemulihan cadangan jika Anda tidak dapat mengakses email.') }}
                     </p>
@@ -208,13 +208,13 @@
                             <input type="password"
                                 wire:model="twoFactorPasswordConfirm"
                                 placeholder="{{ __('Kata sandi saat ini') }}"
-                                class="w-full rounded-xl border border-current/15 bg-white/70 px-3 py-2 text-xs text-current dark:bg-[#151f1b]" />
+                                class="w-full rounded-xl border border-current/15 bg-[#fffefa]/80 px-3 py-2 text-xs text-current dark:bg-[#151f1b]" />
                             @error('twoFactorPasswordConfirm') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                         </div>
 
                         <button type="button"
                             wire:click="enableTwoFactor"
-                            class="inline-flex items-center justify-center rounded-xl bg-[#059669] px-4 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-[#047857] dark:bg-[#10b981] dark:hover:bg-[#059669]">
+                            class="inline-flex items-center justify-center rounded-xl bg-[#28543e] px-4 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:opacity-90 dark:bg-[#bad6ae] dark:text-[#151f1b]">
                             {{ __('Aktifkan 2FA Email') }}
                         </button>
                     </div>
@@ -226,7 +226,7 @@
     {{-- Integrasi Chatbot Telegram --}}
     <x-card :title="__('Integrasi Chatbot Telegram (ODROID)')">
         @if ($telegramMessage)
-            <div class="mb-4 rounded-2xl border border-[#059669]/30 bg-[#059669]/10 p-3 text-sm font-medium text-[#059669] dark:text-[#10b981]" role="alert">
+            <div class="mb-4 rounded-2xl border border-[#28543e]/30 bg-[#28543e]/10 p-3 text-sm font-medium text-[#28543e] dark:text-[#bad6ae]" role="alert">
                 {{ $telegramMessage }}
             </div>
         @endif
@@ -237,11 +237,11 @@
                     <div class="font-semibold text-current flex items-center gap-2">
                         <span>{{ __('Catat Pengeluaran via Telegram') }}</span>
                         @if ($isTelegramLinked)
-                            <span class="inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                            <span class="inline-flex items-center rounded-full bg-[#28543e]/10 px-2.5 py-0.5 text-xs font-semibold text-[#28543e] dark:bg-[#bad6ae]/15 dark:text-[#bad6ae]">
                                 {{ __('Terhubung') }}
                             </span>
                         @else
-                            <span class="inline-flex items-center rounded-full bg-stone-500/10 px-2.5 py-0.5 text-xs font-semibold text-stone-600 dark:text-stone-400">
+                            <span class="inline-flex items-center rounded-full bg-current/10 px-2.5 py-0.5 text-xs font-semibold text-[#637067] dark:text-[#b2beb2]">
                                 {{ __('Belum Terhubung') }}
                             </span>
                         @endif
@@ -270,18 +270,18 @@
             @else
                 <div class="space-y-4">
                     @if ($telegramLinkCode)
-                        <div class="rounded-2xl border border-[#059669]/30 bg-[#059669]/10 p-4 space-y-3">
+                        <div class="rounded-2xl border border-[#28543e]/30 bg-[#28543e]/10 p-4 space-y-3">
                             <div class="text-xs font-medium text-[#637067] dark:text-[#b2beb2]">
                                 {{ __('Kode Verifikasi Anda (berlaku 15 menit):') }}
                             </div>
                             <div class="flex items-center gap-3">
-                                <div class="font-mono text-2xl font-bold tracking-widest text-[#059669] dark:text-[#10b981] bg-white/80 dark:bg-[#151f1b] px-4 py-1.5 rounded-xl border border-current/15">
+                                <div class="font-mono text-2xl font-bold tracking-widest text-[#28543e] dark:text-[#bad6ae] bg-[#fffefa]/80 dark:bg-[#151f1b] px-4 py-1.5 rounded-xl border border-current/15">
                                     {{ $telegramLinkCode }}
                                 </div>
                                 <a href="https://t.me/{{ $botUsername }}?start={{ $telegramLinkCode }}"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    class="inline-flex items-center gap-1.5 rounded-xl bg-[#059669] px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-[#047857] dark:bg-[#10b981]">
+                                    class="inline-flex items-center gap-1.5 rounded-xl bg-[#28543e] px-4 py-2 text-xs font-semibold text-white shadow-sm hover:opacity-90 dark:bg-[#bad6ae] dark:text-[#151f1b]">
                                     <span>{{ __('Buka Telegram') }}</span>
                                     <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -289,7 +289,7 @@
                                 </a>
                             </div>
                             <p class="text-xs text-[#637067] dark:text-[#b2beb2]">
-                                {{ __('Kirim perintah berikut ke bot Telegram Anda:') }} <code class="rounded bg-black/5 dark:bg-white/10 px-1.5 py-0.5 font-mono">/start {{ $telegramLinkCode }}</code>
+                                {{ __('Kirim perintah berikut ke bot Telegram Anda:') }} <code class="rounded bg-black/5 dark:bg-[#fffefa]/10 px-1.5 py-0.5 font-mono">/start {{ $telegramLinkCode }}</code>
                             </p>
                         </div>
                     @endif
@@ -297,7 +297,7 @@
                     <div class="flex items-center gap-3 pt-1">
                         <button type="button"
                             wire:click="generateTelegramCode"
-                            class="inline-flex items-center justify-center rounded-2xl bg-[#059669] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#047857] dark:bg-[#10b981] dark:hover:bg-[#059669]">
+                            class="inline-flex items-center justify-center rounded-2xl bg-[#28543e] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90 dark:bg-[#bad6ae] dark:text-[#151f1b]">
                             {{ $telegramLinkCode ? __('Perbarui Kode Tautan') : __('Hubungkan Akun Telegram') }}
                         </button>
                     </div>

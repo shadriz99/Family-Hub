@@ -1,5 +1,4 @@
 @import 'tailwindcss';
-@import 'boxicons/css/boxicons.min.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -57,7 +56,6 @@ html, body {
     *, ::before, ::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
 }

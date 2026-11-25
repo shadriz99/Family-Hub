@@ -65,7 +65,7 @@
                                         <x-datetime :value="$item->start" :household="$household" />
                                     </p>
                                 </div>
-                                <span class="rounded-full bg-current/10 px-2 py-0.5 text-xs text-current/80">
+                                <span class="ml-3 shrink-0 rounded-full bg-current/10 px-2 py-0.5 text-xs text-current/80">
                                     {{ $item->sourceKey }}
                                 </span>
                             </div>
@@ -90,7 +90,7 @@
                                         <x-datetime :value="$item->start" :household="$household" />
                                     </p>
                                 </div>
-                                <span class="rounded-full bg-current/10 px-2 py-0.5 text-xs text-current/80">
+                                <span class="ml-3 shrink-0 rounded-full bg-current/10 px-2 py-0.5 text-xs text-current/80">
                                     {{ $item->sourceKey }}
                                 </span>
                             </div>

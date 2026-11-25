@@ -9,7 +9,7 @@
     </div>
 
     @if ($feedbackMessage)
-        <div class="rounded-2xl border border-[#059669]/30 bg-[#059669]/10 p-3.5 text-sm font-medium text-[#059669] dark:text-[#10b981]" role="alert">
+        <div class="rounded-2xl border border-[#28543e]/30 bg-[#28543e]/10 p-3.5 text-sm font-medium text-[#28543e] dark:text-[#bad6ae]" role="alert">
             {{ $feedbackMessage }}
         </div>
     @endif
@@ -39,10 +39,10 @@
                     wire:model="invite_email"
                     required
                     placeholder="email-calon-owner@domain.com"
-                    class="flex-1 rounded-2xl border border-current/15 bg-white/70 px-3.5 py-2 text-sm text-current dark:bg-[#151f1b]" />
+                    class="flex-1 rounded-2xl border border-current/15 bg-[#fffefa]/80 px-3.5 py-2 text-sm text-current dark:bg-[#151f1b]" />
 
                 <button type="submit"
-                    class="inline-flex items-center justify-center rounded-2xl bg-[#059669] px-5 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#047857] dark:bg-[#10b981] dark:hover:bg-[#059669]">
+                    class="inline-flex items-center justify-center rounded-2xl bg-[#28543e] px-5 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90 dark:bg-[#bad6ae] dark:text-[#151f1b]">
                     {{ __('Kirim Undangan') }}
                 </button>
             </div>
@@ -156,7 +156,7 @@
                                         {{ __('Dinonaktifkan') }}
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center rounded-full bg-[#059669]/10 px-2 py-0.5 font-semibold text-[#059669] dark:text-[#10b981]">
+                                    <span class="inline-flex items-center rounded-full bg-[#28543e]/10 px-2 py-0.5 font-semibold text-[#28543e] dark:text-[#bad6ae]">
                                         {{ __('Aktif') }}
                                     </span>
                                 @endif
@@ -166,7 +166,7 @@
                                     @if ($user->isDisabled())
                                         <button type="button"
                                             wire:click="toggleUserStatus('{{ $user->getKey() }}')"
-                                            class="rounded-xl border border-[#059669]/30 px-3 py-1 text-xs font-semibold text-[#059669] dark:text-[#10b981] transition-colors hover:bg-[#059669]/10">
+                                            class="rounded-xl border border-[#28543e]/30 px-3 py-1 text-xs font-semibold text-[#28543e] dark:text-[#bad6ae] transition-colors hover:bg-[#28543e]/10">
                                             {{ __('Aktifkan') }}
                                         </button>
                                     @else
