@@ -10,7 +10,7 @@
 
         <div class="flex items-center gap-2">
             <a href="{{ route('finance.transactions.create') }}"
-               class="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-emerald-700 active:scale-95">
+               class="inline-flex items-center gap-2 rounded-2xl bg-[#28543e] px-4 py-2.5 text-sm font-bold text-white dark:bg-[#bad6ae] dark:text-[#151f1b] shadow-sm transition-all hover:opacity-90 active:scale-95">
                 <x-heroicon-o-plus class="size-5" />
                 <span>Catat Transaksi</span>
             </a>
@@ -22,7 +22,7 @@
         <div class="rounded-3xl border border-current/10 bg-[#fffefa] p-5 shadow-sm transition-colors dark:bg-[#1f2c25]">
             <div class="flex items-center justify-between text-xs font-semibold text-current/60">
                 <span>Saldo Operasional</span>
-                <span class="size-2 rounded-full bg-emerald-500"></span>
+                <span class="size-2 rounded-full bg-[#28543e] dark:bg-[#bad6ae]"></span>
             </div>
             <div class="mt-2 text-2xl font-black tracking-tight text-[#263c32] dark:text-[#f3f1e8]">
                 <x-money :amount="$operationalBalance" />
@@ -35,7 +35,7 @@
                 <span>Saldo Tabungan</span>
                 <span class="size-2 rounded-full bg-teal-500"></span>
             </div>
-            <div class="mt-2 text-2xl font-black tracking-tight text-emerald-600 dark:text-emerald-400">
+            <div class="mt-2 text-2xl font-black tracking-tight text-[#28543e] dark:text-[#bad6ae]">
                 <x-money :amount="$savingsBalance" />
             </div>
             <p class="mt-1 text-xs text-current/50">Dana darurat, masa depan, investasi</p>
@@ -57,7 +57,7 @@
     <div>
         <div class="mb-3 flex items-center justify-between">
             <h2 class="text-sm font-bold tracking-tight text-[#263c32] dark:text-[#f3f1e8]">Akun & Dompet</h2>
-            <a href="{{ route('finance.accounts.index') }}" class="text-xs font-bold text-emerald-600 hover:underline dark:text-emerald-400">
+            <a href="{{ route('finance.accounts.index') }}" class="text-xs font-bold text-[#28543e] hover:underline dark:text-[#bad6ae]">
                 Kelola Akun &rarr;
             </a>
         </div>
@@ -74,13 +74,13 @@
                         <span class="text-[10px] font-bold uppercase tracking-wider text-current/50">{{ $acc->type->label() }}</span>
                     </div>
                     <div class="mt-2 font-bold text-sm truncate text-[#263c32] dark:text-[#f3f1e8]">{{ $acc->name }}</div>
-                    <div class="mt-1 text-base font-black tracking-tight {{ $bal < 0 ? 'text-rose-600 dark:text-rose-400' : 'text-current/90' }}">
+                    <div class="mt-1 text-base font-black tracking-tight {{ $bal < 0 ? 'text-[#ad3f45] dark:text-[#ffafb1]' : 'text-current/90' }}">
                         <x-money :amount="$bal" />
                     </div>
                 </div>
             @empty
                 <div class="w-full rounded-2xl border border-dashed border-current/15 p-6 text-center text-xs text-current/60">
-                    Belum ada akun terdaftar. <a href="{{ route('finance.accounts.index') }}" class="font-bold underline text-emerald-600">Tambah Akun Baru</a>
+                    Belum ada akun terdaftar. <a href="{{ route('finance.accounts.index') }}" class="font-bold underline text-[#28543e]">Tambah Akun Baru</a>
                 </div>
             @endforelse
         </div>
@@ -88,7 +88,7 @@
 
     {{-- Navigation Feature Badges --}}
     <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <a href="{{ route('finance.plan.index') }}" class="flex items-center gap-3 rounded-2xl border border-current/10 bg-[#fffefa] p-4 shadow-sm transition-all hover:border-emerald-500/50 hover:shadow-md dark:bg-[#1f2c25]">
+        <a href="{{ route('finance.plan.index') }}" class="flex items-center gap-3 rounded-2xl border border-current/10 bg-[#fffefa] p-4 shadow-sm transition-all hover:border-[#28543e]/50 dark:hover:border-[#bad6ae]/50 hover:shadow-md dark:bg-[#1f2c25]">
             <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
                 <x-heroicon-o-calendar class="size-5" />
             </div>
@@ -98,8 +98,8 @@
             </div>
         </a>
 
-        <a href="{{ route('finance.budgets.index') }}" class="flex items-center gap-3 rounded-2xl border border-current/10 bg-[#fffefa] p-4 shadow-sm transition-all hover:border-emerald-500/50 hover:shadow-md dark:bg-[#1f2c25]">
-            <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+        <a href="{{ route('finance.budgets.index') }}" class="flex items-center gap-3 rounded-2xl border border-current/10 bg-[#fffefa] p-4 shadow-sm transition-all hover:border-[#28543e]/50 dark:hover:border-[#bad6ae]/50 hover:shadow-md dark:bg-[#1f2c25]">
+            <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-[#87571f] dark:text-[#edc48b]">
                 <x-heroicon-o-chart-pie class="size-5" />
             </div>
             <div>
@@ -108,7 +108,7 @@
             </div>
         </a>
 
-        <a href="{{ route('finance.loans.index') }}" class="flex items-center gap-3 rounded-2xl border border-current/10 bg-[#fffefa] p-4 shadow-sm transition-all hover:border-emerald-500/50 hover:shadow-md dark:bg-[#1f2c25]">
+        <a href="{{ route('finance.loans.index') }}" class="flex items-center gap-3 rounded-2xl border border-current/10 bg-[#fffefa] p-4 shadow-sm transition-all hover:border-[#28543e]/50 dark:hover:border-[#bad6ae]/50 hover:shadow-md dark:bg-[#1f2c25]">
             <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
                 <x-heroicon-o-document-currency-bangladeshi class="size-5" />
             </div>
@@ -118,8 +118,8 @@
             </div>
         </a>
 
-        <a href="{{ route('finance.reports.index') }}" class="flex items-center gap-3 rounded-2xl border border-current/10 bg-[#fffefa] p-4 shadow-sm transition-all hover:border-emerald-500/50 hover:shadow-md dark:bg-[#1f2c25]">
-            <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400">
+        <a href="{{ route('finance.reports.index') }}" class="flex items-center gap-3 rounded-2xl border border-current/10 bg-[#fffefa] p-4 shadow-sm transition-all hover:border-[#28543e]/50 dark:hover:border-[#bad6ae]/50 hover:shadow-md dark:bg-[#1f2c25]">
+            <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-rose-500/10 text-[#ad3f45] dark:text-[#ffafb1]">
                 <x-heroicon-o-presentation-chart-line class="size-5" />
             </div>
             <div>
@@ -138,7 +138,7 @@
                     <h2 class="text-sm font-bold tracking-tight text-[#263c32] dark:text-[#f3f1e8]">Kewajiban 7 Hari Ke Depan</h2>
                     <p class="text-xs text-current/60">Tagihan & cicilan yang akan jatuh tempo</p>
                 </div>
-                <a href="{{ route('finance.plan.index') }}" class="text-xs font-bold text-emerald-600 hover:underline dark:text-emerald-400">
+                <a href="{{ route('finance.plan.index') }}" class="text-xs font-bold text-[#28543e] hover:underline dark:text-[#bad6ae]">
                     Lihat Semua
                 </a>
             </div>
@@ -147,7 +147,7 @@
                 @forelse($upcomingObligations as $item)
                     <div class="flex items-center justify-between rounded-2xl border border-current/10 bg-current/5 p-3.5">
                         <div class="flex items-center gap-3">
-                            <div class="flex size-9 items-center justify-center rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400">
+                            <div class="flex size-9 items-center justify-center rounded-xl bg-rose-500/10 text-[#ad3f45] dark:text-[#ffafb1]">
                                 <x-heroicon-o-clock class="size-5" />
                             </div>
                             <div>
@@ -155,17 +155,17 @@
                                 <div class="text-xs text-current/60">
                                     Jatuh tempo: {{ $item->due_date->translatedFormat('d M Y') }}
                                     @if($item->isOverdue())
-                                        <span class="ml-1 rounded px-1.5 py-0.5 text-[10px] font-bold bg-rose-500/20 text-rose-600 dark:text-rose-400">Terlambat</span>
+                                        <span class="ml-1 rounded px-1.5 py-0.5 text-[10px] font-bold bg-rose-500/20 text-[#ad3f45] dark:text-[#ffafb1]">Terlambat</span>
                                     @endif
                                 </div>
                             </div>
                         </div>
 
                         <div class="text-right">
-                            <div class="text-sm font-black text-rose-600 dark:text-rose-400">
+                            <div class="text-sm font-black text-[#ad3f45] dark:text-[#ffafb1]">
                                 <x-money :amount="$item->remainingAmount()" />
                             </div>
-                            <a href="{{ route('finance.plan.index') }}#item-{{ $item->id }}" class="text-xs font-semibold text-emerald-600 underline dark:text-emerald-400">
+                            <a href="{{ route('finance.plan.index') }}#item-{{ $item->id }}" class="text-xs font-semibold text-[#28543e] underline dark:text-[#bad6ae]">
                                 Bayar
                             </a>
                         </div>
@@ -185,7 +185,7 @@
                     <h2 class="text-sm font-bold tracking-tight text-[#263c32] dark:text-[#f3f1e8]">Transaksi Terbaru</h2>
                     <p class="text-xs text-current/60">5 transaksi terakhir tercatat</p>
                 </div>
-                <a href="{{ route('finance.transactions.index') }}" class="text-xs font-bold text-emerald-600 hover:underline dark:text-emerald-400">
+                <a href="{{ route('finance.transactions.index') }}" class="text-xs font-bold text-[#28543e] hover:underline dark:text-[#bad6ae]">
                     Lihat Semua
                 </a>
             </div>
@@ -194,7 +194,7 @@
                 @forelse($latestTransactions as $tx)
                     <a href="{{ route('finance.transactions.show', $tx->id) }}" class="flex items-center justify-between rounded-2xl border border-current/10 bg-current/5 p-3.5 transition-colors hover:bg-current/10">
                         <div class="flex items-center gap-3">
-                            <div class="flex size-9 items-center justify-center rounded-xl {{ $tx->type->value === 'income' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : ($tx->type->value === 'transfer' ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400' : 'bg-rose-500/10 text-rose-600 dark:text-rose-400') }}">
+                            <div class="flex size-9 items-center justify-center rounded-xl {{ $tx->type->value === 'income' ? 'bg-[#28543e]/10 dark:bg-[#bad6ae]/15 text-[#28543e] dark:text-[#bad6ae]' : ($tx->type->value === 'transfer' ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400' : 'bg-rose-500/10 text-[#ad3f45] dark:text-[#ffafb1]') }}">
                                 @if($tx->type->value === 'income')
                                     <x-heroicon-o-arrow-down-left class="size-5" />
                                 @elseif($tx->type->value === 'transfer')
@@ -220,7 +220,7 @@
                         </div>
 
                         <div class="text-right">
-                            <div class="text-sm font-black {{ $tx->type->value === 'income' ? 'text-emerald-600 dark:text-emerald-400' : ($tx->type->value === 'transfer' ? 'text-blue-600 dark:text-blue-400' : 'text-rose-600 dark:text-rose-400') }}">
+                            <div class="text-sm font-black {{ $tx->type->value === 'income' ? 'text-[#28543e] dark:text-[#bad6ae]' : ($tx->type->value === 'transfer' ? 'text-blue-600 dark:text-blue-400' : 'text-[#ad3f45] dark:text-[#ffafb1]') }}">
                                 {{ $tx->type->value === 'income' ? '+' : ($tx->type->value === 'expense' ? '-' : '') }}
                                 <x-money :amount="$tx->amount" />
                             </div>

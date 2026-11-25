@@ -10,7 +10,7 @@
 4. Keputusan reviewer dicatat di logbook (`LOG-NNN`), lalu item di sini ditutup atau diubah menjadi pekerjaan tertunda di bagian B.
 5. Jangan menandai item selesai hanya karena kode sudah ada; sertakan bukti verifikasi atau keputusan eksplisit.
 
-**Status:** diperbarui terakhir pada LOG-066 (Langkah 3 & 4 Phase 4: penutupan P-21 SMTP verification command, Lighthouse audit criteria, dan retensi backup Q-M11).
+**Status:** diperbarui terakhir pada LOG-076 (Grilling Round 1: persetujuan Gelombang 1 rencana peningkatan v1.1+, penutupan P-22, ADR-012 untuk 2FA Email OTP, ADR-013 Bot Telegram, dan inisialisasi GLOSSARY.md).
 
 ## A. Butuh keputusan reviewer
 
@@ -20,14 +20,14 @@
 
 ## B. Pekerjaan tertunda (tidak menahan batch saat ini)
 
-| ID | Topik | Status / alasan ditunda | Langkah berikutnya |
-|---|---|---|---|
-| P-19 | Q-M12: 2FA Email OTP | Keputusan LOG-056: ditunda ke rilis v1.1. Untuk rilis awal keluarga (MVP), keamanan mengandalkan password hash Argon2id/Bcrypt, rate limiting per IP/email, dan pendaftaran tertutup via token undangan | Evaluasi implementasi 2FA email OTP pada siklus v1.1 |
+*Saat ini tidak ada pekerjaan tertunda yang terbuka (seluruh item P-01 s.d. P-22 telah diputuskan/ditutup).*
 
 ## Riwayat penutupan item
 
 | ID | Ditutup oleh | Catatan |
 |---|---|---|
+| P-19 | LOG-079 | Fitur 2FA Email OTP & 8 Recovery Codes sekali pakai (IMP-02, ADR-012, SEC-2) selesai diimplementasikan: migrasi kolom users, TwoFactorAuthService, Fortify pipeline interceptor, TwoFactorAuthenticatedSessionController, tampilan modal & copy recovery codes di ProfileSettings, 7 feature tests lulus 100% |
+| P-22 | LOG-076 | Reviewer menyetujui penuh urutan prioritas pasca-MVP v1.1+ (04-IMPROVEMENT-PLAN.md) dimulai dari Gelombang 1 (IMP-01 Scheduler/Digest, IMP-02 2FA Email OTP, IMP-03 Split Transaksi), ADR-012 disepakati, ADR-013 Bot Telegram dibakukan, dan GLOSSARY.md dibuat |
 | P-21 | LOG-066 | Command Artisan `php artisan core:send-test-email` dan Mailable `TestEmailMail` tersedia untuk verifikasi pengiriman email fisik via driver SMTP produksi maupun mode `log`. Dokumentasi `.env.example` dan runbook deploy diselaraskan |
 | P-12 | LOG-061 | Modul Asset (Phase 3) selesai penuh (AST-01 sampai AST-12): skema 9 tabel, model & cast enum, UpdateMeter monotonik & offset kumulatif reset, WhatsApp link generator dengan normalisasi 62xxx & pesan template, RecordService/RenewDocument/DisposeAsset dengan sinkronisasi Finance expense & PlannedItem, UI Livewire aset/perawatan/dokumen/kerusakan/vendor/lokasi, sumber kalender/alert, widget dashboard, backup exporter, artisan commands, dan 23 feature test lulus |
 | P-05 | LOG-056 | Reviewer menyetujui rekomendasi Opsi A: tidak perlu backfill periode keuangan lampau saat bootstrap household. `PeriodResolver` secara deterministik menghitung periode lampau dari setting awal jika ada transaksi bertanggal lampau |

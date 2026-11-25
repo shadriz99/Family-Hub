@@ -8,6 +8,8 @@ use App\Core\Alerts\AlertAggregator;
 use App\Core\Calendar\CalendarAggregator;
 use App\Core\Console\Commands\CreateSystemAdminCommand;
 use App\Core\Console\Commands\DispatchRemindersCommand;
+use App\Core\Console\Commands\PurgeSoftDeletedHouseholdsCommand;
+use App\Core\Console\Commands\SendDailyDigestCommand;
 use App\Core\Console\Commands\SendTestEmailCommand;
 use App\Core\Dashboard\DashboardManager;
 use App\Core\Exporters\CoreHouseholdExporter;
@@ -65,6 +67,8 @@ class AppServiceProvider extends ServiceProvider
             $this->commands([
                 CreateSystemAdminCommand::class,
                 DispatchRemindersCommand::class,
+                SendDailyDigestCommand::class,
+                PurgeSoftDeletedHouseholdsCommand::class,
                 SendTestEmailCommand::class,
             ]);
         }

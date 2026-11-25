@@ -16,6 +16,7 @@ use App\Modules\Finance\Models\Category;
 use App\Modules\Finance\Models\Loan;
 use App\Modules\Finance\Models\PlannedItem;
 use App\Modules\Finance\Models\Transaction;
+use App\Modules\Finance\Models\TransactionSplit;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
@@ -79,12 +80,24 @@ final class Index extends Component
             $childIds = Category::query()->where('parent_id', $parent->id)->pluck('id')->all();
             $allIds = array_merge([$parent->id], $childIds);
 
-            $spent = (int) Transaction::query()
+            $directSpent = (int) Transaction::query()
                 ->where('household_id', $household->id)
                 ->whereIn('category_id', $allIds)
                 ->where('type', TransactionType::Expense)
+                ->whereDoesntHave('splits')
                 ->whereBetween('occurred_on', [$startDate, $endDate])
                 ->sum('amount');
+
+            $splitSpent = (int) TransactionSplit::query()
+                ->where('household_id', $household->id)
+                ->whereIn('category_id', $allIds)
+                ->whereHas('transaction', function ($q) use ($startDate, $endDate): void {
+                    $q->where('type', TransactionType::Expense)
+                        ->whereBetween('occurred_on', [$startDate, $endDate]);
+                })
+                ->sum('amount');
+
+            $spent = $directSpent + $splitSpent;
 
             if ($spent > 0) {
                 $categoryBreakdown[] = [

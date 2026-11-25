@@ -42,6 +42,19 @@ final class Index extends Component
         $this->showSnoozeModal = false;
     }
 
+    public function deletePlan(string $planId, \App\Modules\Finance\Contracts\FinanceGateway $financeGateway): void
+    {
+        $household = app(HouseholdContext::class)->currentOrNull();
+        $plan = MaintenancePlan::where('household_id', $household?->id)->where('id', $planId)->first();
+        if ($plan) {
+            try {
+                $financeGateway->cancelPlannedExpenses('asset_maintenance', $plan->id);
+            } catch (\Throwable) {
+            }
+            $plan->delete();
+        }
+    }
+
     public function render(): View
     {
         $household = app(HouseholdContext::class)->currentOrNull();

@@ -107,24 +107,202 @@
         </form>
     </x-card>
 
-    {{-- Status Keamanan --}}
+    {{-- Status Keamanan (2FA & OTP) --}}
     <x-card :title="__('Keamanan Akun (2FA & OTP)')">
-        <div class="space-y-3 text-sm">
-            <div class="flex items-center justify-between border-b border-current/10 pb-3">
-                <div>
-                    <div class="font-semibold text-current">{{ __('Autentikasi Dua Faktor (Email OTP)') }}</div>
-                    <div class="text-xs text-[#637067] dark:text-[#b2beb2]">
-                        {{ __('Kode sandi sekali pakai dikirim ke email saat masuk.') }}
+        @if ($twoFactorMessage)
+            <div class="mb-4 rounded-2xl border border-[#059669]/30 bg-[#059669]/10 p-3 text-sm font-medium text-[#059669] dark:text-[#10b981]" role="alert">
+                {{ $twoFactorMessage }}
+            </div>
+        @endif
+
+        {{-- Recovery Codes Modal / Banner --}}
+        @if ($showRecoveryCodesModal && !empty($plainRecoveryCodes))
+            <div class="mb-5 rounded-2xl border-2 border-emerald-500/30 bg-emerald-500/5 p-4 dark:bg-emerald-950/20">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <h4 class="font-semibold text-emerald-800 dark:text-emerald-300">
+                            {{ __('Simpan Kode Pemulihan Anda Sekarang') }}
+                        </h4>
+                        <p class="mt-1 text-xs text-[#637067] dark:text-[#b2beb2] leading-relaxed">
+                            {{ __('Simpan 8 kode pemulihan sekali pakai ini di tempat yang aman. Jika Anda kehilangan akses ke email, salah satu kode ini dapat digunakan untuk masuk ke akun Anda. Kode ini hanya ditampilkan sekali!') }}
+                        </p>
                     </div>
                 </div>
-                <span class="inline-flex items-center rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-semibold text-amber-600 dark:text-amber-400">
-                    {{ __('Tertunda (Q-M12)') }}
-                </span>
+
+                <div class="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-xs font-semibold text-center py-2">
+                    @foreach ($plainRecoveryCodes as $code)
+                        <div class="rounded-xl border border-current/15 bg-white/90 dark:bg-neutral-800 px-2 py-1.5 shadow-sm select-all">
+                            {{ $code }}
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="mt-4 flex items-center justify-between gap-3 pt-2">
+                    <button type="button"
+                        onclick="navigator.clipboard.writeText('{{ implode("\n", $plainRecoveryCodes) }}'); alert('Kode pemulihan berhasil disalin ke clipboard!');"
+                        class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 underline underline-offset-2 hover:opacity-80">
+                        <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        {{ __('Salin Semua Kode') }}
+                    </button>
+
+                    <button type="button"
+                        wire:click="closeRecoveryModal"
+                        class="rounded-xl bg-emerald-600 px-4 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-emerald-500 transition">
+                        {{ __('Saya Sudah Menyimpan Kode') }}
+                    </button>
+                </div>
+            </div>
+        @endif
+
+        <div class="space-y-4 text-sm">
+            <div class="flex items-start justify-between border-b border-current/10 pb-3">
+                <div>
+                    <div class="font-semibold text-current">{{ __('Autentikasi Dua Faktor (Email OTP)') }}</div>
+                    <div class="text-xs text-[#637067] dark:text-[#b2beb2] mt-0.5">
+                        {{ __('Setiap kali masuk, kode verifikasi 6 digit dikirimkan ke email terdaftar Anda (berlaku 10 menit).') }}
+                    </div>
+                </div>
+                @if ($twoFactorEnabled)
+                    <span class="inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                        {{ __('Aktif') }}
+                    </span>
+                @else
+                    <span class="inline-flex items-center rounded-full bg-stone-500/10 px-2.5 py-0.5 text-xs font-semibold text-stone-600 dark:text-stone-400">
+                        {{ __('Nonaktif') }}
+                    </span>
+                @endif
             </div>
 
-            <p class="text-xs text-[#637067] dark:text-[#b2beb2] leading-relaxed">
-                {{ __('Sesuai spesifikasi SEC-2 dan keputusan Q-M12, fitur Email OTP opsional akan diaktifkan setelah kebijakan masa berlaku dan pemulihan akun disepakati oleh reviewer. Saat ini akun Anda diamankan oleh perlindungan isolasi token tertutup (invite-only) dan enkripsi kata sandi kuat.') }}
-            </p>
+            @if ($twoFactorEnabled)
+                <div class="rounded-2xl border border-current/10 bg-white/40 dark:bg-white/5 p-4 space-y-3">
+                    <p class="text-xs text-[#637067] dark:text-[#b2beb2] leading-relaxed">
+                        {{ __('Akun Anda terlindungi dengan 2FA Email OTP. Untuk menonaktifkan fitur ini, masukkan kata sandi Anda saat ini.') }}
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 pt-1">
+                        <div class="w-full sm:w-64">
+                            <input type="password"
+                                wire:model="twoFactorPasswordConfirm"
+                                placeholder="{{ __('Kata sandi saat ini') }}"
+                                class="w-full rounded-xl border border-current/15 bg-white/70 px-3 py-2 text-xs text-current dark:bg-[#151f1b]" />
+                            @error('twoFactorPasswordConfirm') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+                        </div>
+
+                        <button type="button"
+                            wire:click="disableTwoFactor"
+                            class="inline-flex items-center justify-center rounded-xl bg-rose-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-rose-500">
+                            {{ __('Nonaktifkan 2FA') }}
+                        </button>
+                    </div>
+                </div>
+            @else
+                <div class="rounded-2xl border border-current/10 bg-white/40 dark:bg-white/5 p-4 space-y-3">
+                    <p class="text-xs text-[#637067] dark:text-[#b2beb2] leading-relaxed">
+                        {{ __('Aktifkan 2FA Email OTP untuk perlindungan maksimal. Sistem akan menghasilkan 8 kode pemulihan cadangan jika Anda tidak dapat mengakses email.') }}
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 pt-1">
+                        <div class="w-full sm:w-64">
+                            <input type="password"
+                                wire:model="twoFactorPasswordConfirm"
+                                placeholder="{{ __('Kata sandi saat ini') }}"
+                                class="w-full rounded-xl border border-current/15 bg-white/70 px-3 py-2 text-xs text-current dark:bg-[#151f1b]" />
+                            @error('twoFactorPasswordConfirm') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+                        </div>
+
+                        <button type="button"
+                            wire:click="enableTwoFactor"
+                            class="inline-flex items-center justify-center rounded-xl bg-[#059669] px-4 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-[#047857] dark:bg-[#10b981] dark:hover:bg-[#059669]">
+                            {{ __('Aktifkan 2FA Email') }}
+                        </button>
+                    </div>
+                </div>
+            @endif
+        </div>
+    </x-card>
+
+    {{-- Integrasi Chatbot Telegram --}}
+    <x-card :title="__('Integrasi Chatbot Telegram (ODROID)')">
+        @if ($telegramMessage)
+            <div class="mb-4 rounded-2xl border border-[#059669]/30 bg-[#059669]/10 p-3 text-sm font-medium text-[#059669] dark:text-[#10b981]" role="alert">
+                {{ $telegramMessage }}
+            </div>
+        @endif
+
+        <div class="space-y-4 text-sm">
+            <div class="flex items-start justify-between border-b border-current/10 pb-4">
+                <div>
+                    <div class="font-semibold text-current flex items-center gap-2">
+                        <span>{{ __('Catat Pengeluaran via Telegram') }}</span>
+                        @if ($isTelegramLinked)
+                            <span class="inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                                {{ __('Terhubung') }}
+                            </span>
+                        @else
+                            <span class="inline-flex items-center rounded-full bg-stone-500/10 px-2.5 py-0.5 text-xs font-semibold text-stone-600 dark:text-stone-400">
+                                {{ __('Belum Terhubung') }}
+                            </span>
+                        @endif
+                    </div>
+                    <div class="mt-1 text-xs text-[#637067] dark:text-[#b2beb2] leading-relaxed">
+                        {{ __('Catat pengeluaran instan lewat chat ("kopi 25rb", "bensin 50k bca") atau kirim foto struk belanja untuk dipindai OCR lokal langsung di ODROID.') }}
+                    </div>
+                </div>
+            </div>
+
+            @if ($isTelegramLinked)
+                <div class="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <div class="text-xs font-medium text-[#637067] dark:text-[#b2beb2]">{{ __('Akun Telegram Terhubung') }}</div>
+                        <div class="text-base font-semibold text-current mt-0.5">
+                            {{ $telegramUsername ? '@' . $telegramUsername : __('Pengguna Telegram') }}
+                        </div>
+                    </div>
+                    <button type="button"
+                        wire:click="disconnectTelegram"
+                        wire:confirm="Yakin ingin memutuskan sambungan akun Telegram ini?"
+                        class="inline-flex items-center justify-center rounded-2xl border border-red-500/30 px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-500/10 dark:text-red-400">
+                        {{ __('Putuskan Sambungan') }}
+                    </button>
+                </div>
+            @else
+                <div class="space-y-4">
+                    @if ($telegramLinkCode)
+                        <div class="rounded-2xl border border-[#059669]/30 bg-[#059669]/10 p-4 space-y-3">
+                            <div class="text-xs font-medium text-[#637067] dark:text-[#b2beb2]">
+                                {{ __('Kode Verifikasi Anda (berlaku 15 menit):') }}
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="font-mono text-2xl font-bold tracking-widest text-[#059669] dark:text-[#10b981] bg-white/80 dark:bg-[#151f1b] px-4 py-1.5 rounded-xl border border-current/15">
+                                    {{ $telegramLinkCode }}
+                                </div>
+                                <a href="https://t.me/{{ $botUsername }}?start={{ $telegramLinkCode }}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="inline-flex items-center gap-1.5 rounded-xl bg-[#059669] px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-[#047857] dark:bg-[#10b981]">
+                                    <span>{{ __('Buka Telegram') }}</span>
+                                    <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                    </svg>
+                                </a>
+                            </div>
+                            <p class="text-xs text-[#637067] dark:text-[#b2beb2]">
+                                {{ __('Kirim perintah berikut ke bot Telegram Anda:') }} <code class="rounded bg-black/5 dark:bg-white/10 px-1.5 py-0.5 font-mono">/start {{ $telegramLinkCode }}</code>
+                            </p>
+                        </div>
+                    @endif
+
+                    <div class="flex items-center gap-3 pt-1">
+                        <button type="button"
+                            wire:click="generateTelegramCode"
+                            class="inline-flex items-center justify-center rounded-2xl bg-[#059669] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#047857] dark:bg-[#10b981] dark:hover:bg-[#059669]">
+                            {{ $telegramLinkCode ? __('Perbarui Kode Tautan') : __('Hubungkan Akun Telegram') }}
+                        </button>
+                    </div>
+                </div>
+            @endif
         </div>
     </x-card>
 </div>

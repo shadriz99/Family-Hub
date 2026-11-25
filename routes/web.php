@@ -14,6 +14,21 @@ Route::post('/forgot-password', [Laravel\Fortify\Http\Controllers\PasswordResetL
     ->middleware(['web', 'guest', 'throttle:forgot-password'])
     ->name('password.email');
 
+Route::get('/two-factor-challenge', [App\Http\Controllers\Auth\TwoFactorAuthenticatedSessionController::class, 'create'])
+    ->middleware(['web', 'guest'])
+    ->name('two-factor.challenge');
+
+Route::post('/two-factor-challenge', [App\Http\Controllers\Auth\TwoFactorAuthenticatedSessionController::class, 'store'])
+    ->middleware(['web', 'guest', 'throttle:10,1'])
+    ->name('two-factor.login');
+
+Route::post('/two-factor-challenge/resend', [App\Http\Controllers\Auth\TwoFactorAuthenticatedSessionController::class, 'resend'])
+    ->middleware(['web', 'guest', 'throttle:3,1'])
+    ->name('two-factor.resend');
+
+Route::post('/telegram/webhook', [App\Modules\Finance\Http\Controllers\TelegramWebhookController::class, 'handle'])
+    ->name('telegram.webhook');
+
 Route::get('/', function () {
     if (auth()->check()) {
         $user = auth()->user();

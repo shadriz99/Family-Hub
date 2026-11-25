@@ -13,6 +13,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -140,5 +141,16 @@ class Transaction extends Model
     public function source(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    /** @return HasMany<TransactionSplit, $this> */
+    public function splits(): HasMany
+    {
+        return $this->hasMany(TransactionSplit::class, 'transaction_id');
+    }
+
+    public function hasSplits(): bool
+    {
+        return $this->splits()->exists();
     }
 }

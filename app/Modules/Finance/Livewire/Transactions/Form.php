@@ -13,6 +13,7 @@ use App\Modules\Finance\Events\TransactionRecorded;
 use App\Modules\Finance\Models\Account;
 use App\Modules\Finance\Models\Category;
 use App\Modules\Finance\Models\Transaction;
+use App\Modules\Finance\Models\TransactionSplit;
 use App\Modules\Finance\Services\AccountBalanceService;
 use App\Modules\Finance\Services\CategorySuggestionService;
 use App\Modules\Finance\Services\ReceiptOcrService;
@@ -55,6 +56,69 @@ final class Form extends Component
     // Suggestions
     public ?string $suggested_category_name = null;
     public ?string $suggested_category_id = null;
+
+    // Multi-category Transaction Splits (IMP-03)
+    public bool $is_split = false;
+
+    /** @var array<int, array{category_id: string|null, amount: string, notes: string}> */
+    public array $splits = [];
+
+    public function toggleSplit(): void
+    {
+        $this->is_split = ! $this->is_split;
+        if ($this->is_split) {
+            $this->mode = 'detail';
+            if (empty($this->splits)) {
+                $this->splits = [
+                    ['category_id' => $this->category_id ?: $this->parent_category_id, 'amount' => '', 'notes' => ''],
+                    ['category_id' => null, 'amount' => '', 'notes' => ''],
+                ];
+            }
+        }
+    }
+
+    public function addSplitRow(): void
+    {
+        $this->splits[] = ['category_id' => null, 'amount' => '', 'notes' => ''];
+    }
+
+    public function removeSplitRow(int $index): void
+    {
+        if (count($this->splits) > 2) {
+            unset($this->splits[$index]);
+            $this->splits = array_values($this->splits);
+        }
+    }
+
+    public function getSplitTotalProperty(): int
+    {
+        $total = 0;
+        foreach ($this->splits as $split) {
+            if (! empty($split['amount'])) {
+                try {
+                    $total += Money::parse((string) $split['amount']);
+                } catch (\Throwable) {
+                    // Ignore parsing error while typing
+                }
+            }
+        }
+
+        return $total;
+    }
+
+    public function getSplitRemainderProperty(): int
+    {
+        $parsedTotal = 0;
+        if (! empty($this->amount)) {
+            try {
+                $parsedTotal = Money::parse($this->amount);
+            } catch (\Throwable) {
+                // Ignore
+            }
+        }
+
+        return $parsedTotal - $this->splitTotal;
+    }
 
     public function mount(HouseholdContext $context): void
     {
@@ -123,32 +187,56 @@ final class Form extends Component
         }
     }
 
-    public function updatedReceiptFile(ReceiptOcrService $ocrService): void
+    public function updatedReceiptFile(ReceiptOcrService $ocrService, CategorySuggestionService $suggester, HouseholdContext $context): void
     {
         if (! $this->receipt_file) {
             return;
         }
 
-        $this->validate([
-            'receipt_file' => 'image|max:10240', // 10MB max
-        ]);
+        try {
+            $this->validate([
+                'receipt_file' => 'image|max:25600', // 25MB max
+            ], [
+                'receipt_file.image' => 'File struk harus berupa gambar (JPG, PNG, WebP).',
+                'receipt_file.max' => 'Ukuran gambar struk maksimal 25MB.',
+            ]);
 
-        $path = $this->receipt_file->getRealPath();
-        $result = $ocrService->scan($path);
+            $path = $this->receipt_file->getRealPath();
+            $result = $ocrService->scan($path);
 
-        if ($result['payee'] !== null) {
-            $this->payee = $result['payee'];
-        }
-        if ($result['occurred_on'] !== null) {
-            $this->occurred_on = $result['occurred_on']->toDateString();
-        }
-        if ($result['amount'] !== null && $result['amount'] > 0) {
-            $this->amount = (string) $result['amount'];
-        }
+            if ($result['payee'] !== null) {
+                $this->payee = $result['payee'];
+                $household = $context->current();
+                $typeEnum = TransactionType::tryFrom($this->type) ?? TransactionType::Expense;
+                $suggestion = $suggester->suggestCategory($household, $this->payee, $typeEnum);
+                if ($suggestion !== null) {
+                    $this->suggested_category_id = $suggestion->id;
+                    $this->suggested_category_name = $suggestion->name;
+                }
+            }
+            if ($result['occurred_on'] !== null) {
+                $this->occurred_on = $result['occurred_on']->toDateString();
+            }
+            if ($result['amount'] !== null && $result['amount'] > 0) {
+                $this->amount = (string) $result['amount'];
+            }
 
-        $confidencePct = round($result['confidence'] * 100);
-        $this->receipt_ocr_summary = "Pindai berhasil (Keyakinan: {$confidencePct}%). Silakan tinjau dan konfirmasi sebelum menyimpan.";
-        $this->mode = 'detail'; // US-FIN-01 AC5: scan always enters review step
+            $confidencePct = round($result['confidence'] * 100);
+            if ($result['amount'] !== null) {
+                $formattedAmount = 'Rp ' . number_format($result['amount'], 0, ',', '.');
+                $merchantInfo = $result['payee'] ? " ({$result['payee']})" : '';
+                $this->receipt_ocr_summary = "Pindai struk selesai{$merchantInfo}: Total terbaca {$formattedAmount} (Keyakinan: {$confidencePct}%). Silakan tinjau dan konfirmasi sebelum menyimpan.";
+            } elseif ($result['payee'] !== null) {
+                $this->receipt_ocr_summary = "Pindai struk selesai: Merchant {$result['payee']} terdeteksi, silakan masukkan total nominal.";
+            } else {
+                $this->receipt_ocr_summary = "Pindai selesai namun detail nominal/merchant belum terdeteksi. Silakan lengkapi form.";
+            }
+            $this->mode = 'detail'; // US-FIN-01 AC5: scan always enters review step
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            $this->receipt_ocr_summary = 'Terjadi kesalahan saat memproses OCR struk: ' . $e->getMessage();
+        }
     }
 
     /**
@@ -182,7 +270,62 @@ final class Form extends Component
     {
         $household = $context->current();
 
-        if ($this->type !== 'transfer') {
+        if ($this->is_split && $this->type === 'expense') {
+            if (count($this->splits) < 2) {
+                $this->addError('splits', 'Minimal 2 baris rincian kategori untuk split transaksi.');
+
+                return;
+            }
+
+            $parsedAmount = 0;
+            try {
+                $parsedAmount = Money::parse($this->amount);
+            } catch (\Throwable) {
+                $this->addError('amount', 'Nominal total transaksi tidak valid.');
+
+                return;
+            }
+
+            $totalSplit = 0;
+            foreach ($this->splits as $idx => $s) {
+                if (empty($s['category_id'])) {
+                    $this->addError("splits.{$idx}.category_id", 'Pilih kategori.');
+
+                    return;
+                }
+                if (empty($s['amount'])) {
+                    $this->addError("splits.{$idx}.amount", 'Masukkan nominal pecahan.');
+
+                    return;
+                }
+                try {
+                    $val = Money::parse((string) $s['amount']);
+                    if ($val <= 0) {
+                        $this->addError("splits.{$idx}.amount", 'Nominal pecahan harus lebih dari 0.');
+
+                        return;
+                    }
+                    $totalSplit += $val;
+                } catch (\Throwable) {
+                    $this->addError("splits.{$idx}.amount", 'Format nominal tidak valid.');
+
+                    return;
+                }
+            }
+
+            if ($totalSplit !== $parsedAmount) {
+                $diff = Money::format(abs($parsedAmount - $totalSplit));
+                if ($totalSplit < $parsedAmount) {
+                    $this->addError('splits', "Total rincian kurang Rp {$diff} dari total transaksi.");
+                } else {
+                    $this->addError('splits', "Total rincian melebihi Rp {$diff} dari total transaksi.");
+                }
+
+                return;
+            }
+
+            $this->category_id = $this->splits[0]['category_id'];
+        } elseif ($this->type !== 'transfer') {
             if ($this->parent_category_id !== null) {
                 $parentCat = Category::query()->where('household_id', $household->id)->findOrFail($this->parent_category_id);
                 $cleanSub = trim($this->subcategory_name);
@@ -261,6 +404,18 @@ final class Form extends Component
             $transaction->allocation_detail = $this->allocation_detail !== '' ? $this->allocation_detail : null;
             $transaction->created_by = auth()->id();
             $transaction->save();
+
+            if ($this->is_split && $typeEnum === TransactionType::Expense) {
+                foreach ($this->splits as $splitItem) {
+                    TransactionSplit::create([
+                        'household_id' => $household->id,
+                        'transaction_id' => $transaction->id,
+                        'category_id' => $splitItem['category_id'],
+                        'amount' => Money::parse((string) $splitItem['amount']),
+                        'notes' => ! empty($splitItem['notes']) ? trim((string) $splitItem['notes']) : null,
+                    ]);
+                }
+            }
 
             $balanceService->bustCache($transaction->account_id);
             if ($transaction->to_account_id !== null) {

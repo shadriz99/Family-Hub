@@ -1,7 +1,7 @@
 # Logbook Development - Family Hub
 
-**Diperbarui:** 2026-10-28
-**Status:** CORE-01 diterima untuk kelanjutan development; CORE-03 dinyatakan selesai oleh reviewer; CORE-04 parsial (konkurensi slot selesai); CORE-05 selesai di sisi Alur A & B; CORE-06 selesai pada LOG-044; CORE-07 selesai pada LOG-045; CORE-08 selesai pada LOG-046; CORE-11 selesai pada LOG-047; CORE-09 selesai pada LOG-048; CORE-10 selesai pada LOG-049; CORE-12 selesai pada LOG-050; CORE-13 selesai pada LOG-051; CORE-14, CORE-15, CORE-16, dan CORE-02 selesai pada LOG-052 (Phase 0 Core Module rampung). Resolusi batch pending P-05, P-06, P-15, P-16, P-18, P-19, P-20 selesai pada LOG-056. Phase 1 (Finance Module: FIN-01 sampai FIN-16) selesai pada LOG-055 dan LOG-057. Phase 2 (Organizer: ORG-01 sampai ORG-13) selesai pada LOG-059 dan LOG-060. Phase 3 (Asset: AST-01 sampai AST-12) selesai pada LOG-061. Phase 4 Hardening Langkah 1, 2, 3, 4 selesai pada LOG-064, LOG-065, dan LOG-066. P-21 ditutup. Belum ada rilis aplikasi.
+**Diperbarui:** 2026-11-07
+**Status:** CORE-01 diterima untuk kelanjutan development; CORE-03 dinyatakan selesai oleh reviewer; CORE-04 parsial (konkurensi slot selesai); CORE-05 selesai di sisi Alur A & B; CORE-06 selesai pada LOG-044; CORE-07 selesai pada LOG-045; CORE-08 selesai pada LOG-046; CORE-11 selesai pada LOG-047; CORE-09 selesai pada LOG-048; CORE-10 selesai pada LOG-049; CORE-12 selesai pada LOG-050; CORE-13 selesai pada LOG-051; CORE-14, CORE-15, CORE-16, dan CORE-02 selesai pada LOG-052 (Phase 0 Core Module rampung). Resolusi batch pending P-05, P-06, P-15, P-16, P-18, P-19, P-20 selesai pada LOG-056. Phase 1 (Finance Module: FIN-01 sampai FIN-16) selesai pada LOG-055 dan LOG-057, disempurnakan pada LOG-069 (akurasi OCR pembacaan total nominal struk). Phase 2 (Organizer: ORG-01 sampai ORG-13) selesai pada LOG-059 dan LOG-060. Phase 3 (Asset: AST-01 sampai AST-12) selesai pada LOG-061. Phase 4 Hardening Langkah 1 sampai 5 selesai pada LOG-064 s.d. LOG-067 (P-21 ditutup). Rencana fitur peningkatan pasca-MVP v1.1+ (`IMP-01` s.d. `IMP-08`) disusun pada LOG-068 (`P-22` menunggu persetujuan urutan reviewer). Belum ada rilis aplikasi.
 
 Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan selesai. [Rencana development](development-plan.md) menentukan langkah berikutnya; spesifikasi dan acceptance criteria tetap mengikuti [Masterplan](00-MASTERPLAN.md) dan dokumen modul.
 
@@ -1217,9 +1217,346 @@ Logbook ini mencatat pekerjaan aktual, bukan daftar fitur yang diasumsikan seles
   - Test suite, Pint, dan Larastan tetap dalam kondisi 100% hijau.
 - **Dokumen yang diselaraskan:** `docs/runbook/backup-restore.md`, `docs/uat-go-live.md`, `docs/development-plan.md`, `docs/logbook.md`.
 
+## 2026-10-30
+
+### LOG-068 - Penyusunan Rencana Fitur Peningkatan Pasca-MVP Terprioritas (IMP-01 sampai IMP-08)
+
+- **Konteks:** Permintaan pengguna untuk menyusun rencana fitur peningkatan baru (*improvement feature plan*) berisi minimal 5 fitur, mendokumentasikannya di `docs/`, dan mengurutkannya dari prioritas tertinggi hingga prioritas paling rendah. Perubahan kode yang belum di-commit di working tree (`app/`, `resources/`, `tests/`, `config/livewire.php`) dipertahankan utuh tanpa disentuh sesuai aturan otorisasi batch dokumentasi.
+- **Perubahan Dokumentasi:**
+  1. Membuat [`docs/04-IMPROVEMENT-PLAN.md`](04-IMPROVEMENT-PLAN.md): dokumen rencana peningkatan pasca-MVP (v1.1–v1.3) dengan metodologi penilaian 4 kriteria (Dampak Harian Pasangan, Keamanan & Keandalan Operasional, Sinergi Lintas Modul, serta Efisiensi Host Odroid-C2 2GB) dan **8 fitur terurut dari prioritas #1 (tertinggi) ke #8 (terendah)**:
+     - **#1 `IMP-01` (P1 — Skor 20/20):** Otomasi Scheduler Penuh (`routes/console.php`), Pengiriman Daily Digest Pagi (`digest:send`), Penggulungan Tugas Berulang (`organizer:roll-recurring-tasks`), Penjadwalan `assets:refresh-due-dates` & `assets:odometer-reminders`, serta Purge Retensi 30 Hari (`households:purge-deleted`, `SEC-9`).
+     - **#2 `IMP-02` (P1 — Skor 17/20):** Autentikasi Dua Faktor (2FA) Email OTP & 8 Recovery Codes Sekali Pakai (`P-19` / `Q-M12` / `SEC-2`).
+     - **#3 `IMP-03` (P2 — Skor 17/20):** Split Transaksi Multi-Kategori (`fin_transaction_splits`) & Integrasi Checkout Struk OCR / `ShoppingList`.
+     - **#4 `IMP-04` (P2 — Skor 16/20):** Kantong Tabungan Tujuan / *Sinking Funds* (`FIN-V11-1`) di atas akun tabungan.
+     - **#5 `IMP-05` (P2 — Skor 16/20):** Pencarian Terpadu Lintas Modul (*Global Household Search* `Ctrl+K`) berbasis kontrak `SearchSource` & `SearchAggregator` dengan penegakan `HouseholdScope` dan privasi catatan `BR-ORG-010`.
+     - **#6 `IMP-06` (P3 — Skor 15/20):** Langganan Kalender Live `.ics` (`webcal://`) 1-Arah Bertoken Pribadi & Sumber Kalender Libur Nasional Indonesia.
+     - **#7 `IMP-07` (P3 — Skor 14/20):** Prediksi Tanggal Jatuh Tempo Servis Berbasis Laju Meter, Analisis *Total Cost of Ownership* (TCO), & Cetak Label QR Internal Aset.
+     - **#8 `IMP-08` (P4 — Skor 12/20, Terendah):** Wizard Impor CSV Mutasi Bank dengan Deduplikasi Semi-Otomatis (`maatwebsite/excel`) & Laporan Keuangan Bulanan Ramah Cetak PDF (`@media print`).
+  2. Menyelaraskan peta dokumen (§0), pohon direktori `docs/` (§4.1), dan tabel Roadmap Phase 5 (§14) pada [`docs/00-MASTERPLAN.md`](00-MASTERPLAN.md).
+  3. Menambahkan tahap `I. Peningkatan pasca-MVP (v1.1+)` berstatus **Belum dimulai (direncanakan)** pada tabel §2 serta rincian §8.1 di [`docs/development-plan.md`](development-plan.md).
+  4. Mencatat item keputusan terbuka `P-22` (konfirmasi urutan prioritas `IMP-01`..`IMP-08` dan parameter `Q-M12`) serta menautkan `P-19` ke `IMP-02` pada [`docs/pending.md`](pending.md).
+  5. Memperbarui aturan rujukan task `IMP-*` pada [`.github/copilot-instructions.md`](../.github/copilot-instructions.md) dan aturan pembaruan logbook di bawah.
+- **Cakupan Review Konsistensi Struktural (`development-docs-sync`):**
+  - *Dokumen yang diperbarui:* `docs/04-IMPROVEMENT-PLAN.md` (baru), `docs/00-MASTERPLAN.md`, `docs/development-plan.md`, `docs/pending.md`, `docs/logbook.md`, `.github/copilot-instructions.md`.
+  - *Dokumen yang ditinjau dan tetap sesuai tanpa edit kosmetik:* `docs/01-MODULE-FINANCE.md`, `docs/02-MODULE-ORGANIZER.md`, `docs/03-MODULE-ASSET.md` (tabel kolom *Ditunda v1.1+* §2 selaras penuh dengan `IMP-03`, `IMP-04`, `IMP-06`, `IMP-07`, `IMP-08`), `docs/adr/ADR-011-current-stack.md` (tidak ada perubahan stack/paket), `docs/runbook/deploy.md`, `docs/runbook/backup-restore.md`, `docs/uat-go-live.md`, serta seluruh skill di `.github/skills/` dan `.agents/skills/`.
+- **Verifikasi & Pemeriksaan yang Dilewati:**
+  - Validasi seluruh tautan relatif antar dokumen di `docs/` dan `git diff --check -- docs/ .github/copilot-instructions.md`: lulus bersih tanpa spasi ekor atau tautan rusak.
+  - Pengujian aplikasi (`composer test`, `npm test`, Pint, Larastan, browser check) tidak dijalankan karena batch ini murni penambahan dokumentasi perencanaan tanpa menyentuh kode aplikasi.
+- **Risiko & Langkah Berikutnya:** Tidak memblokir penyelesaian UAT Phase 4 (`docs/uat-go-live.md`) maupun rilis v1.0.0; implementasi `IMP-01` dimulai setelah rilis v1.0.0 dan konfirmasi reviewer pada `P-22`.
+
+## 2026-11-06
+
+### LOG-069 - Penyempurnaan OCR Struk: Ekstraksi Total Nominal Tangguh, Multi-Format Angka, & Segmentasi PSM
+
+- **Konteks:** Menindaklanjuti permintaan pengguna: "check OCR scanning, it should read total amount too". Dilakukan investigasi mendalam terhadap `ReceiptOcrService` dan komponen Livewire form transaksi `app/Modules/Finance/Livewire/Transactions/Form.php` untuk menemukan akar masalah kegagalan pembacaan nominal total struk.
+- **Akar Masalah yang Ditemukan:**
+  1. *Segmentasi Halaman Tesseract:* Pemanggilan default tanpa `--psm` menggunakan mode PSM 3 (auto-segmentation) yang memecah tata letak struk berkategori kolom (nama item di kiri, harga di kanan) menjadi dua kolom independen sehingga memisahkan label `TOTAL BELANJA` dari angkanya dan mencabik-cabik deret angka. Fallback `--psm 6` sebelumnya tidak pernah terpanggil karena teks tidak pernah kosong.
+  2. *Konflik Subtotal vs Total:* Ekstraksi sebelumnya tidak memiliki batasan kata ketat (`\b`), sehingga regex mencari kata `TOTAL` mencocokkan substring `TOTAL` di dalam `SUBTOTAL` yang selalu muncul lebih dulu sebelum total akhir.
+  3. *Misidentifikasi Diskon & Uang Tunai:* Baris diskon (`TOTAL DISKON`) dan uang tunai yang diserahkan (`TUNAI` / `CASH` / `KEMBALIAN`) berpotensi terpilih mendahului total tagihan riil.
+  4. *Format Angka POS & Mesin EDC:* Pemisah ribuan format koma (mis. `150,000`), format sen trailing (`.00` atau `,00`), trailing strip mata uang (`Rp 50.000,-`), serta artefak OCR huruf `O`/`o` pada angka (`50.OOO`) menyebabkan kegagalan parsing nominal Rupiah.
+- **Implementasi & Perbaikan (`ReceiptOcrService` & `Form.php`):**
+  1. *Segmentasi Tesseract Khusus Struk:* `ReceiptOcrService::scan` kini memprioritaskan `--psm 6` (single uniform block) yang menjaga integritas baris struk horizontal, dengan fallback bertahap ke `--psm 4` (single column variable sizes) dan default PSM bila nominal belum terdeteksi.
+  2. *Pembersihan & Parsing Nominal Fleksibel (`parseAmountString`):*
+     - Menghapus prefix mata uang (`Rp`, `IDR`), trailing dash/sen (`,-`, `.-`, `,00`, `.00`).
+     - Normalisasi typo OCR huruf `O`/`o` di antara deret digit menjadi angka `0`.
+     - Konversi cerdas pemisah ribuan koma `150,000` dan spasi `150 000` menjadi format integer utuh.
+  3. *Hirarki Deteksi Total 3-Tier Terbalik (Bottom-Up):*
+     - **Tier 1 (Final Total):** Frasa definitif total (`grand total`, `total bayar`, `total akhir`, `total pembayaran`, `total tagihan`, `total keseluruhan`, `jumlah bayar`, `amount due`).
+     - **Tier 2 (General Total):** Frasa umum (`total belanja`, `total pembelian`, `total transaksi`, `total harga`, `jumlah total`).
+     - **Tier 3 (Standalone Total):** Kata `total` mandiri dengan negative lookbehind `(?<!sub\s?)(?<!sub-)` dan pengecualian tegas terhadap `item`, `qty`, `pcs`, `diskon`, `potongan`, `hemat`, `tunai`, `kembali`.
+     - *Dukungan multi-baris:* Jika angka berada di baris persis di bawah label `TOTAL`, parser membaca hingga 3 baris ke bawah dengan melewati baris metadata nomor struk / kasir.
+  4. *Deteksi Tanggal Bahasa Indonesia:* Mendukung format teks bulan bahasa Indonesia (`DD Month YYYY`, mis. `28 Okt 2026`).
+  5. *Umpan Balik Livewire & Saran Kategori:* Form Livewire menampilkan ringkasan nominal terbaca dalam format Rupiah terformat dan secara otomatis memicu saran kategori berdasarkan riwayat merchant struk yang terdeteksi.
+- **Verifikasi:**
+  - `php artisan test tests/Feature/Finance/TransactionAndQuickAddTest.php`: **20 passed (49 assertions)** termasuk 8 variasi kasus uji format angka dan pemindaian gambar struk via tesseract biner lokal.
+  - `php artisan test`: Seluruh suite **425 passed (2,929 assertions)** 100% hijau tanpa regresi.
+  - `vendor/bin/pint --test`: Lulus bersih tanpa pelanggaran format.
+  - `vendor/bin/phpstan analyse app/Modules/Finance/Services/ReceiptOcrService.php app/Modules/Finance/Livewire/Transactions/Form.php`: **`[OK] No errors`** (PHPStan Level 6).
+  - `git diff --check`: Lulus tanpa spasi ekor atau konflik sintaks.
+- **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`, `docs/pending.md`.
+
+### LOG-070 - Penanganan Error Blade Compiler `touch() Utime failed` & Isolasi Direktori View Testing
+
+- **Konteks:** Laporan pengguna: `ErrorException: vendor/laravel/framework/src/Illuminate/View/Compilers/BladeCompiler.php:217 touch(): Utime failed: Operation not permitted` saat membuka menu **Laporan Keuangan** (`/finance/reports`).
+- **Akar Masalah:**
+  1. *Konflik Kepemilikan File View Cache:* Eksekusi `php artisan test` atau command CLI di lingkungan server berjalan di bawah user `root`. Kompilasi template Blade oleh CLI menghasilkan file view cache di `storage/framework/views/*.php` dengan kepemilikan `root:root`.
+  2. *Batasan POSIX utime():* Saat web server (Nginx + PHP-FPM di bawah user `www-data`) menangani request HTTP `/finance/reports`, BladeCompiler memeriksa keusangan file cache (`lastModified`) dan memanggil `touch($compiledPath, $lastModified + 1)`. Pada standar POSIX Linux kernel (`fs/utimes.c`), fungsi `utime()` dengan argumen timestamp spesifik mewajibkan caller adalah owner file (`uid == euid`) atau superuser (`root`), terlepas dari izin file 777. Karena file dimiliki `root`, user `www-data` ditolak dengan kode `EPERM` (*Operation not permitted*).
+  3. *Ketiadaan Isolasi View Path Testing:* File konfigurasi `phpunit.xml` sebelumnya tidak menyetel `VIEW_COMPILED_PATH`, sehingga seluruh suite pengujian mengotori direktori view cache produksi/runtime.
+- **Solusi & Implementasi:**
+  1. *Pembersihan Cache & Normalisasi Permission:*
+     - Menjalankan `php artisan view:clear` dan `php artisan cache:clear`.
+     - Mengubah kepemilikan rekursif ke user web server: `chown -R www-data:www-data storage bootstrap/cache`.
+     - Memberikan hak akses penuh: `chmod -R 775 storage bootstrap/cache` serta `chmod -R 777 storage/framework/views storage/framework/cache storage/framework/sessions`.
+     - Memanaskan cache view di bawah user web server: `su -s /bin/bash www-data -c "php artisan view:cache"`.
+  2. *Isolasi Jalur Kompilasi Blade Pengujian:*
+     - Menambahkan variabel lingkungan `<env name="VIEW_COMPILED_PATH" value="storage/framework/testing/views"/>` pada `phpunit.xml`.
+     - Membuat direktori khusus pengujian `storage/framework/testing/views` dengan aturan `.gitignore`.
+     - Dengan pemisahan ini, eksekusi test di masa mendatang tidak akan pernah lagi menimpa atau mengubah kepemilikan file di `storage/framework/views`.
+- **Verifikasi:**
+  - Simulasi rendering komponen laporan keuangan `App\Modules\Finance\Livewire\Reports\Index` di bawah user `www-data`: `RENDER OK! Length: 18293 bytes` tanpa error.
+  - Verifikasi isolasi: `php artisan test` mengompilasi view ke `storage/framework/testing/views`, dan `storage/framework/views` tetap 100% dimiliki `www-data:www-data`.
+  - Feature test `TransactionAndQuickAddTest`: **20 passed (49 assertions)**.
+  - `git diff --check`: Lulus bersih tanpa error.
+- **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`, `docs/pending.md`.
+
+### LOG-071 - Instalasi Skill `frontend-design` & `improve-ui` Serta Audit UI Menyeluruh 82 Blade Views
+
+- **Konteks:** Permintaan pengguna untuk memasang skill resmi Anthropic `frontend-design` dan ibelick `improve-ui` ke dalam repository, kemudian melakukan audit UI/UX komprehensif terhadap seluruh 82 view Blade template pada aplikasi Family Hub.
+- **Tindakan & Instalasi Skill:**
+  1. *Instalasi Skill Anthropic `frontend-design`:*
+     - Mengunduh `SKILL.md` dan `LICENSE.txt` resmi dari repositori `anthropics/skills` (`skills/frontend-design`).
+     - Dipasang secara ganda pada `.agents/skills/frontend-design/` dan `.github/skills/frontend-design/`.
+  2. *Instalasi Skill ibelick `improve-ui`:*
+     - Mengunduh `SKILL.md` dan `references/plan-template.md` resmi dari repositori `ibelick/ui-skills` (`skills/improve-ui`).
+     - Dipasang secara ganda pada `.agents/skills/improve-ui/` dan `.github/skills/improve-ui/`.
+  3. *Audit UI Menyeluruh (82 File Blade):*
+     - Mengevaluasi seluruh 82 berkas template di `resources/views/` (Core, Finance, Organizer, Asset, Settings, Admin, Components) menggunakan kriteria Anthropic `frontend-design` (karakter visual distingtif non-AI slop, tipografi bertujuan, hierarki visual bermakna, transisi halus, microcopy ramah keluarga) dan `improve-ui`/`premium-frontend-ui` (Tailwind 4 color tokens, 360px mobile responsiveness, WCAG 2.1 AA touch targets, handling component states).
+     - Menghasilkan artefak laporan mendalam: `ui_audit_report.md` lengkap dengan skor kualitas per modul, matriks temuan berdasar tingkat keparahan, tautan baris kode presisi, serta rencana remediasi 3 tahap.
+- **Temuan Kunci Audit:**
+  - *Tinggi (Arsitektur & Fungsional):*
+    1. Triplikasi shell layout utama: `resources/views/layouts/app.blade.php`, `components/layouts/app.blade.php`, dan `components/app-layout.blade.php` identik 450+ baris dengan inkonsistensi pemanggilan Livewire (`layouts.app` vs `components.app-layout`) dan potensi N+1 pada `$household->members` di `layouts/app.blade.php`.
+    2. Bug prop komponen status badge: `dashboard.blade.php#L26` mengoper `:color` bukan `:status`, dan `badge-status.blade.php` hanya menerima status non-alert (`overdue`, `today`, `soon`, `done`), sehingga peringatan penting keluarga selalu jatuh ke fallback warna abu-abu netral.
+    3. FOUC / flicker dark mode pada layout admin: `layouts/admin.blade.php` tidak memiliki script anti-flicker inline dan kontrol toggle tema.
+  - *Sedang (Desain Sistem & Aksesibilitas Mobile):*
+    4. Fragmentasi skala warna netral: Finance/Core memakai token custom earthy `#28543e`/`#f6f4ee`, Asset memakai 1.365 `stone-*`, Organizer memakai 645 `slate-*`/`indigo-600`.
+    5. Disparitas ikon: campuran Boxicons dan Heroicons; bilah navigasi bawah mobile memakai Boxicons di Beranda (`text-2xl`) vs Heroicons (`size-5`) di Keuangan/Kalender/Lainnya.
+    6. Target sentuh di bawah 44px: tombol aksi emoji di Catatan (`notes/index.blade.php`) & Belanja (`shopping/index.blade.php`), tombol aksi notifikasi (`notification-center.blade.php`), tombol filter transaksi, dan tombol status aset.
+    7. Aksi destruktif tanpa konfirmasi: `shopping/index.blade.php#L52` (`deleteList`) tanpa `wire:confirm`.
+    8. Avatar profil header mobile tidak interaktif (`<div>` pasif tanpa tautan pengaturan profil).
+  - *Rendah (Tipografi & Polish):*
+    9. Kebocoran kode spek internal: `BR-FIN-030` muncul di antarmuka publik anggaran kategori (`budgets/index.blade.php#L59`).
+    10. Ikon mata uang asing: Bangladeshi Taka (`document-currency-bangladeshi`) pada laporan keuangan.
+    11. Kurangnya `tabular-nums` pada angka nominal dan meteran.
+    12. Hardcoded URL string (10 path) pada modul Organizer.
+- **Verifikasi:**
+  - File skill terverifikasi di kedua direktori target (`.agents/skills/` dan `.github/skills/`).
+  - Laporan audit lengkap tersimpan pada artefak `ui_audit_report.md`.
+  - Seluruh 82 view Blade lolos verifikasi sintaksis dan integritas view cache web server.
+- **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`, `docs/pending.md`.
+
+### LOG-072 - Pemasangan Skill `caveman` (JuliusBrussee/caveman)
+
+- **Konteks:** Permintaan pengguna untuk memasang skill `caveman` ke dalam repository.
+- **Tindakan & Instalasi Skill:**
+  - Mengunduh dan memasang skill `caveman` dari repositori resmi `JuliusBrussee/caveman` menggunakan CLI `skills add JuliusBrussee/caveman --skill caveman -y`.
+  - Terpasang pada `.agents/skills/caveman/` (`SKILL.md`, `README.md`) dan diselaraskan ke `.github/skills/caveman/` untuk konsistensi antar-tool agent (Antigravity & GitHub Copilot).
+- **Verifikasi:**
+  - `skills list` / integritas file `SKILL.md` dan `README.md` terverifikasi di `.agents/skills/caveman/` dan `.github/skills/caveman/`.
+  - Validasi frontmatter YAML skill: `name: caveman`, deskripsi ringkas, dan aturan mode komunikasi terse.
+- **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`.
+
+### LOG-073 - Remediasi Hasil Audit UI (Batch 1 s.d. 3), Resolusi Rekursi Blade, dan Verifikasi Test Terisolasi
+
+- **Konteks:** Perbaikan antarmuka pengguna pasca-audit komprehensif 82 view Blade, penanganan hang/freeze perangkat ODROID-C2 akibat rekursi komponen Blade, serta perbaikan regresi rute dan pemetaan badge status.
+- **Tindakan & Remediasi:**
+  1. *Eliminasi Rekursi Blade Penyebab Hang:*
+     - Mengubah `components/layouts/app.blade.php` dan `layouts/app.blade.php` menjadi proxy wrapper delegatif ke `<x-app-layout>`, mencegah infinite recursion (`<x-layouts.app>` memanggil dirinya sendiri) yang menguras RAM hingga fatal OOM dan 100% CPU di ODROID-C2.
+     - Menjadikan `components/app-layout.blade.php` sebagai single source of truth shell layout.
+  2. *Batch 1 (Quick Wins Kritis):*
+     - Memperbaiki prop badge status di `resources/views/dashboard.blade.php` dan memperluas pemetaan di `resources/views/components/badge-status.blade.php` dengan tetap menjaga nilai default label (`Terlambat`, `Hari ini`, `Segera`, `Selesai`) agar kompatibel dengan kontrak test.
+     - Menambahkan script anti-flicker dark mode inline dan tombol toggle tema pada `resources/views/layouts/admin.blade.php`.
+     - Menambahkan tautan profil interaktif pada avatar mobile header `components/app-layout.blade.php`.
+     - Menambahkan `wire:confirm` pada aksi destruktif penghapusan daftar belanja di `modules/organizer/shopping/index.blade.php`.
+  3. *Batch 2 (Aksesibilitas & Responsivitas Mobile):*
+     - Menambah target sentuh minimal 44x44px (`min-h-[44px] min-w-[44px]`) pada tombol aksi catatan (`notes/index.blade.php`), notifikasi (`notification-center.blade.php`), dan daftar belanja.
+     - Memperbaiki regresi nama rute pada link judul catatan dari `organizer.notes.show` yang tidak ada menjadi `route('organizer.notes.edit', $note->id)`.
+     - Menambahkan `aria-label` eksplisit pada tombol panah kalender bulan sebelumnya/berikutnya, tombol aksi emoji, dan ekspor.
+     - Mengubah sub-navigasi tab aset pada `assets/index.blade.php` menjadi horizontal scrollable (`overflow-x-auto no-scrollbar flex-nowrap`) pada viewport mobile.
+  4. *Batch 3 (Sistem Desain & Polish):*
+     - Menyeragamkan ikon bottom nav Beranda menggunakan Heroicons `size-5` konsisten.
+     - Membersihkan teks spek internal `BR-FIN-030` pada antarmuka anggaran kategori.
+     - Mengganti ikon Bangladeshi Taka menjadi `x-heroicon-o-banknotes` pada ringkasan hutang/piutang laporan keuangan.
+     - Mengonversi seluruh string URL hardcoded di modul Organizer ke route helper resmi.
+     - Menambahkan kelas `tabular-nums` pada angka nominal dan meteran di modul Asset dan Finance.
+- **Verifikasi:**
+  - Pengujian dijalankan secara bertahap dalam batch kecil per modul untuk menjaga stabilitas memori ODROID-C2:
+    - `LayoutAndComponentsTest`: 12 passed.
+    - `NoteAndEditorTest`: 4 passed.
+    - Modul Asset (6 test suite): 31 passed.
+    - Modul Finance (9 test suite): 62 passed.
+    - Modul Organizer (5 test suite): 22 passed.
+    - Modul Core & Dashboard (4 test suite): 13 passed.
+    - Modul Settings, Notifications, Admin (3 test suite): 21 passed.
+    - Auth & Onboarding (6 test suite): 69 passed.
+    - Hardening, PWA, Reminders, Foundation, Tenant (13 test suite): 88 passed.
+    - **Total 322 test cases: 100% PASS** tanpa kegagalan, tanpa OOM, dan tanpa memory spike.
+  - Verifikasi web server lokal: `curl http://127.0.0.1/` menghasilkan **HTTP 200 OK**.
+  - `git diff --check`: Lulus bersih tanpa error spasi atau sintaksis.
+- **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`.
+
+### LOG-074 - Implementasi Chatbot Telegram Pengeluaran & OCR Struk Deterministik Ringan ODROID (Option A)
+
+- **Konteks:** Menjawab dan mengimplementasikan kebutuhan pencatatan pengeluaran instan dan scan struk melalui chatbot pada server rumah ODROID (Odroid-C2, 2GB RAM) tanpa menggunakan AI LLM lokal/cloud yang membebani memori.
+- **Tindakan & Arsitektur (Option A):**
+  1. *Database & Model TelegramLink:*
+     - Membuat migrasi `database/migrations/2026_11_08_140000_finance_create_telegram_links_table.php` dengan primary key ULID, composite unique `(household_id, user_id)`, indexed `telegram_chat_id`, verifikasi kode 6-digit `link_code` bertenggat waktu 15 menit, dan kolom `pending_draft` untuk menyimpan draft transaksi sementara sebelum konfirmasi pengguna.
+     - Membuat model `App\Modules\Finance\Models\TelegramLink` dengan relasi ke `Household` dan `User`.
+  2. *Parser Bahasa Alami Deterministik (`NaturalExpenseParser`):*
+     - Membuat `App\Modules\Finance\Services\NaturalExpenseParser` untuk mengekstraksi nominal berbasis pola angka Indonesia (`25rb`, `50k`, `1.5jt`, `50.000`, `Rp 25.000`), mencocokkan alias akun keluarga (`BCA`, `Dompet Kas`, `Mandiri`, `GoPay`, `OVO`, `Jago`), membersihkan kata pengantar (`beli`, `bayar`), dan menginferensi kategori melalui `CategorySuggestionService` serta pencocokan kata kunci lokal.
+     - Eksekusi deterministik murni di PHP dengan footprint memori < 5 MB dan latensi < 10 ms.
+  3. *Layanan Bot Telegram & Pipa OCR Struk (`TelegramBotService`):*
+     - Mengembangkan `App\Modules\Finance\Services\TelegramBotService` menggunakan HTTP Client bawaan Laravel (`Illuminate\Support\Facades\Http`) tanpa dependensi SDK pihak ketiga.
+     - Menghubungkan upload foto struk ke `ReceiptOcrService` lokal (Tesseract OCR), mengekstrak merchant/nominal, dan menyajikan draft konfirmasi.
+     - Mengirim antarmuka inline keyboard `[ ✅ Simpan ]` dan `[ ❌ Batal ]` untuk keamanan draft transaksi sebelum komit ke SQLite.
+     - Menyediakan perintah bot: `/start [kode]`, `/saldo`, `/hariini`, `/help`, dan `/unlink`.
+  4. *Webhook, Poller CLI & Konfigurasi:*
+     - Membuat controller `TelegramWebhookController` dengan validasi secret header `X-Telegram-Bot-Api-Secret-Token` dan pengecualian CSRF di `bootstrap/app.php`.
+     - Menyediakan command Artisan `php artisan telegram:poll` (`TelegramPollCommand`) dengan opsi `--once` dan `--timeout` agar bot dapat berjalan di jaringan lokal ODROID tanpa memerlukan domain publik/tunnel.
+     - Menambahkan konfigurasi `config/telegram.php` dan mendokumentasikan variabel `.env.example`.
+  5. *UI Livewire Integrasi Profil Pengguna:*
+     - Menambahkan kartu integrasi Telegram pada `ProfileSettings` dan view `resources/views/livewire/settings/profile-settings.blade.php`: tombol hubungkan, tampilan kode 6-digit, link satu klik `https://t.me/<bot>?start=<code>`, dan tombol putuskan sambungan.
+- **Verifikasi:**
+  - `NaturalExpenseParserTest`: 7 test cases passed (27 assertions).
+  - `TelegramBotTest`: 8 test cases passed (35 assertions) mencakup webhook token guard, /start linking, draft creation, confirmation callback, OCR receipt scan, /saldo, /hariini, /unlink, dan artisan poller.
+  - `SettingsAndProfileTest`: 8 test cases passed (46 assertions).
+  - Modul Finance regression suite: 73 test cases passed (353 assertions).
+  - Larastan / PHPStan level 5: lulus dengan **0 errors**.
+  - Laravel Pint: lulus bersih setelah format styling.
+  - `git diff --check`: Lulus bersih tanpa error spasi atau sintaksis.
+- **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`, `.env.example`.
+
+### LOG-075 - Pemanfaatan Skill `ui-ux-pro-max` & Persistensi Design System Master File
+
+- **Konteks:** Menjalankan skill `ui-ux-pro-max` (`https://github.com/nextlevelbuilder/ui-ux-pro-max-skill`) via `npx skills use`, membaca instruksi lengkap, dan mengikuti alur design intelligence untuk sistem desain Family Hub.
+- **Tindakan:**
+  1. *Eksekusi Skill & Resolusi Berkas:*
+     - Mengunduh dan mengeksekusi skill melalui `npx skills use "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill" --skill "ui-ux-pro-max"` dengan output dialihkan ke berkas sementara `/tmp/ui-ux-pro-max-output.txt`.
+     - Menyelesaikan path direktori supporting-files di `/tmp/skills-use-eMcPtX/ui-ux-pro-max` (`scripts/search.py`, `references/pro-rules.md`, `references/quick-reference.md`, `data/stacks/laravel.csv`).
+  2. *Analisis Desain & Generasi Design System:*
+     - Mengidentifikasi profil produk: Family Finance & Household Management Dashboard (kategori *Family Calendar & Chores* / *Productivity*), stack Laravel 13 + Livewire + Tailwind 4.
+     - Menjalankan search intelligence dengan dial desain yang disesuaikan untuk Family Hub (`--variance 5`, `--motion 3`, `--density 7`).
+     - Menyimpan master design system ke `design-system/family-hub/MASTER.md` sebagai acuan tunggal perancangan antarmuka (warna semantik, tipografi, ritme spasial, panduan aksesibilitas WCAG, dan checklist pra-kirim).
+- **Verifikasi:**
+  - `python3 /tmp/skills-use-eMcPtX/ui-ux-pro-max/scripts/search.py` tervalidasi berjalan tanpa error dependensi.
+  - Berkas master `design-system/family-hub/MASTER.md` terbuat dan terverifikasi di root proyek.
+- **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`.
+
+### LOG-076 - Sesi Grilling Round 1: Penutupan P-22, ADR-012 2FA OTP, ADR-013 Telegram Bot, & Inisialisasi GLOSSARY.md
+
+- **Konteks:** Menjalankan skill `grill-with-docs` (`mattpocock/skills`) untuk menajamkan arsitektur, domain model, dan rencana peningkatan v1.1+. Reviewer menyetujui penuh seluruh rekomendasi pada Round 1.
+- **Keputusan & Dokumen yang Dibakukan:**
+  1. *Penutupan P-22 & Pengesahan Gelombang 1 v1.1:*
+     - Reviewer menyetujui prioritas Gelombang 1 pada `docs/04-IMPROVEMENT-PLAN.md`: `IMP-01` (Otomasi Scheduler/Digest), `IMP-02` (2FA Email OTP & Recovery Codes), dan `IMP-03` (Split Transaksi). Item `P-22` di `docs/pending.md` resmi ditutup.
+  2. *ADR-012: Autentikasi Dua Faktor (2FA) Email OTP & Recovery Codes:*
+     - Disepakati parameter `Q-M12`: OTP 6-digit masa berlaku 10 menit, batas 5 kali kegagalan, dan 8 Recovery Codes sekali pakai di-hash di database. Disusun pada `docs/adr/ADR-012-two-factor-authentication-email-otp.md`.
+  3. *ADR-013: Integrasi Bot Telegram Pengeluaran & OCR Struk Deterministik Ringan ODROID:*
+     - Memvalidasi arsitektur `LOG-074`: isolasi draft pada `pending_draft`, konfirmasi tombol inline wajib sebelum menjadi transaksi resmi, dan jejak audit `source: telegram`. Disusun pada `docs/adr/ADR-013-telegram-bot-lightweight-expense-integration.md`.
+  4. *Inisialisasi GLOSSARY.md:*
+     - Membuat `GLOSSARY.md` di root repository untuk mendefinisikan istilah kanonikal domain (`Household`, `HouseholdMember`, `Owner`, `Partner`, `PeriodResolver`, `RecoveryCode`, `Account`, `Transaction`, `TransactionSplit`, `PlannedItem`, `TelegramLink`, `PendingDraft`, `ReceiptOCR`, `Task`, `Asset`, `MaintenancePlan`).
+- **Verifikasi:**
+  - `git diff --check`: Lulus bersih tanpa error spasi atau sintaksis.
+  - Berkas `GLOSSARY.md`, `ADR-012`, `ADR-013`, dan `docs/pending.md` tersinkronisasi konsisten.
+- **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`, `docs/pending.md`, `GLOSSARY.md`, `docs/adr/ADR-012-two-factor-authentication-email-otp.md`, `docs/adr/ADR-013-telegram-bot-lightweight-expense-integration.md`.
+
+### LOG-077 - Sesi Grilling Round 2: Penajaman Spesifikasi Teknis Gelombang 1 & Penutupan Frontier
+
+- **Konteks:** Menuntaskan sesi Grilling Round 2 di bawah panduan skill `grill-with-docs`. Reviewer menyetujui seluruh rekomendasi frontier teknis untuk Gelombang 1 (`IMP-01` s.d. `IMP-03`) dan integrasi Bot Telegram.
+- **Keputusan Spesifikasi Teknis:**
+  1. *IMP-01 (Daily Digest):*
+     - Jadwal default pengiriman ditetapkan pukul 07:00 waktu lokal rumah tangga (`timezone`).
+     - Digest otomatis dilewati (*suppressed*) tanpa mengirim email/notifikasi jika pada tanggal terkait tidak ada agenda kalender, tidak ada tagihan jatuh tempo, dan tidak ada tugas overdue.
+  2. *IMP-02 (Kebijakan 2FA Antar-Anggota):*
+     - Fitur 2FA Email OTP murni mandiri per-pengguna (*opt-in* masing-masing anggota), tidak ada paksaan antar-pasangan demi fleksibilitas keluarga.
+  3. *IMP-03 (Integritas Split Transaksi):*
+     - Validasi ketat diterapkan pada form split: total nilai pecahan wajib sama persis dengan transaksi induk (`sum(splits) == transaction.amount`), menolak penyimpanan jika ada selisih atau sisa yang belum dialokasikan.
+  4. *Bot Telegram Multi-User:*
+     - Mengukuhkan dukungan multi-link per household: baik Owner maupun Partner dapat menautkan akun Telegram pribadi masing-masing ke household yang sama, dengan transaksi teratribusi langsung ke anggota pengirim.
+- **Verifikasi:**
+  - `git diff --check`: Lulus bersih tanpa error spasi atau sintaksis.
+  - Seluruh dokumen `docs/04-IMPROVEMENT-PLAN.md`, `GLOSSARY.md`, dan logbook tersinkronisasi.
+  - Decision tree frontier kini kosong (*frontier is empty*), pemahaman bersama telah tercapai.
+- **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`, `docs/04-IMPROVEMENT-PLAN.md`.
+
+### LOG-078 - Eksekusi IMP-01: Otomasi Scheduler Lengkap, Daily Digest, Roll Task Berulang, dan Purge Soft-Deleted
+
+- **Konteks:** Mengimplementasikan paket otomasi scheduler `IMP-01` dari Dokumen Rencana Perbaikan Pasca-MVP (`docs/04-IMPROVEMENT-PLAN.md`) dengan batasan memori ODROID-C2 (2 GB RAM) dan ketahanan SQLite WAL.
+- **Perubahan yang Dilakukan:**
+  1. *Daily Morning Digest (`digest:send`):*
+     - Menambahkan migrasi `database/migrations/2026_11_12_000001_core_add_last_daily_digest_sent_on_to_users_table.php` untuk melacak tanggal pengiriman terakhir per pengguna.
+     - Membuat `App\Core\Notifications\DailyDigestNotification` mendukung WebPush, Mail, dan Database.
+     - Membuat `App\Core\Services\DailyDigestService` dengan isolasi konteks rumah tangga (`runInContext`), supresi otomatis pada jam hening (*quiet hours*), dan aturan supresi cerdas bila seluruh tagihan jatuh tempo, tugas harian, perawatan aset, dan alert kosong.
+     - Membuat artisan command `App\Core\Console\Commands\SendDailyDigestCommand` (`digest:send`) dengan opsi `--user=` dan `--force`.
+  2. *Roll Task Berulang (`organizer:roll-recurring-tasks`):*
+     - Membuat command `App\Modules\Organizer\Commands\RollRecurringTasksCommand` menegakkan aturan domain `BR-ORG-001` (hanya ada tepat satu instans tugas berstatus `open` dalam satu seri berulang aktif).
+  3. *Purge Rumah Tangga Terhapus (`households:purge-deleted`):*
+     - Membuat command `App\Core\Console\Commands\PurgeSoftDeletedHouseholdsCommand` menegakkan kepatuhan privasi `SEC-9` (membersihkan seluruh data anak finansial, organizer, aset, anggota, dan storage `households/{id}` untuk rumah tangga yang telah di-soft delete lebih dari 30 hari).
+  4. *Pendaftaran Scheduler Lengkap pada `routes/console.php`:*
+     - Menjadwalkan `digest:send` setiap 15 menit (`everyFifteenMinutes()`).
+     - Menjadwalkan `organizer:roll-recurring-tasks` pukul 00:30 WIB (`dailyAt('00:30')`).
+     - Menjadwalkan `assets:refresh-due-dates` pukul 00:40 WIB (`dailyAt('00:40')`).
+     - Menjadwalkan `assets:odometer-reminders` tanggal 1 tiap bulan pukul 08:00 WIB (`monthlyOn(1, '08:00')`).
+     - Menjadwalkan `households:purge-deleted` pukul 03:10 WIB (`dailyAt('03:10')`).
+- **Verifikasi:**
+  - `php artisan schedule:list`: Menampilkan seluruh 11 tugas terjadwal dengan timing yang valid.
+  - `php artisan test tests/Feature/SchedulerAndDailyDigestTest.php`: 6 pengujian lulus 100% (19 assertions) dalam 3.74 detik.
+  - `php artisan test tests/Feature/ReminderEngineTest.php`: 9 pengujian lulus 100% (45 assertions).
+  - Konsumsi memori ODROID-C2 stabil (Available RAM ~500 MB).
+- **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`, `docs/04-IMPROVEMENT-PLAN.md`, `routes/console.php`.
+
+### LOG-079 - Eksekusi IMP-02: Autentikasi Dua Faktor (2FA) Email OTP & 8 Recovery Codes Sekali Pakai
+
+- **Konteks:** Mengimplementasikan fitur Autentikasi Dua Faktor (2FA) Email OTP dan 8 Recovery Codes (`IMP-02`, menutup `P-19` / `Q-M12` / `SEC-2`) berdasarkan konsensus arsitektur `ADR-012` dan persetujuan grilling.
+- **Perubahan yang Dilakukan:**
+  1. *Migrasi Skema `users`:*
+     - Menambahkan migrasi `database/migrations/2026_11_12_000002_core_add_two_factor_auth_to_users_table.php` (`two_factor_email_enabled`, `two_factor_otp_code`, `two_factor_otp_expires_at`, `two_factor_attempts`, `two_factor_recovery_codes`).
+     - Memperbarui model `App\Models\User` dengan fillable, hidden atribut sensitif, dan casting tipe (`boolean`, `datetime`, `array`).
+  2. *Layanan Domain & Notifikasi (`TwoFactorAuthService` & `TwoFactorOtpNotification`):*
+     - Membuat `App\Core\Notifications\TwoFactorOtpNotification` mengirim kode 6-digit via email.
+     - Membuat `App\Core\Services\TwoFactorAuthService` dengan batasan masa berlaku OTP 10 menit, batas 5 kali salah percobaan, hashing bcrypt untuk kode OTP dan 8 kode pemulihan (`XXXXX-XXXXX`), serta penegakan konsumsi sekali pakai (*single-use*) recovery code.
+  3. *Integrasi Pipeline Fortify & Controller Tantangan:*
+     - Membuat action pipeline Fortify `App\Actions\Fortify\RedirectIfTwoFactorEmailAuthenticatable` dan mendaftarkannya pada `Fortify::authenticateThrough` di `FortifyServiceProvider`.
+     - Membuat `App\Http\Controllers\Auth\TwoFactorAuthenticatedSessionController` menangani tampilan tantangan (`GET /two-factor-challenge`), verifikasi OTP/recovery code (`POST /two-factor-challenge`), dan kirim ulang OTP (`POST /two-factor-challenge/resend`).
+     - Menyusun tampilan responsif, aksesibel, dan dark-mode friendly pada `resources/views/auth/two-factor-challenge.blade.php`.
+  4. *Antarmuka Pengaturan Profil (`ProfileSettings`):*
+     - Memperbarui `App\Livewire\Settings\ProfileSettings` dan view `profile-settings.blade.php` dengan kontrol aktif/nonaktif 2FA yang mewajibkan konfirmasi kata sandi saat ini (`current_password`).
+     - Menyediakan modal tampilan 8 kode pemulihan dengan tombol salin otomatis ke clipboard (`navigator.clipboard`).
+- **Verifikasi:**
+  - `php artisan test tests/Feature/TwoFactorAuthenticationTest.php`: 7 pengujian lulus 100% (60 assertions) dalam 4.23 detik.
+  - `php artisan test tests/Feature/AuthenticationTest.php`: 12 pengujian otentikasi umum lulus 100% (62 assertions).
+  - `php artisan test tests/Feature/SettingsAndProfileTest.php`: 8 pengujian profil lulus 100%.
+  - Item `P-19` pada `docs/pending.md` resmi ditutup.
+- **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`, `docs/pending.md`, `app/Providers/FortifyServiceProvider.php`, `routes/web.php`.
+
+### LOG-080 - Eksekusi IMP-03: Split Transaksi Multi-Kategori, Validasi Invarian Ketat, dan Integrasi Laporan Anggaran
+
+- **Konteks:** Mengimplementasikan fitur Split Transaksi Multi-Kategori (`IMP-03`) dari Dokumen Rencana Perbaikan Pasca-MVP (`docs/04-IMPROVEMENT-PLAN.md`) dengan penegakan integritas data ketat `sum(splits) == transaction.amount` yang disepakati pada grilling.
+- **Perubahan yang Dilakukan:**
+  1. *Migrasi Skema `fin_transaction_splits`:*
+     - Menambahkan migrasi `database/migrations/2026_11_12_000003_finance_create_transaction_splits_table.php` (`id` ULID, `household_id`, `transaction_id`, `category_id`, `amount`, `notes`, `timestamps`).
+     - Menambahkan indeks pencarian cepat pada `['household_id', 'transaction_id']` dan `['household_id', 'category_id']` dengan cascading delete saat transaksi atau kategori dihapus.
+  2. *Model Domain & Relasi (`TransactionSplit` & `Transaction`):*
+     - Membuat model `App\Modules\Finance\Models\TransactionSplit` dengan traits `BelongsToHousehold` dan `HasUlids`.
+     - Menambahkan relasi `splits()` dan helper `hasSplits()` pada model `App\Modules\Finance\Models\Transaction`.
+  3. *Integrasi Kalkulasi Anggaran & Laporan (`BudgetService` & `Reports`):*
+     - Memperbarui `BudgetService::calculateSpent` untuk mengagregasi pengeluaran langsung (transaksi tanpa split) dan pengeluaran rincian pecahan (`TransactionSplit`) tanpa duplikasi penghitungan.
+     - Memperbarui laporan kategori bulanan pada `App\Modules\Finance\Livewire\Reports\Index` untuk memecah pengeluaran sesuai porsi split kategori aktual.
+  4. *Formulir Transaksi Livewire & Tampilan Dinamis (`Transactions\Form`):*
+     - Memperbarui komponen `App\Modules\Finance\Livewire\Transactions\Form` dengan toggle split (`is_split`), penambahan/pengurangan baris dinamis (`splits`), kalkulasi sisa alokasi real-time (`splitTotal`, `splitRemainder`), dan validasi invarian wajib (`total rincian == total transaksi`).
+     - Memperbarui template Blade `resources/views/modules/finance/transactions/form.blade.php` dengan UI ringkas, indikator sisa alokasi hijau/merah interaktif, dan integrasi mulus dengan scan struk OCR lokal.
+- **Verifikasi:**
+  - `php artisan test tests/Feature/Finance/TransactionSplitTest.php`: 3 pengujian spesifik split lulus 100% (19 assertions).
+  - `php artisan test tests/Feature/Finance/TransactionAndQuickAddTest.php`: 20 pengujian transaksi & quick-add lulus 100% (49 assertions).
+  - `php artisan test tests/Feature/Finance/BudgetAndAllocationTest.php`: 4 pengujian anggaran lulus 100% (20 assertions).
+  - `git diff --check`: Bersih tanpa error spasi atau sintaksis.
+  - Akses web lokal `curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1/` menghasilkan respons 200 OK.
+  - Gelombang 1 (`IMP-01`, `IMP-02`, `IMP-03`) kini tuntas 100%.
+- **Dokumen yang diselaraskan:** `docs/logbook.md`, `docs/development-plan.md`, `docs/04-IMPROVEMENT-PLAN.md`, `resources/views/modules/finance/transactions/form.blade.php`.
+
+### LOG-081 - Penyelarasan UI Terpadu Core Shell, Dashboard, Finance, Organizer, & Asset
+
+- **Cakupan:** Menjalankan rencana [family-hub-ui-unification-plan.md](../design-plans/family-hub-ui-unification-plan.md) untuk menyelaraskan seluruh view Blade dengan standar `docs/00-MASTERPLAN.md` §9.4–§9.5 & §8 CS-2:
+  1. *Core Shell & Dashboard:* Menghapus override label Inggris `DANGER`/`WARNING`/`INFO` pada `<x-badge-status>` di `resources/views/dashboard.blade.php` agar memakai label Indonesia default (`Bahaya`, `Peringatan`, `Info`); mengganti `#059669`/`#10b981` dengan `#28543e`/`#bad6ae` di `app-layout.blade.php`, `dashboard.blade.php`, dan `copyable-link.blade.php`.
+  2. *Dashboard Widgets:* Menyelaraskan `modules/finance/widgets/summary.blade.php`, `modules/organizer/widgets/summary.blade.php`, dan `modules/asset/widgets/attention.blade.php` menggunakan `<x-card>` (`rounded-3xl`, `#fffefa`/`#1f2c25`), token warna §9.4, serta mengganti emoji dengan Heroicons.
+  3. *Modul Finance, Organizer, & Asset:* Menyelaraskan 38 file view Blade di `resources/views/modules/{finance,organizer,asset}/` dari kelas `slate-*`, `stone-*`, `indigo-*`, `bg-white`, `emerald-600`, Boxicons (`<i class='bx ...'>`), dan emoji UI ke token §9.4 (`#fffefa`/`#1f2c25`, `#263c32`/`#f3f1e8`, `#637067`/`#b2beb2`, `#28543e`/`#bad6ae`, `#ad3f45`/`#ffafb1`, `#87571f`/`#edc48b`, `#386578`/`#a7cad6`) serta Heroicons.
+- **Verifikasi:**
+  - `php artisan test`: 457 passed (3100 assertions).
+  - `npm run build`: Vite 8.3.5 production build sukses (`public/build/assets/app-vdUFkz2t.css`, `app-DFx6156R.js`).
+  - `git diff --check`: Bersih.
+  - `vendor/bin/pint --test` & `vendor/bin/phpstan analyse`: Gagal hanya pada file PHP/migrasi pra-ada di luar batch UI ini (`TwoFactorAuthenticationTest.php`, `DailyDigestService.php`, `TwoFactorAuthService.php`, `Transactions/Form.php`, `RollRecurringTasksCommand.php`, dan migrasi `2026_11_12_*`).
+
 ## Aturan pembaruan berikutnya
 
-1. Tambahkan entri baru dengan tanggal dan ID `LOG-NNN`; sertakan task ID resmi (`CORE-*`, `FIN-*`, `ORG-*`, `AST-*`) jika relevan.
+1. Tambahkan entri baru dengan tanggal dan ID `LOG-NNN`; sertakan task ID resmi (`CORE-*`, `FIN-*`, `ORG-*`, `AST-*`, `IMP-*`) jika relevan.
 2. Catat perubahan, keputusan reviewer/ADR, command dan hasil verifikasi, kegagalan, serta pemeriksaan yang tidak dijalankan. Jangan mencatat secret atau data pengguna.
 3. Perbarui status tahap terkait di [rencana development](development-plan.md) dan tautkan ke entri bukti. Jangan menandai selesai hanya karena paket terpasang atau kode sudah ditulis.
 4. Task selesai hanya setelah acceptance criteria dan Definition of Done terpenuhi serta diverifikasi reviewer. Bila terblokir, tulis penyebab dan langkah pembuka blokir.

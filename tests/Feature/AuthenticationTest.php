@@ -93,10 +93,13 @@ it('keeps registration, passkeys, and TOTP disabled', function (): void {
         ->and(Features::enabled(Features::passkeys()))->toBeFalse()
         ->and(Features::enabled(Features::twoFactorAuthentication()))->toBeFalse();
 
-    foreach (['register', 'passkeys/login', 'two-factor-challenge'] as $path) {
+    foreach (['register', 'passkeys/login'] as $path) {
         $this->get('/'.$path)->assertNotFound();
         $this->post('/'.$path, [])->assertNotFound();
     }
+
+    // Two-factor challenge exists for email OTP (IMP-02/ADR-012) and redirects guests to login
+    $this->get('/two-factor-challenge')->assertRedirect('/login');
 });
 
 it('redirects authenticated users away from login', function (): void {

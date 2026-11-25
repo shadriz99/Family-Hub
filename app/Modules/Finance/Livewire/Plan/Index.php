@@ -50,6 +50,7 @@ final class Index extends Component
     public string $skipReason = '';
 
     // Manual Planned Item Fields
+    public ?string $manualItemId = null;
     public string $manualName = '';
     public string $manualDirection = 'expense';
     public ?string $manualCategoryId = null;
@@ -166,15 +167,32 @@ final class Index extends Component
         session()->flash('message', "Status kewajiban '{$item->name}' dikembalikan.");
     }
 
-    public function openManualModal(): void
+    public function openManualModal(?string $itemId = null): void
     {
-        $this->manualName = '';
-        $this->manualDirection = 'expense';
-        $this->manualCategoryId = null;
-        $this->manualAccountId = null;
-        $this->manualAmount = '';
-        $this->manualDueDate = now()->toDateString();
+        if ($itemId !== null) {
+            $item = PlannedItem::query()->findOrFail($itemId);
+            $this->manualItemId = $item->id;
+            $this->manualName = $item->name;
+            $this->manualDirection = $item->direction->value;
+            $this->manualCategoryId = $item->category_id;
+            $this->manualAccountId = $item->account_id;
+            $this->manualAmount = (string) $item->amount;
+            $this->manualDueDate = $item->due_date->toDateString();
+        } else {
+            $this->manualItemId = null;
+            $this->manualName = '';
+            $this->manualDirection = 'expense';
+            $this->manualCategoryId = null;
+            $this->manualAccountId = null;
+            $this->manualAmount = '';
+            $this->manualDueDate = now()->toDateString();
+        }
         $this->showManualModal = true;
+    }
+
+    public function openEdit(string $itemId): void
+    {
+        $this->openManualModal($itemId);
     }
 
     public function saveManualItem(HouseholdContext $context): void
@@ -191,6 +209,24 @@ final class Index extends Component
         $dueDate = CarbonImmutable::parse($this->manualDueDate);
         $period = $resolver->forDate($dueDate)->key;
 
+        if ($this->manualItemId !== null) {
+            $item = PlannedItem::query()->findOrFail($this->manualItemId);
+            $item->name = $this->manualName;
+            $item->direction = Direction::from($this->manualDirection);
+            $item->category_id = $this->manualCategoryId;
+            $item->account_id = $this->manualAccountId;
+            $item->amount = Money::parse($this->manualAmount);
+            $item->due_date = $dueDate;
+            $item->period = $period;
+            $item->save();
+
+            $this->showManualModal = false;
+            $this->manualItemId = null;
+            session()->flash('message', "Rencana '{$item->name}' berhasil diperbarui.");
+
+            return;
+        }
+
         $item = new PlannedItem();
         $item->household_id = $household->id;
         $item->name = $this->manualName;
@@ -206,7 +242,23 @@ final class Index extends Component
         $item->save();
 
         $this->showManualModal = false;
+        $this->manualItemId = null;
         session()->flash('message', "Rencana '{$item->name}' berhasil ditambahkan.");
+    }
+
+    public function deleteItem(string $itemId): void
+    {
+        $item = PlannedItem::query()->findOrFail($itemId);
+        $name = $item->name;
+
+        // Unlink any transactions associated with this planned item
+        Transaction::query()
+            ->where('planned_item_id', $item->id)
+            ->update(['planned_item_id' => null]);
+
+        $item->delete();
+
+        session()->flash('message', "Rencana '{$name}' berhasil dihapus.");
     }
 
     public function openAllocationModal(HouseholdContext $context): void

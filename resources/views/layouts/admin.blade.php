@@ -9,6 +9,18 @@
     <link rel="apple-touch-icon" href="/icons/icon-192.svg">
     <title>{{ $title ?? __('Admin') }} · Family Hub</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script>
+        (function() {
+            var stored = localStorage.getItem('theme');
+            if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
     @livewireStyles
 </head>
 <body class="min-h-full bg-[#f6f4ee] text-[#263c32] antialiased dark:bg-[#151f1b] dark:text-[#f3f1e8]">
@@ -28,7 +40,15 @@
                 </span>
             </div>
 
-            <div class="flex items-center gap-4 text-sm">
+            <div class="flex items-center gap-3 text-sm">
+                <button type="button"
+                    onclick="window.toggleDarkMode()"
+                    aria-label="{{ __('Ganti tema') }}"
+                    class="flex size-9 items-center justify-center rounded-xl border border-current/15 text-current/80 transition-colors hover:bg-current/5">
+                    <x-heroicon-o-moon class="size-4 hidden dark:inline" />
+                    <x-heroicon-o-sun class="size-4 inline dark:hidden" />
+                </button>
+
                 <span class="hidden sm:inline text-xs text-[#637067] dark:text-[#b2beb2]">
                     {{ auth()->user()?->name }} ({{ auth()->user()?->email }})
                 </span>

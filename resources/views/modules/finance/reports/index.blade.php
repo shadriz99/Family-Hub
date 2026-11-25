@@ -25,7 +25,7 @@
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div class="rounded-3xl border border-current/10 bg-[#fffefa] p-5 shadow-sm transition-colors dark:bg-[#1f2c25]">
             <span class="text-xs font-semibold text-current/60">Total Pemasukan Riil</span>
-            <div class="mt-2 text-2xl font-black tracking-tight text-emerald-600 dark:text-emerald-400">
+            <div class="mt-2 text-2xl font-black tracking-tight text-[#28543e] dark:text-[#bad6ae]">
                 <x-money :amount="$totalIncome" />
             </div>
             <p class="mt-1 text-xs text-current/50">Seluruh uang masuk aktual periode ini</p>
@@ -33,7 +33,7 @@
 
         <div class="rounded-3xl border border-current/10 bg-[#fffefa] p-5 shadow-sm transition-colors dark:bg-[#1f2c25]">
             <span class="text-xs font-semibold text-current/60">Total Pengeluaran Riil</span>
-            <div class="mt-2 text-2xl font-black tracking-tight text-rose-600 dark:text-rose-400">
+            <div class="mt-2 text-2xl font-black tracking-tight text-[#ad3f45] dark:text-[#ffafb1]">
                 <x-money :amount="$totalExpense" />
             </div>
             <p class="mt-1 text-xs text-current/50">Kewajiban + belanja variabel</p>
@@ -41,7 +41,7 @@
 
         <div class="rounded-3xl border border-current/10 bg-[#fffefa] p-5 shadow-sm transition-colors dark:bg-[#1f2c25]">
             <span class="text-xs font-semibold text-current/60">Arus Kas Bersih (Net)</span>
-            <div class="mt-2 text-2xl font-black tracking-tight {{ $netCashFlow < 0 ? 'text-rose-600' : 'text-emerald-600 dark:text-emerald-400' }}">
+            <div class="mt-2 text-2xl font-black tracking-tight {{ $netCashFlow < 0 ? 'text-[#ad3f45]' : 'text-[#28543e] dark:text-[#bad6ae]' }}">
                 <x-money :amount="$netCashFlow" />
             </div>
             <p class="mt-1 text-xs text-current/50">{{ $netCashFlow >= 0 ? 'Surplus tabungan' : 'Defisit periode' }}</p>
@@ -52,10 +52,10 @@
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div class="rounded-3xl border border-current/10 bg-[#fffefa] p-5 shadow-sm transition-colors dark:bg-[#1f2c25]">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-rose-600">Total Sisa Hutang Keluarga</span>
-                <x-heroicon-o-document-currency-bangladeshi class="size-5 text-rose-600" />
+                <span class="text-xs font-bold uppercase tracking-wider text-[#ad3f45]">Total Sisa Hutang Keluarga</span>
+                <x-heroicon-o-banknotes class="size-5 text-[#ad3f45]" />
             </div>
-            <div class="mt-2 text-2xl font-black text-rose-600 dark:text-rose-400">
+            <div class="mt-2 text-2xl font-black text-[#ad3f45] dark:text-[#ffafb1]">
                 <x-money :amount="$totalPayableRemaining" />
             </div>
             <p class="mt-1 text-xs text-current/50">Total kewajiban pinjaman yang masih harus dilunasi</p>
@@ -63,10 +63,10 @@
 
         <div class="rounded-3xl border border-current/10 bg-[#fffefa] p-5 shadow-sm transition-colors dark:bg-[#1f2c25]">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">Total Sisa Piutang (Hak Tagih)</span>
-                <x-heroicon-o-document-currency-bangladeshi class="size-5 text-emerald-600" />
+                <span class="text-xs font-bold uppercase tracking-wider text-[#28543e]">Total Sisa Piutang (Hak Tagih)</span>
+                <x-heroicon-o-banknotes class="size-5 text-[#28543e]" />
             </div>
-            <div class="mt-2 text-2xl font-black text-emerald-600 dark:text-emerald-400">
+            <div class="mt-2 text-2xl font-black text-[#28543e] dark:text-[#bad6ae]">
                 <x-money :amount="$totalReceivableRemaining" />
             </div>
             <p class="mt-1 text-xs text-current/50">Total pinjaman yang dipinjamkan ke pihak lain</p>
@@ -91,7 +91,7 @@
                         </span>
                     </div>
                     <div class="h-2 w-full overflow-hidden rounded-full bg-current/10">
-                        <div class="h-full rounded-full bg-emerald-500 transition-all" style="width: {{ $row['percentage'] }}%"></div>
+                        <div class="h-full rounded-full bg-[#28543e] dark:bg-[#bad6ae] transition-all" style="width: {{ $row['percentage'] }}%"></div>
                     </div>
                 </div>
             @empty
@@ -123,13 +123,13 @@
                     @foreach($twelvePeriods as $tp)
                         <tr class="hover:bg-current/5">
                             <td class="py-2.5 font-bold">{{ $tp['label'] }}</td>
-                            <td class="py-2.5 text-right text-emerald-600 dark:text-emerald-400 font-semibold">
+                            <td class="py-2.5 text-right text-[#28543e] dark:text-[#bad6ae] font-semibold">
                                 <x-money :amount="$tp['income']" />
                             </td>
-                            <td class="py-2.5 text-right text-rose-600 dark:text-rose-400 font-semibold">
+                            <td class="py-2.5 text-right text-[#ad3f45] dark:text-[#ffafb1] font-semibold">
                                 <x-money :amount="$tp['expense']" />
                             </td>
-                            <td class="py-2.5 text-right font-black {{ $tp['net'] < 0 ? 'text-rose-600' : 'text-emerald-600' }}">
+                            <td class="py-2.5 text-right font-black {{ $tp['net'] < 0 ? 'text-[#ad3f45]' : 'text-[#28543e]' }}">
                                 <x-money :amount="$tp['net']" />
                             </td>
                         </tr>

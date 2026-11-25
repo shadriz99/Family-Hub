@@ -69,6 +69,68 @@ it('extracts merchant, date, and amount locally from receipt text without extern
     expect(Transaction::count())->toBe(0);
 });
 
+it('avoids mistaking TOTAL ITEM count for transaction amount', function (): void {
+    $ocrService = app(ReceiptOcrService::class);
+
+    $receiptText = "INDOMARET POINT\nTanggal: 2026-10-27\nTOTAL ITEM: 3\nTOTAL BELANJA: Rp 75.000";
+
+    $result = $ocrService->extractFromText($receiptText);
+
+    expect($result['amount'])->toBe(75000);
+});
+
+it('accurately identifies final total when subtotal, discount, and cash tendered are present', function (): void {
+    $ocrService = app(ReceiptOcrService::class);
+
+    $receiptText = "ALFAMART\nTanggal: 2026-11-05\nSUBTOTAL: 65.000\nTOTAL DISKON: 5.000\nTOTAL BAYAR: 60.000\nTUNAI: 100.000\nKEMBALIAN: 40.000";
+
+    $result = $ocrService->extractFromText($receiptText);
+
+    expect($result['payee'])->toBe('Alfamart');
+    expect($result['amount'])->toBe(60000);
+});
+
+it('parses diverse total amount formats including commas, trailing dashes, and cents', function (string $input, int $expected): void {
+    $ocrService = app(ReceiptOcrService::class);
+
+    $result = $ocrService->extractFromText("SUPERINDO\nTanggal: 2026-11-06\nTOTAL: {$input}\nTERIMA KASIH");
+
+    expect($result['amount'])->toBe($expected);
+})->with([
+    'standard rupiah dot' => ['54.000', 54000],
+    'trailing dash' => ['Rp 54.000,-', 54000],
+    'comma thousands' => ['150,000', 150000],
+    'comma thousands with cents' => ['150,000.00', 150000],
+    'dot thousands with cents' => ['50.000,00', 50000],
+    'ocr typo letter O' => ['50.OOO', 50000],
+    'amount on next line' => ["\n75.000", 75000],
+]);
+
+it('scans receipt image using local tesseract binary', function (): void {
+    $ocrService = app(ReceiptOcrService::class);
+
+    $tempFile = tempnam(sys_get_temp_dir(), 'test_rcpt_') . '.png';
+    $im = imagecreatetruecolor(600, 300);
+    $bg = imagecolorallocate($im, 255, 255, 255);
+    $black = imagecolorallocate($im, 0, 0, 0);
+    imagefilledrectangle($im, 0, 0, 600, 300, $bg);
+    imagestring($im, 5, 20, 20, 'ALFAMART', $black);
+    imagestring($im, 4, 20, 50, 'Tanggal: 2026-10-28', $black);
+    imagestring($im, 4, 20, 80, 'SUBTOTAL                  65.000', $black);
+    imagestring($im, 4, 20, 110, 'DISKON MEMBER              5.000', $black);
+    imagestring($im, 4, 20, 140, 'TOTAL BELANJA             60.000', $black);
+    imagestring($im, 4, 20, 170, 'TUNAI                    100.000', $black);
+    imagestring($im, 4, 20, 200, 'KEMBALIAN                 40.000', $black);
+    imagepng($im, $tempFile);
+    imagedestroy($im);
+
+    $result = $ocrService->scan($tempFile);
+    @unlink($tempFile);
+
+    expect($result['payee'])->toBe('Alfamart');
+    expect($result['amount'])->toBe(60000);
+});
+
 it('provides category suggestions based on payee history without auto-saving prior to user confirmation', function (): void {
     $context = app(HouseholdContext::class);
     $suggester = app(CategorySuggestionService::class);

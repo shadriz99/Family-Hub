@@ -197,4 +197,36 @@ final class SettingsAndProfileTest extends TestCase
             ->assertSee(__('Memperbarui data dan pengaturan keluarga'))
             ->assertSee('Owner User');
     }
+
+    public function test_user_can_generate_telegram_code_and_disconnect(): void
+    {
+        $this->actingAs($this->owner);
+
+        $test = Livewire::test(ProfileSettings::class)
+            ->assertSee(__('Integrasi Chatbot Telegram'))
+            ->assertSee(__('Belum Terhubung'))
+            ->call('generateTelegramCode')
+            ->assertHasNoErrors()
+            ->assertSee(__('Kode tautan baru telah dibuat'));
+
+        $link = \App\Modules\Finance\Models\TelegramLink::where('user_id', $this->owner->id)->first();
+        $this->assertNotNull($link);
+        $this->assertNotNull($link->link_code);
+
+        // Simulate connected
+        $link->update([
+            'telegram_chat_id' => '12345678',
+            'telegram_username' => 'owner_tg',
+        ]);
+
+        Livewire::test(ProfileSettings::class)
+            ->assertSee(__('Terhubung'))
+            ->assertSee('@owner_tg')
+            ->call('disconnectTelegram')
+            ->assertHasNoErrors()
+            ->assertSee(__('Sambungan Telegram berhasil diputuskan.'));
+
+        $link->refresh();
+        $this->assertNull($link->telegram_chat_id);
+    }
 }

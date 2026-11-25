@@ -248,15 +248,17 @@
                         class="relative flex size-10 items-center justify-center rounded-2xl border border-current/15 text-current/80 transition-colors hover:bg-current/5">
                         <x-heroicon-o-bell class="size-5" />
                         @if ($user && $user->unreadNotifications()->count() > 0)
-                            <span class="absolute top-2 right-2 size-2 rounded-full bg-[#059669] ring-2 ring-white dark:bg-[#10b981] dark:ring-[#1f2c25]"></span>
+                            <span class="absolute top-2 right-2 size-2 rounded-full bg-[#28543e] ring-2 ring-white dark:bg-[#bad6ae] dark:ring-[#1f2c25]"></span>
                         @endif
                     </a>
 
                     {{-- User Profile Avatar / Logout Menu Mobile --}}
                     @if ($user)
-                        <div class="lg:hidden">
+                        <a href="{{ route('settings.profile') }}"
+                           aria-label="{{ __('Profil & Pengaturan Akun') }}"
+                           class="lg:hidden flex size-9 items-center justify-center rounded-full transition-transform active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current">
                             <x-member-avatar :name="$user->name" size="sm" />
-                        </div>
+                        </a>
                     @endif
                 </div>
             </header>
@@ -276,7 +278,11 @@
         <a href="{{ url('/') }}"
             class="flex min-h-12 flex-1 flex-col items-center justify-center gap-1 text-[11px] font-medium transition-colors
                 {{ request()->is('/') ? 'font-bold text-[#28543e] dark:text-[#bad6ae]' : 'text-[#637067] dark:text-[#b2beb2]' }}">
-            <i class="bx {{ request()->is('/') ? 'bxs-home-heart' : 'bx-home-heart' }} text-2xl leading-none"></i>
+            @if(request()->is('/'))
+                <x-heroicon-s-home class="size-5" />
+            @else
+                <x-heroicon-o-home class="size-5" />
+            @endif
             <span>{{ __('Beranda') }}</span>
         </a>
 

@@ -9,6 +9,7 @@ use App\Core\Support\HouseholdContext;
 use App\Modules\Finance\Console\Commands\ApplyPeriodSettingsCommand;
 use App\Modules\Finance\Console\Commands\GeneratePlannedItemsCommand;
 use App\Modules\Finance\Console\Commands\MarkOverduePlannedItemsCommand;
+use App\Modules\Finance\Console\Commands\TelegramPollCommand;
 use App\Modules\Finance\Contracts\FinanceGateway;
 use App\Modules\Finance\Events\TransactionDeleted;
 use App\Modules\Finance\Events\TransactionRecorded;
@@ -72,6 +73,7 @@ final class FinanceServiceProvider extends ServiceProvider
                 GeneratePlannedItemsCommand::class,
                 MarkOverduePlannedItemsCommand::class,
                 ApplyPeriodSettingsCommand::class,
+                TelegramPollCommand::class,
             ]);
         }
 

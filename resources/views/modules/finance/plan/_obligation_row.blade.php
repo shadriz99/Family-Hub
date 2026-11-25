@@ -33,7 +33,7 @@
 
     <div class="flex items-center justify-between sm:justify-end gap-3 self-end sm:self-auto w-full sm:w-auto">
         <div class="text-right">
-            <div class="text-sm font-black text-rose-600 dark:text-rose-400">
+            <div class="text-sm font-black text-[#ad3f45] dark:text-[#ffafb1]">
                 <x-money :amount="$item->remainingAmount()" />
             </div>
             @if($item->paid_amount > 0 && $item->paid_amount < $item->amount)
@@ -46,7 +46,7 @@
         <div class="flex items-center gap-1.5">
             @if(in_array($item->status->value, ['planned', 'partial']))
                 <button wire:click="openPay('{{ $item->id }}')"
-                        class="rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm hover:bg-emerald-700 active:scale-95">
+                        class="rounded-xl bg-[#28543e] px-3 py-1.5 text-xs font-bold text-white dark:bg-[#bad6ae] dark:text-[#151f1b] shadow-sm hover:opacity-90 active:scale-95">
                     Bayar
                 </button>
                 <button wire:click="openSkip('{{ $item->id }}')"
@@ -59,6 +59,18 @@
                     Batalkan Skip
                 </button>
             @endif
+
+            <button wire:click="openEdit('{{ $item->id }}')"
+                    title="Edit Rencana"
+                    class="rounded-xl p-1.5 text-current/50 hover:text-current hover:bg-current/10 transition-colors">
+                <x-heroicon-o-pencil class="size-4" />
+            </button>
+            <button wire:confirm="Apakah Anda yakin ingin menghapus rencana '{{ $item->name }}'?"
+                    wire:click="deleteItem('{{ $item->id }}')"
+                    title="Hapus Rencana"
+                    class="rounded-xl p-1.5 text-rose-400 hover:text-[#ad3f45] hover:bg-rose-500/10 transition-colors">
+                <x-heroicon-o-trash class="size-4" />
+            </button>
         </div>
     </div>
 </div>

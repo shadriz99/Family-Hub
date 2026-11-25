@@ -15,6 +15,7 @@
 | `01-MODULE-FINANCE.md` | Keuangan, anggaran, rencana bulanan, tagihan rutin, pinjaman & cicilan | Task berprefix `FIN-` |
 | `02-MODULE-ORGANIZER.md` | Tugas rumah tangga, catatan, daftar belanja, kalender, pengingat, ekspor .ics | Task berprefix `ORG-` |
 | `03-MODULE-ASSET.md` | Inventaris aset, garansi/dokumen, perawatan, servis, vendor, laporan kerusakan | Task berprefix `AST-` |
+| `04-IMPROVEMENT-PLAN.md` | Peta jalan fitur peningkatan pasca-MVP (v1.1+) terurut dari prioritas tertinggi ke terendah | Perencanaan rilis lanjutan & task berprefix `IMP-` |
 | `docs/runbook/deploy.md` | Prosedur deploy/pembaruan produksi dan pengecekan operasional | Deploy server |
 | `docs/runbook/backup-restore.md` | Prosedur backup, uji restore, dan pemulihan insiden | Sebelum go-live dan operasi |
 | `docs/uat-go-live.md` | Checklist penerimaan lintas modul dan kesiapan rilis | Sebelum rilis |
@@ -229,10 +230,12 @@ docs/
 ├── 01-MODULE-FINANCE.md
 ├── 02-MODULE-ORGANIZER.md
 ├── 03-MODULE-ASSET.md
+├── 04-IMPROVEMENT-PLAN.md
 ├── adr/ADR-NNN-judul.md
 ├── runbook/{deploy,backup-restore}.md
 ├── development-plan.md
 ├── logbook.md
+├── pending.md
 └── uat-go-live.md
 ```
 
@@ -696,6 +699,7 @@ Teks notifikasi WAJIB singkat (≤ 120 karakter) dan berisi URL tujuan.
 | **Phase 2 – Organizer MVP** | `02-MODULE-ORGANIZER.md` | Kalender menampilkan tagihan + event + tugas; .ics bisa di-import ke Google Calendar; daftar belanja terpakai 2 kali belanja |
 | **Phase 3 – Asset MVP** | `03-MODULE-ASSET.md` | Minimal 10 aset tercatat; 1 siklus servis tercatat → transaksi & jadwal berikutnya benar |
 | **Phase 4 – Hardening** | Performa, Lighthouse, aksesibilitas, dokumentasi user | Target §10 tercapai; runbook deploy & backup/restore teruji; checklist UAT/go-live lulus |
+| **Phase 5 – Improvement (v1.1+)** | `04-IMPROVEMENT-PLAN.md` (`IMP-01..IMP-08`) | Prioritas disetujui reviewer; rilis bertahap pasca-v1.0.0 tanpa melanggar Non-Goals §1.2 atau budget RAM server |
 
 ---
 

@@ -153,6 +153,26 @@ final class Form extends Component
         return redirect()->route('assets.show', ['asset' => $asset->id, 'tab' => 'maintenance']);
     }
 
+    public function delete(FinanceGateway $financeGateway): mixed
+    {
+        if (! $this->planId) {
+            return null;
+        }
+
+        $household = app(HouseholdContext::class)->currentOrNull();
+        $plan = MaintenancePlan::where('household_id', $household?->id)->findOrFail($this->planId);
+        $assetId = $plan->asset_id;
+
+        try {
+            $financeGateway->cancelPlannedExpenses('asset_maintenance', $plan->id);
+        } catch (\Throwable) {
+        }
+
+        $plan->delete();
+
+        return redirect()->route('assets.show', ['asset' => $assetId, 'tab' => 'maintenance']);
+    }
+
     public function render(): View
     {
         $household = app(HouseholdContext::class)->currentOrNull();

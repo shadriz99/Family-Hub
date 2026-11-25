@@ -7,20 +7,20 @@
         </div>
 
         <button wire:click="openCreate(null)"
-                class="inline-flex items-center gap-1.5 rounded-2xl bg-emerald-600 px-4 py-2 text-xs sm:text-sm font-bold text-white shadow-sm transition-all hover:bg-emerald-700 active:scale-95 self-start sm:self-auto">
+                class="inline-flex items-center gap-1.5 rounded-2xl bg-[#28543e] px-4 py-2 text-xs sm:text-sm font-bold text-white dark:bg-[#bad6ae] dark:text-[#151f1b] shadow-sm transition-all hover:opacity-90 active:scale-95 self-start sm:self-auto">
             <x-heroicon-o-plus class="size-4" />
             <span>Tambah Kategori Induk</span>
         </button>
     </div>
 
     @if (session()->has('message'))
-        <div class="rounded-2xl bg-emerald-500/10 p-4 text-xs sm:text-sm font-semibold text-emerald-700 dark:text-emerald-300">
+        <div class="rounded-2xl bg-[#28543e] dark:bg-[#bad6ae]/10 p-4 text-xs sm:text-sm font-semibold text-[#28543e] dark:text-[#bad6ae]">
             {{ session('message') }}
         </div>
     @endif
 
     @if (session()->has('error'))
-        <div class="rounded-2xl bg-rose-500/10 p-4 text-xs sm:text-sm font-semibold text-rose-700 dark:text-rose-300">
+        <div class="rounded-2xl bg-rose-500/10 p-4 text-xs sm:text-sm font-semibold text-[#ad3f45] dark:text-rose-300">
             {{ session('error') }}
         </div>
     @endif
@@ -28,11 +28,11 @@
     {{-- Tabs --}}
     <div class="flex gap-2 border-b border-current/10 pb-2">
         <button wire:click="selectTab('expense')"
-                class="rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition-colors {{ $activeTab === 'expense' ? 'bg-emerald-600 text-white' : 'text-current/60 hover:bg-current/10' }}">
+                class="rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition-colors {{ $activeTab === 'expense' ? 'bg-[#28543e] text-white dark:bg-[#bad6ae] dark:text-[#151f1b]' : 'text-current/60 hover:bg-current/10' }}">
             Pengeluaran
         </button>
         <button wire:click="selectTab('income')"
-                class="rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition-colors {{ $activeTab === 'income' ? 'bg-emerald-600 text-white' : 'text-current/60 hover:bg-current/10' }}">
+                class="rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition-colors {{ $activeTab === 'income' ? 'bg-[#28543e] text-white dark:bg-[#bad6ae] dark:text-[#151f1b]' : 'text-current/60 hover:bg-current/10' }}">
             Pemasukan
         </button>
     </div>
@@ -44,7 +44,7 @@
                 {{-- Parent Category Header --}}
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-current/10 pb-4">
                     <div class="flex items-center gap-3">
-                        <div class="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                        <div class="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-[#28543e]/10 dark:bg-[#bad6ae]/15 text-[#28543e] dark:text-[#bad6ae]">
                             <x-heroicon-o-folder class="size-5" />
                         </div>
                         <div>
@@ -54,11 +54,11 @@
                                     <span class="rounded-full bg-blue-500/10 px-2 py-0.5 text-[10px] font-bold text-blue-600 dark:text-blue-400">Sistem</span>
                                 @endif
                                 @if($category->isArchived())
-                                    <span class="rounded-full bg-rose-500/10 px-2 py-0.5 text-[10px] font-bold text-rose-600 dark:text-rose-400">Diarsipkan</span>
+                                    <span class="rounded-full bg-rose-500/10 px-2 py-0.5 text-[10px] font-bold text-[#ad3f45] dark:text-[#ffafb1]">Diarsipkan</span>
                                 @endif
                             </div>
                             @if($category->default_allocation)
-                                <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                                <span class="text-xs font-semibold text-[#28543e] dark:text-[#bad6ae]">
                                     Alokasi: {{ $category->default_allocation->label() }}
                                 </span>
                             @endif
@@ -73,10 +73,10 @@
                             Edit
                         </button>
                         @if(!$category->isSystem())
-                            <button wire:click="openMerge('{{ $category->id }}')" class="rounded-xl px-2.5 py-1 text-xs font-semibold text-amber-600 hover:bg-amber-500/10">
+                            <button wire:click="openMerge('{{ $category->id }}')" class="rounded-xl px-2.5 py-1 text-xs font-semibold text-[#87571f] hover:bg-amber-500/10">
                                 Gabung
                             </button>
-                            <button wire:click="toggleArchive('{{ $category->id }}')" class="rounded-xl px-2.5 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-500/10">
+                            <button wire:click="toggleArchive('{{ $category->id }}')" class="rounded-xl px-2.5 py-1 text-xs font-semibold text-[#ad3f45] hover:bg-rose-500/10">
                                 {{ $category->isArchived() ? 'Aktifkan' : 'Arsip' }}
                             </button>
                         @endif
@@ -95,7 +95,7 @@
                                             <span class="rounded bg-blue-500/10 px-1.5 py-0.2 text-[9px] font-bold text-blue-600">Sistem</span>
                                         @endif
                                         @if($child->isArchived())
-                                            <span class="rounded bg-rose-500/10 px-1.5 py-0.2 text-[9px] font-bold text-rose-600">Arsip</span>
+                                            <span class="rounded bg-rose-500/10 px-1.5 py-0.2 text-[9px] font-bold text-[#ad3f45]">Arsip</span>
                                         @endif
                                     </div>
                                     @if($child->default_allocation)
@@ -108,10 +108,10 @@
                                         Edit
                                     </button>
                                     @if(!$child->isSystem())
-                                        <button wire:click="openMerge('{{ $child->id }}')" class="rounded-lg px-2 py-0.5 text-xs text-amber-600 hover:bg-amber-500/10">
+                                        <button wire:click="openMerge('{{ $child->id }}')" class="rounded-lg px-2 py-0.5 text-xs text-[#87571f] hover:bg-amber-500/10">
                                             Gabung
                                         </button>
-                                        <button wire:click="toggleArchive('{{ $child->id }}')" class="rounded-lg px-2 py-0.5 text-xs text-rose-600 hover:bg-rose-500/10">
+                                        <button wire:click="toggleArchive('{{ $child->id }}')" class="rounded-lg px-2 py-0.5 text-xs text-[#ad3f45] hover:bg-rose-500/10">
                                             {{ $child->isArchived() ? 'Aktifkan' : 'Arsip' }}
                                         </button>
                                     @endif
@@ -144,22 +144,22 @@
                     <div>
                         <label class="block text-xs font-bold text-current/70">Nama Kategori</label>
                         <input type="text" wire:model="name" placeholder="mis. Belanja Dapur, Kopi & Jajan"
-                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
-                        @error('name') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
+                        @error('name') <span class="text-xs text-[#ad3f45]">{{ $message }}</span> @enderror
                     </div>
 
                     @if($type === 'expense')
                         <div>
                             <label class="block text-xs font-bold text-current/70">Alokasi Default</label>
                             <select wire:model="default_allocation"
-                                    class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none">
+                                    class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none">
                                 <option value="living">Kebutuhan Hidup (Makan, Operasional, Transportasi)</option>
                                 <option value="tertiary">Tersier (Hiburan, Hobi, Skincare, Dining Out)</option>
                                 <option value="debt">Cicilan / Utang (KPR, Kendaraan, Utang)</option>
                                 <option value="savings">Tabungan & Investasi (Dana Darurat, Investasi)</option>
                                 <option value="social">Donasi / Sosial / Zakat (Zakat, Infak, Sedekah)</option>
                             </select>
-                            @error('default_allocation') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                            @error('default_allocation') <span class="text-xs text-[#ad3f45]">{{ $message }}</span> @enderror
                         </div>
                     @endif
 
@@ -169,7 +169,7 @@
                             Batal
                         </button>
                         <button type="submit"
-                                class="rounded-xl bg-emerald-600 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-emerald-700">
+                                class="rounded-xl bg-[#28543e] px-5 py-2 text-xs font-bold text-white dark:bg-[#bad6ae] dark:text-[#151f1b] shadow-sm hover:opacity-90">
                             Simpan
                         </button>
                     </div>
@@ -191,7 +191,7 @@
                     <div>
                         <label class="block text-xs font-bold text-current/70">Pilih Kategori Tujuan</label>
                         <select wire:model="mergeTargetId"
-                                class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none">
+                                class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none">
                             <option value="">-- Pilih Kategori Tujuan --</option>
                             @foreach($mergeOptions as $opt)
                                 <option value="{{ $opt->id }}">{{ $opt->parent ? "{$opt->parent->name} > " : '' }}{{ $opt->name }}</option>

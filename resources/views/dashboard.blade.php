@@ -23,15 +23,13 @@
                     @endphp
                     <div class="flex items-center justify-between gap-3 rounded-2xl border border-current/10 bg-[#fffefa] p-4 shadow-xs dark:bg-[#1f2c25]">
                         <div class="flex items-center gap-3 min-w-0">
-                            <x-badge-status :color="$badgeColor">
-                                {{ strtoupper($alert->level) }}
-                            </x-badge-status>
+                            <x-badge-status :status="$badgeColor" />
                             <span class="truncate text-sm font-medium text-current">
                                 {{ $alert->title }}
                             </span>
                         </div>
                         @if ($alert->url)
-                            <a href="{{ $alert->url }}" class="shrink-0 text-xs font-semibold text-[#059669] hover:underline dark:text-[#10b981]">
+                            <a href="{{ $alert->url }}" class="shrink-0 text-xs font-semibold text-[#28543e] hover:underline dark:text-[#bad6ae]">
                                 {{ __('Buka') }} &rarr;
                             </a>
                         @endif

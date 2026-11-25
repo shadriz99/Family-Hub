@@ -6,7 +6,7 @@
 
         <button wire:click="deleteTransaction"
                 wire:confirm="Yakin ingin menghapus transaksi ini? Saldo akun akan dikembalikan."
-                class="rounded-xl px-3 py-1.5 text-xs font-bold text-rose-600 hover:bg-rose-500/10">
+                class="rounded-xl px-3 py-1.5 text-xs font-bold text-[#ad3f45] hover:bg-rose-500/10">
             Hapus Transaksi
         </button>
     </div>
@@ -14,7 +14,7 @@
     <div class="rounded-3xl border border-current/10 bg-[#fffefa] p-6 shadow-sm transition-colors dark:bg-[#1f2c25]">
         <div class="flex items-center justify-between border-b border-current/10 pb-4">
             <div class="flex items-center gap-3">
-                <div class="flex size-11 items-center justify-center rounded-2xl {{ $tx->type->value === 'income' ? 'bg-emerald-500/10 text-emerald-600' : ($tx->type->value === 'transfer' ? 'bg-blue-500/10 text-blue-600' : 'bg-rose-500/10 text-rose-600') }}">
+                <div class="flex size-11 items-center justify-center rounded-2xl {{ $tx->type->value === 'income' ? 'bg-[#28543e]/10 dark:bg-[#bad6ae]/15 text-[#28543e]' : ($tx->type->value === 'transfer' ? 'bg-blue-500/10 text-blue-600' : 'bg-rose-500/10 text-[#ad3f45]') }}">
                     @if($tx->type->value === 'income')
                         <x-heroicon-o-arrow-down-left class="size-6" />
                     @elseif($tx->type->value === 'transfer')
@@ -32,7 +32,7 @@
             </div>
 
             <div class="text-right">
-                <div class="text-2xl font-black {{ $tx->type->value === 'income' ? 'text-emerald-600 dark:text-emerald-400' : ($tx->type->value === 'transfer' ? 'text-blue-600 dark:text-blue-400' : 'text-rose-600 dark:text-rose-400') }}">
+                <div class="text-2xl font-black {{ $tx->type->value === 'income' ? 'text-[#28543e] dark:text-[#bad6ae]' : ($tx->type->value === 'transfer' ? 'text-blue-600 dark:text-blue-400' : 'text-[#ad3f45] dark:text-[#ffafb1]') }}">
                     <x-money :amount="$tx->amount" />
                 </div>
                 <div class="text-xs text-current/50">{{ $tx->occurred_on->translatedFormat('d F Y') }}</div>
@@ -69,7 +69,7 @@
             @if($tx->allocation)
                 <div class="flex justify-between py-2">
                     <span class="text-current/60">Alokasi Anggaran</span>
-                    <span class="font-bold text-emerald-600 dark:text-emerald-400">{{ $tx->allocation->label() }}</span>
+                    <span class="font-bold text-[#28543e] dark:text-[#bad6ae]">{{ $tx->allocation->label() }}</span>
                 </div>
             @endif
 

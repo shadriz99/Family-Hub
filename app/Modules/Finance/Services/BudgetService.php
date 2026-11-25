@@ -14,6 +14,7 @@ use App\Modules\Finance\Models\AllocationPlan;
 use App\Modules\Finance\Models\Budget;
 use App\Modules\Finance\Models\Category;
 use App\Modules\Finance\Models\Transaction;
+use App\Modules\Finance\Models\TransactionSplit;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -122,15 +123,30 @@ final class BudgetService
 
         $allIds = array_merge($categoryIds, $childIds);
 
-        return (int) Transaction::query()
+        $directSum = (int) Transaction::query()
             ->whereIn('category_id', $allIds)
             ->where('type', TransactionType::Expense)
             ->whereNull('planned_item_id')
+            ->whereDoesntHave('splits')
             ->whereBetween('occurred_on', [
                 $period->start->toDateString(),
                 $period->end->toDateString(),
             ])
             ->sum('amount');
+
+        $splitSum = (int) TransactionSplit::query()
+            ->whereIn('category_id', $allIds)
+            ->whereHas('transaction', function ($q) use ($period): void {
+                $q->where('type', TransactionType::Expense)
+                    ->whereNull('planned_item_id')
+                    ->whereBetween('occurred_on', [
+                        $period->start->toDateString(),
+                        $period->end->toDateString(),
+                    ]);
+            })
+            ->sum('amount');
+
+        return $directSum + $splitSum;
     }
 
     /**

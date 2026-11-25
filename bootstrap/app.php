@@ -22,6 +22,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'onboarded' => EnsureHouseholdOnboarded::class,
             'admin' => EnsureSystemAdmin::class,
         ]);
+        $middleware->validateCsrfTokens(except: [
+            'telegram/webhook',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

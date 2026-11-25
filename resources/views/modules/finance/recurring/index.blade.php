@@ -7,14 +7,14 @@
         </div>
 
         <button wire:click="openCreate"
-                class="inline-flex items-center gap-1.5 rounded-2xl bg-emerald-600 px-4 py-2 text-xs sm:text-sm font-bold text-white shadow-sm hover:bg-emerald-700 active:scale-95 self-start sm:self-auto">
+                class="inline-flex items-center gap-1.5 rounded-2xl bg-[#28543e] px-4 py-2 text-xs sm:text-sm font-bold text-white dark:bg-[#bad6ae] dark:text-[#151f1b] shadow-sm hover:opacity-90 active:scale-95 self-start sm:self-auto">
             <x-heroicon-o-plus class="size-4" />
             <span>Tambah Rutinitas</span>
         </button>
     </div>
 
     @if (session()->has('message'))
-        <div class="rounded-2xl bg-emerald-500/10 p-4 text-xs sm:text-sm font-semibold text-emerald-700 dark:text-emerald-300">
+        <div class="rounded-2xl bg-[#28543e] dark:bg-[#bad6ae]/10 p-4 text-xs sm:text-sm font-semibold text-[#28543e] dark:text-[#bad6ae]">
             {{ session('message') }}
         </div>
     @endif
@@ -25,7 +25,7 @@
             <div class="flex flex-col justify-between rounded-3xl border border-current/10 bg-[#fffefa] p-5 shadow-sm transition-colors dark:bg-[#1f2c25] {{ !$bill->is_active ? 'opacity-50' : '' }}">
                 <div>
                     <div class="flex items-center justify-between">
-                        <span class="rounded-full px-2 py-0.5 text-[10px] font-bold {{ $bill->direction->value === 'expense' ? 'bg-rose-500/10 text-rose-600' : 'bg-emerald-500/10 text-emerald-600' }}">
+                        <span class="rounded-full px-2 py-0.5 text-[10px] font-bold {{ $bill->direction->value === 'expense' ? 'bg-rose-500/10 text-[#ad3f45]' : 'bg-[#28543e]/10 dark:bg-[#bad6ae]/15 text-[#28543e]' }}">
                             {{ $bill->direction->label() }}
                         </span>
 
@@ -54,7 +54,7 @@
                         Edit
                     </button>
                     <button wire:click="toggleActive('{{ $bill->id }}')"
-                            class="rounded-xl px-2.5 py-1 text-xs font-semibold {{ $bill->is_active ? 'text-rose-600 hover:bg-rose-500/10' : 'text-emerald-600 hover:bg-emerald-500/10' }}">
+                            class="rounded-xl px-2.5 py-1 text-xs font-semibold {{ $bill->is_active ? 'text-[#ad3f45] hover:bg-rose-500/10' : 'text-[#28543e] hover:opacity-90/10' }}">
                         {{ $bill->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
                     </button>
                 </div>
@@ -78,7 +78,7 @@
                     <div>
                         <label class="block text-xs font-bold text-current/70">Arah Arus Kas</label>
                         <select wire:model="direction"
-                                class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none">
+                                class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none">
                             <option value="expense">Pengeluaran Rutin (Tagihan / Biaya)</option>
                             <option value="income">Pemasukan Rutin (Gaji / Pendapatan Tetap)</option>
                         </select>
@@ -87,45 +87,45 @@
                     <div>
                         <label class="block text-xs font-bold text-current/70">Nama Tagihan / Pemasukan</label>
                         <input type="text" wire:model="name" placeholder="mis. Listrik PLN, Tagihan Internet, Gaji Bulanan"
-                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
-                        @error('name') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
+                        @error('name') <span class="text-xs text-[#ad3f45]">{{ $message }}</span> @enderror
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-bold text-current/70">Kategori</label>
                             <select wire:model="category_id"
-                                    class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none">
+                                    class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none">
                                 <option value="">-- Kategori --</option>
                                 @foreach($categories as $cat)
                                     <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                                 @endforeach
                             </select>
-                            @error('category_id') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                            @error('category_id') <span class="text-xs text-[#ad3f45]">{{ $message }}</span> @enderror
                         </div>
 
                         <div>
                             <label class="block text-xs font-bold text-current/70">Akun Default</label>
                             <select wire:model="account_id"
-                                    class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none">
+                                    class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none">
                                 <option value="">-- Akun --</option>
                                 @foreach($accounts as $acc)
                                     <option value="{{ $acc->id }}">{{ $acc->name }}</option>
                                 @endforeach
                             </select>
-                            @error('account_id') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                            @error('account_id') <span class="text-xs text-[#ad3f45]">{{ $message }}</span> @enderror
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-current/70">Nominal Estimasi (Rp)</label>
                         <input type="text" wire:model="amount" placeholder="mis. 500rb atau 500000"
-                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm font-bold focus:border-emerald-500 focus:outline-none" />
-                        @error('amount') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm font-bold focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
+                        @error('amount') <span class="text-xs text-[#ad3f45]">{{ $message }}</span> @enderror
                     </div>
 
                     <div class="flex items-center gap-2">
-                        <input type="checkbox" id="is_var" wire:model="is_variable_amount" class="size-4 rounded accent-emerald-600" />
+                        <input type="checkbox" id="is_var" wire:model="is_variable_amount" class="size-4 rounded accent-[#28543e] dark:accent-[#bad6ae]" />
                         <label for="is_var" class="text-xs font-semibold text-current/80">Nominal berubah-ubah tiap bulan (mis. listrik/air)</label>
                     </div>
 
@@ -133,20 +133,20 @@
                         <div>
                             <label class="block text-xs font-bold text-current/70">Ulang Tiap Tanggal (1-28)</label>
                             <input type="number" min="1" max="28" wire:model="monthly_day"
-                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
+                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
                         </div>
 
                         <div>
                             <label class="block text-xs font-bold text-current/70">Mulai Tanggal</label>
                             <input type="date" wire:model="dtstart"
-                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
+                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-current/70">Pengingat Sebelum Jatuh Tempo (Hari)</label>
                         <input type="number" min="0" max="30" wire:model="remind_days_before"
-                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
+                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
                     </div>
 
                     <div class="mt-6 flex items-center justify-end gap-2 pt-2">
@@ -155,7 +155,7 @@
                             Batal
                         </button>
                         <button type="submit"
-                                class="rounded-xl bg-emerald-600 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-emerald-700">
+                                class="rounded-xl bg-[#28543e] px-5 py-2 text-xs font-bold text-white dark:bg-[#bad6ae] dark:text-[#151f1b] shadow-sm hover:opacity-90">
                             Simpan
                         </button>
                     </div>

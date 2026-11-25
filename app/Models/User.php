@@ -19,8 +19,25 @@ use NotificationChannels\WebPush\HasPushSubscriptions;
 /**
  * @property \Illuminate\Support\Carbon|null $disabled_at
  */
-#[Fillable(['name', 'email', 'password', 'locale', 'notify_push', 'notify_email', 'quiet_hours_start', 'quiet_hours_end', 'daily_digest_time', 'disabled_at'])]
-#[Hidden(['password', 'remember_token'])]
+#[Fillable([
+    'name',
+    'email',
+    'password',
+    'locale',
+    'notify_push',
+    'notify_email',
+    'quiet_hours_start',
+    'quiet_hours_end',
+    'daily_digest_time',
+    'last_daily_digest_sent_on',
+    'disabled_at',
+    'two_factor_email_enabled',
+    'two_factor_otp_code',
+    'two_factor_otp_expires_at',
+    'two_factor_attempts',
+    'two_factor_recovery_codes',
+])]
+#[Hidden(['password', 'remember_token', 'two_factor_otp_code', 'two_factor_recovery_codes'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
@@ -54,6 +71,11 @@ class User extends Authenticatable
             'disabled_at' => 'datetime',
             'notify_push' => 'boolean',
             'notify_email' => 'boolean',
+            'last_daily_digest_sent_on' => 'date',
+            'two_factor_email_enabled' => 'boolean',
+            'two_factor_otp_expires_at' => 'datetime',
+            'two_factor_attempts' => 'integer',
+            'two_factor_recovery_codes' => 'array',
         ];
     }
 }

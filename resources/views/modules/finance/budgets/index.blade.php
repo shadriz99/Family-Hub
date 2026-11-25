@@ -14,7 +14,7 @@
             />
 
             <button wire:click="openConfigure"
-                    class="inline-flex items-center gap-1.5 rounded-2xl bg-emerald-600 px-3.5 py-2 text-xs font-bold text-white shadow-sm hover:bg-emerald-700 active:scale-95">
+                    class="inline-flex items-center gap-1.5 rounded-2xl bg-[#28543e] px-3.5 py-2 text-xs font-bold text-white dark:bg-[#bad6ae] dark:text-[#151f1b] shadow-sm hover:opacity-90 active:scale-95">
                 <x-heroicon-o-adjustments-horizontal class="size-4" />
                 <span>Atur Persentase (100%)</span>
             </button>
@@ -28,7 +28,7 @@
     </div>
 
     @if (session()->has('message'))
-        <div class="rounded-2xl bg-emerald-500/10 p-4 text-xs sm:text-sm font-semibold text-emerald-700 dark:text-emerald-300">
+        <div class="rounded-2xl bg-[#28543e] dark:bg-[#bad6ae]/10 p-4 text-xs sm:text-sm font-semibold text-[#28543e] dark:text-[#bad6ae]">
             {{ session('message') }}
         </div>
     @endif
@@ -37,7 +37,7 @@
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-4">
         <div class="rounded-3xl border border-current/10 bg-[#fffefa] p-5 shadow-sm transition-colors dark:bg-[#1f2c25]">
             <span class="text-xs font-semibold text-current/60">Keseluruhan Pemasukan</span>
-            <div class="mt-2 text-2xl font-black tracking-tight text-emerald-600 dark:text-emerald-400">
+            <div class="mt-2 text-2xl font-black tracking-tight text-[#28543e] dark:text-[#bad6ae]">
                 <x-money :amount="$totalIncome" />
             </div>
             <p class="mt-1 text-[11px] text-current/50">Basis kalkulasi persentase anggaran</p>
@@ -53,15 +53,15 @@
 
         <div class="rounded-3xl border border-current/10 bg-[#fffefa] p-5 shadow-sm transition-colors dark:bg-[#1f2c25]">
             <span class="text-xs font-semibold text-current/60">Pengeluaran Aktual</span>
-            <div class="mt-2 text-2xl font-black tracking-tight text-rose-600 dark:text-rose-400">
+            <div class="mt-2 text-2xl font-black tracking-tight text-[#ad3f45] dark:text-[#ffafb1]">
                 <x-money :amount="$totalSpent" />
             </div>
-            <p class="mt-1 text-[11px] text-current/50">Tidak termasuk kewajiban planned (BR-FIN-030)</p>
+            <p class="mt-1 text-[11px] text-current/50">Tidak termasuk pengeluaran rutin terencana</p>
         </div>
 
         <div class="rounded-3xl border border-current/10 bg-[#fffefa] p-5 shadow-sm transition-colors dark:bg-[#1f2c25]">
             <span class="text-xs font-semibold text-current/60">Sisa Anggaran Tersedia</span>
-            <div class="mt-2 text-2xl font-black tracking-tight {{ $totalRemaining < 0 ? 'text-rose-600' : 'text-emerald-600 dark:text-emerald-400' }}">
+            <div class="mt-2 text-2xl font-black tracking-tight {{ $totalRemaining < 0 ? 'text-[#ad3f45]' : 'text-[#28543e] dark:text-[#bad6ae]' }}">
                 <x-money :amount="$totalRemaining" />
             </div>
             <p class="mt-1 text-[11px] text-current/50">{{ $totalBudget > 0 ? round(($totalSpent / $totalBudget) * 100, 1) : 0 }}% terpakai</p>
@@ -72,7 +72,7 @@
     <div class="rounded-3xl border border-current/10 bg-[#fffefa] p-5 shadow-sm dark:bg-[#1f2c25]">
         <div class="flex items-center justify-between text-xs font-bold text-current/70 mb-3">
             <span>Komposisi Alokasi Anggaran (100% Pemasukan)</span>
-            <span class="text-emerald-600 dark:text-emerald-400">5 Kategori Utama</span>
+            <span class="text-[#28543e] dark:text-[#bad6ae]">5 Kategori Utama</span>
         </div>
         <div class="flex h-3.5 w-full overflow-hidden rounded-full bg-current/10">
             @foreach($budgetSummaries as $row)
@@ -137,25 +137,25 @@
                                     {{ $budgetPercentage }}% Alokasi
                                 </span>
                                 @if($usedPct >= 100)
-                                    <span class="rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-bold text-rose-600 dark:text-rose-400">100% Penuh</span>
+                                    <span class="rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-bold text-[#ad3f45] dark:text-[#ffafb1]">100% Penuh</span>
                                 @elseif($usedPct >= 80)
-                                    <span class="rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:text-amber-300">Waspada 80%</span>
+                                    <span class="rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold text-[#87571f] dark:text-amber-300">Waspada 80%</span>
                                 @endif
                             </div>
 
                             <div class="mt-1 text-xs text-current/60 flex flex-wrap gap-2">
                                 <span>Plafon: <strong class="text-current/90"><x-money :amount="$budgetAmount" /></strong></span>
                                 <span>&bull;</span>
-                                <span>Terpakai: <strong class="text-rose-600 dark:text-rose-400"><x-money :amount="$spentAmount" /></strong></span>
+                                <span>Terpakai: <strong class="text-[#ad3f45] dark:text-[#ffafb1]"><x-money :amount="$spentAmount" /></strong></span>
                                 <span>&bull;</span>
-                                <span>Sisa: <strong class="{{ $remaining < 0 ? 'text-rose-600' : 'text-emerald-600 dark:text-emerald-400' }}"><x-money :amount="$remaining" /></strong></span>
+                                <span>Sisa: <strong class="{{ $remaining < 0 ? 'text-[#ad3f45]' : 'text-[#28543e] dark:text-[#bad6ae]' }}"><x-money :amount="$remaining" /></strong></span>
                             </div>
                         </div>
                     </div>
 
                     <div class="text-right sm:min-w-[120px]">
                         <div class="text-xs font-semibold text-current/60">Tingkat Konsumsi</div>
-                        <div class="text-xl font-black {{ $usedPct >= 100 ? 'text-rose-600' : ($usedPct >= 80 ? 'text-amber-600' : 'text-emerald-600 dark:text-emerald-400') }}">
+                        <div class="text-xl font-black {{ $usedPct >= 100 ? 'text-[#ad3f45]' : ($usedPct >= 80 ? 'text-[#87571f]' : 'text-[#28543e] dark:text-[#bad6ae]') }}">
                             {{ $usedPct }}%
                         </div>
                     </div>
@@ -164,7 +164,7 @@
                 {{-- Progress Bar --}}
                 <div class="mt-4">
                     <div class="h-2.5 w-full overflow-hidden rounded-full bg-current/10">
-                        <div class="h-full rounded-full transition-all {{ $usedPct >= 100 ? 'bg-rose-500' : ($usedPct >= 80 ? 'bg-amber-500' : 'bg-emerald-500') }}"
+                        <div class="h-full rounded-full transition-all {{ $usedPct >= 100 ? 'bg-rose-500' : ($usedPct >= 80 ? 'bg-amber-500' : 'bg-[#28543e] dark:bg-[#bad6ae]') }}"
                              style="width: {{ min(100, $usedPct) }}%"></div>
                     </div>
                 </div>
@@ -195,8 +195,8 @@
                     <div>
                         <label class="block text-xs font-bold text-current/70">Estimasi / Total Pemasukan Periode Ini (Rp)</label>
                         <input type="text" wire:model="incomeBaseInput" placeholder="mis. 10jt atau 10000000"
-                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm font-bold focus:border-emerald-500 focus:outline-none" />
-                        @error('incomeBaseInput') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm font-bold focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
+                        @error('incomeBaseInput') <span class="text-xs text-[#ad3f45]">{{ $message }}</span> @enderror
                         <p class="mt-0.5 text-[11px] text-current/50">Jika sudah ada pemasukan aktual tercatat, sistem akan otomatis menggunakannya.</p>
                     </div>
 
@@ -220,7 +220,7 @@
 
                                     <div class="flex items-center gap-1.5">
                                         <input type="number" min="0" max="100" wire:model.live="percentages.{{ $catId }}"
-                                               class="w-16 rounded-xl border border-current/20 bg-transparent px-2.5 py-1.5 text-center text-sm font-black focus:border-emerald-500 focus:outline-none" />
+                                               class="w-16 rounded-xl border border-current/20 bg-transparent px-2.5 py-1.5 text-center text-sm font-black focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
                                         <span class="text-xs font-bold text-current/60">%</span>
                                     </div>
                                 </div>
@@ -232,13 +232,13 @@
                     @php
                         $tot = $this->totalPercentage;
                     @endphp
-                    <div class="flex items-center justify-between rounded-2xl p-3.5 border {{ $tot === 100 ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-800 dark:text-emerald-200' : 'border-rose-500/30 bg-rose-500/10 text-rose-800 dark:text-rose-200' }}">
+                    <div class="flex items-center justify-between rounded-2xl p-3.5 border {{ $tot === 100 ? 'border-[#28543e] dark:border-[#bad6ae]/30 bg-[#28543e]/10 dark:bg-[#bad6ae]/15 text-[#28543e] dark:text-[#bad6ae]' : 'border-rose-500/30 bg-rose-500/10 text-rose-800 dark:text-rose-200' }}">
                         <span class="text-xs font-bold">Total Alokasi Keseluruhan:</span>
                         <span class="text-base font-black">{{ $tot }}% / 100%</span>
                     </div>
 
                     @error('percentages')
-                        <div class="rounded-xl bg-rose-500/10 p-2.5 text-xs font-bold text-rose-600 dark:text-rose-400">
+                        <div class="rounded-xl bg-rose-500/10 p-2.5 text-xs font-bold text-[#ad3f45] dark:text-[#ffafb1]">
                             {{ $message }}
                         </div>
                     @enderror
@@ -249,7 +249,7 @@
                         Batal
                     </button>
                     <button type="button" wire:click="savePercentages"
-                            class="rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-emerald-700 active:scale-95 disabled:opacity-50"
+                            class="rounded-xl bg-[#28543e] px-5 py-2.5 text-xs font-bold text-white dark:bg-[#bad6ae] dark:text-[#151f1b] shadow-sm hover:opacity-90 active:scale-95 disabled:opacity-50"
                             {{ $tot !== 100 ? 'disabled' : '' }}>
                         Simpan Anggaran (100%)
                     </button>

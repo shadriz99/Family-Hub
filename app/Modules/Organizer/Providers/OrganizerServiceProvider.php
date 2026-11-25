@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Organizer\Providers;
 
+use App\Modules\Organizer\Commands\RollRecurringTasksCommand;
 use App\Modules\Organizer\Integrations\OrganizerAlertSource;
 use App\Modules\Organizer\Integrations\OrganizerEventCalendarSource;
 use App\Modules\Organizer\Integrations\OrganizerHouseholdExporter;
@@ -60,5 +61,11 @@ final class OrganizerServiceProvider extends ServiceProvider
         Livewire::component('organizer.shopping.show', ShoppingShow::class);
         Livewire::component('organizer.calendar.index', CalendarIndex::class);
         Livewire::component('organizer.reminders.index', RemindersIndex::class);
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                RollRecurringTasksCommand::class,
+            ]);
+        }
     }
 }

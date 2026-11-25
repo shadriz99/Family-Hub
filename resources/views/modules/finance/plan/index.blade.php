@@ -14,7 +14,7 @@
             />
 
             <button wire:click="openManualModal"
-                    class="inline-flex items-center gap-1.5 rounded-2xl bg-emerald-600 px-3.5 py-2 text-xs sm:text-sm font-bold text-white shadow-sm hover:bg-emerald-700 active:scale-95">
+                    class="inline-flex items-center gap-1.5 rounded-2xl bg-[#28543e] px-3.5 py-2 text-xs sm:text-sm font-bold text-white dark:bg-[#bad6ae] dark:text-[#151f1b] shadow-sm hover:opacity-90 active:scale-95">
                 <x-heroicon-o-plus class="size-4" />
                 <span>Tambah Rencana</span>
             </button>
@@ -22,7 +22,7 @@
     </div>
 
     @if (session()->has('message'))
-        <div class="rounded-2xl bg-emerald-500/10 p-4 text-xs sm:text-sm font-semibold text-emerald-700 dark:text-emerald-300">
+        <div class="rounded-2xl bg-[#28543e] dark:bg-[#bad6ae]/10 p-4 text-xs sm:text-sm font-semibold text-[#28543e] dark:text-[#bad6ae]">
             {{ session('message') }}
         </div>
     @endif
@@ -31,14 +31,14 @@
     <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         <div class="rounded-2xl border border-current/10 bg-[#fffefa] p-4 shadow-sm transition-colors dark:bg-[#1f2c25]">
             <span class="text-[11px] font-semibold text-current/60">Rencana Masuk</span>
-            <div class="mt-1 text-base sm:text-lg font-black tracking-tight text-emerald-600 dark:text-emerald-400">
+            <div class="mt-1 text-base sm:text-lg font-black tracking-tight text-[#28543e] dark:text-[#bad6ae]">
                 <x-money :amount="$planIncomeTotal" />
             </div>
         </div>
 
         <div class="rounded-2xl border border-current/10 bg-[#fffefa] p-4 shadow-sm transition-colors dark:bg-[#1f2c25]">
             <span class="text-[11px] font-semibold text-current/60">Rencana Keluar</span>
-            <div class="mt-1 text-base sm:text-lg font-black tracking-tight text-rose-600 dark:text-rose-400">
+            <div class="mt-1 text-base sm:text-lg font-black tracking-tight text-[#ad3f45] dark:text-[#ffafb1]">
                 <x-money :amount="$planExpenseTotal" />
             </div>
             <span class="text-[10px] text-current/40">Kewajiban + Anggaran</span>
@@ -46,7 +46,7 @@
 
         <div class="rounded-2xl border border-current/10 bg-[#fffefa] p-4 shadow-sm transition-colors dark:bg-[#1f2c25]">
             <span class="text-[11px] font-semibold text-current/60">Sisa Rencana</span>
-            <div class="mt-1 text-base sm:text-lg font-black tracking-tight {{ $remainingPlan < 0 ? 'text-rose-600' : 'text-[#263c32] dark:text-[#f3f1e8]' }}">
+            <div class="mt-1 text-base sm:text-lg font-black tracking-tight {{ $remainingPlan < 0 ? 'text-[#ad3f45]' : 'text-[#263c32] dark:text-[#f3f1e8]' }}">
                 <x-money :amount="$remainingPlan" />
             </div>
             <span class="text-[10px] text-current/40">Surplus / Defisit</span>
@@ -54,21 +54,21 @@
 
         <div class="rounded-2xl border border-current/10 bg-[#fffefa] p-4 shadow-sm transition-colors dark:bg-[#1f2c25]">
             <span class="text-[11px] font-semibold text-current/60">Realisasi Masuk</span>
-            <div class="mt-1 text-base sm:text-lg font-black tracking-tight text-emerald-600 dark:text-emerald-400">
+            <div class="mt-1 text-base sm:text-lg font-black tracking-tight text-[#28543e] dark:text-[#bad6ae]">
                 <x-money :amount="$realizedIncome" />
             </div>
         </div>
 
         <div class="rounded-2xl border border-current/10 bg-[#fffefa] p-4 shadow-sm transition-colors dark:bg-[#1f2c25]">
             <span class="text-[11px] font-semibold text-current/60">Realisasi Keluar</span>
-            <div class="mt-1 text-base sm:text-lg font-black tracking-tight text-rose-600 dark:text-rose-400">
+            <div class="mt-1 text-base sm:text-lg font-black tracking-tight text-[#ad3f45] dark:text-[#ffafb1]">
                 <x-money :amount="$realizedExpense" />
             </div>
         </div>
 
         <div class="rounded-2xl border border-current/10 bg-[#fffefa] p-4 shadow-sm transition-colors dark:bg-[#1f2c25]">
             <span class="text-[11px] font-semibold text-current/60">Kewajiban Belum Bayar</span>
-            <div class="mt-1 text-base sm:text-lg font-black tracking-tight text-amber-600 dark:text-amber-400">
+            <div class="mt-1 text-base sm:text-lg font-black tracking-tight text-[#87571f] dark:text-[#edc48b]">
                 <x-money :amount="$unpaidObligationsAmount" />
             </div>
             <span class="text-[10px] text-current/40">{{ $unpaidObligationsCount }} item belum lunas</span>
@@ -83,18 +83,18 @@
                 <p class="text-xs text-current/60">
                     Dasar Penghasilan: <strong class="text-current/90"><x-money :amount="$allocationSummary['income_base']" /></strong>
                     @if($allocationSummary['unallocated_target'] > 0)
-                        &bull; Belum dialokasikan: <span class="font-bold text-amber-600"><x-money :amount="$allocationSummary['unallocated_target']" /></span>
+                        &bull; Belum dialokasikan: <span class="font-bold text-[#87571f]"><x-money :amount="$allocationSummary['unallocated_target']" /></span>
                     @endif
                 </p>
             </div>
 
             <div class="flex items-center gap-2">
                 @if($allocationSummary['debt_ratio_warning'])
-                    <span class="rounded-full bg-rose-500/20 px-3 py-1 text-xs font-bold text-rose-700 dark:text-rose-300">
+                    <span class="rounded-full bg-rose-500/20 px-3 py-1 text-xs font-bold text-[#ad3f45] dark:text-rose-300">
                         Peringatan Cicilan: {{ $allocationSummary['debt_ratio'] }}% (>30%)
                     </span>
                 @elseif($allocationSummary['debt_ratio'] !== null)
-                    <span class="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+                    <span class="rounded-full bg-[#28543e] dark:bg-[#bad6ae]/10 px-3 py-1 text-xs font-semibold text-[#28543e] dark:text-[#bad6ae]">
                         Rasio Cicilan: {{ $allocationSummary['debt_ratio'] }}%
                     </span>
                 @endif
@@ -117,7 +117,7 @@
                     </div>
                     <div class="mt-1 flex items-center justify-between text-[11px] text-current/60">
                         <span>Pakai: <x-money :amount="$alloc['used']" /></span>
-                        <span class="{{ $alloc['remaining'] < 0 ? 'text-rose-600 font-bold' : '' }}">
+                        <span class="{{ $alloc['remaining'] < 0 ? 'text-[#ad3f45] font-bold' : '' }}">
                             {{ $alloc['remaining'] < 0 ? 'Lebih' : 'Sisa' }}
                         </span>
                     </div>
@@ -139,12 +139,12 @@
             {{-- 1. Overdue Items --}}
             @if($overdueItems->isNotEmpty())
                 <div>
-                    <h3 class="mb-2 text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
+                    <h3 class="mb-2 text-xs font-bold uppercase tracking-wider text-[#ad3f45] dark:text-[#ffafb1]">
                         Terlambat ({{ $overdueItems->count() }})
                     </h3>
                     <div class="space-y-2">
                         @foreach($overdueItems as $item)
-                            @include('finance::plan._obligation_row', ['item' => $item, 'badge' => 'Terlambat', 'badgeColor' => 'bg-rose-500/20 text-rose-600'])
+                            @include('finance::plan._obligation_row', ['item' => $item, 'badge' => 'Terlambat', 'badgeColor' => 'bg-rose-500/20 text-[#ad3f45]'])
                         @endforeach
                     </div>
                 </div>
@@ -167,12 +167,12 @@
             {{-- 3. Partial Items --}}
             @if($partialItems->isNotEmpty())
                 <div>
-                    <h3 class="mb-2 text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                    <h3 class="mb-2 text-xs font-bold uppercase tracking-wider text-[#87571f] dark:text-[#edc48b]">
                         Sebagian Dibayar ({{ $partialItems->count() }})
                     </h3>
                     <div class="space-y-2">
                         @foreach($partialItems as $item)
-                            @include('finance::plan._obligation_row', ['item' => $item, 'badge' => 'Sebagian', 'badgeColor' => 'bg-amber-500/20 text-amber-700'])
+                            @include('finance::plan._obligation_row', ['item' => $item, 'badge' => 'Sebagian', 'badgeColor' => 'bg-amber-500/20 text-[#87571f]'])
                         @endforeach
                     </div>
                 </div>
@@ -181,12 +181,12 @@
             {{-- 4. Paid Items --}}
             @if($paidItems->isNotEmpty())
                 <div>
-                    <h3 class="mb-2 text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                    <h3 class="mb-2 text-xs font-bold uppercase tracking-wider text-[#28543e] dark:text-[#bad6ae]">
                         Lunas ({{ $paidItems->count() }})
                     </h3>
                     <div class="space-y-2">
                         @foreach($paidItems as $item)
-                            @include('finance::plan._obligation_row', ['item' => $item, 'badge' => 'Lunas', 'badgeColor' => 'bg-emerald-500/20 text-emerald-700'])
+                            @include('finance::plan._obligation_row', ['item' => $item, 'badge' => 'Lunas', 'badgeColor' => 'bg-[#28543e] dark:bg-[#bad6ae]/20 text-[#28543e]'])
                         @endforeach
                     </div>
                 </div>
@@ -225,31 +225,31 @@
                     <div>
                         <label class="block text-xs font-bold text-current/70">Nominal Pembayaran (Rp)</label>
                         <input type="text" wire:model="payAmount"
-                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-base font-bold focus:border-emerald-500 focus:outline-none" />
-                        @error('payAmount') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-base font-bold focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
+                        @error('payAmount') <span class="text-xs text-[#ad3f45]">{{ $message }}</span> @enderror
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-current/70">Bayar Menggunakan Akun</label>
                         <select wire:model="payAccountId"
-                                class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none">
+                                class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none">
                             @foreach($accounts as $acc)
                                 <option value="{{ $acc->id }}">{{ $acc->name }} ({{ $acc->type->label() }})</option>
                             @endforeach
                         </select>
-                        @error('payAccountId') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                        @error('payAccountId') <span class="text-xs text-[#ad3f45]">{{ $message }}</span> @enderror
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-current/70">Tanggal Bayar</label>
                         <input type="date" wire:model="payDate"
-                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
+                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-current/70">Catatan (Opsional)</label>
                         <input type="text" wire:model="payNote" placeholder="mis. No ref / bukti transfer"
-                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
+                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
                     </div>
 
                     <div class="mt-6 flex items-center justify-end gap-2 pt-2">
@@ -258,7 +258,7 @@
                             Batal
                         </button>
                         <button type="submit"
-                                class="rounded-xl bg-emerald-600 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-emerald-700">
+                                class="rounded-xl bg-[#28543e] px-5 py-2 text-xs font-bold text-white dark:bg-[#bad6ae] dark:text-[#151f1b] shadow-sm hover:opacity-90">
                             Konfirmasi Bayar
                         </button>
                     </div>
@@ -278,8 +278,8 @@
                     <div>
                         <label class="block text-xs font-bold text-current/70">Alasan Melewati (Wajib min 3 karakter)</label>
                         <input type="text" wire:model="skipReason" placeholder="mis. Ditunda ke bulan depan, Bebas bayar promo"
-                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
-                        @error('skipReason') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
+                        @error('skipReason') <span class="text-xs text-[#ad3f45]">{{ $message }}</span> @enderror
                     </div>
 
                     <div class="mt-6 flex items-center justify-end gap-2 pt-2">
@@ -301,39 +301,41 @@
     @if($showManualModal)
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
             <div class="w-full max-w-md rounded-3xl border border-current/10 bg-[#fffefa] p-6 shadow-2xl transition-colors dark:bg-[#1f2c25]">
-                <h3 class="text-lg font-black text-[#263c32] dark:text-[#f3f1e8]">Tambah Rencana Pengeluaran Sekali</h3>
+                <h3 class="text-lg font-black text-[#263c32] dark:text-[#f3f1e8]">
+                    {{ $manualItemId ? 'Edit Rencana' : 'Tambah Rencana Pengeluaran Sekali' }}
+                </h3>
 
                 <form wire:submit.prevent="saveManualItem" class="mt-4 space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-current/70">Nama Rencana</label>
                         <input type="text" wire:model="manualName" placeholder="mis. Beli Kasur Baru, Servis AC"
-                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
-                        @error('manualName') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
+                        @error('manualName') <span class="text-xs text-[#ad3f45]">{{ $message }}</span> @enderror
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-current/70">Kategori</label>
                         <select wire:model="manualCategoryId"
-                                class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none">
+                                class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none">
                             <option value="">-- Pilih Kategori --</option>
                             @foreach($categories as $cat)
                                 <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                             @endforeach
                         </select>
-                        @error('manualCategoryId') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                        @error('manualCategoryId') <span class="text-xs text-[#ad3f45]">{{ $message }}</span> @enderror
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-current/70">Estimasi Nominal (Rp)</label>
                         <input type="text" wire:model="manualAmount" placeholder="mis. 1,5jt atau 1500000"
-                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm font-bold focus:border-emerald-500 focus:outline-none" />
-                        @error('manualAmount') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm font-bold focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
+                        @error('manualAmount') <span class="text-xs text-[#ad3f45]">{{ $message }}</span> @enderror
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-current/70">Target Tanggal Jatuh Tempo</label>
                         <input type="date" wire:model="manualDueDate"
-                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
+                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
                     </div>
 
                     <div class="mt-6 flex items-center justify-end gap-2 pt-2">
@@ -342,8 +344,8 @@
                             Batal
                         </button>
                         <button type="submit"
-                                class="rounded-xl bg-emerald-600 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-emerald-700">
-                            Simpan Rencana
+                                class="rounded-xl bg-[#28543e] px-5 py-2 text-xs font-bold text-white dark:bg-[#bad6ae] dark:text-[#151f1b] shadow-sm hover:opacity-90">
+                            {{ $manualItemId ? 'Simpan Perubahan' : 'Simpan Rencana' }}
                         </button>
                     </div>
                 </form>
@@ -362,37 +364,37 @@
                     <div>
                         <label class="block text-xs font-bold text-current/70">Dasar Penghasilan Periode (Rp)</label>
                         <input type="text" wire:model="allocIncomeBase" placeholder="mis. 15.000.000 atau 15jt"
-                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm font-bold focus:border-emerald-500 focus:outline-none" />
+                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm font-bold focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
                     </div>
 
                     <div class="grid grid-cols-2 gap-3 pt-2">
                         <div>
                             <label class="block text-xs font-bold text-current/70">Kebutuhan Hidup (%)</label>
                             <input type="number" step="0.01" wire:model="allocLivingPct"
-                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-1.5 text-xs font-bold focus:border-emerald-500 focus:outline-none" />
+                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-1.5 text-xs font-bold focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-current/70">Tersier (%)</label>
                             <input type="number" step="0.01" wire:model="allocTertiaryPct"
-                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-1.5 text-xs font-bold focus:border-emerald-500 focus:outline-none" />
+                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-1.5 text-xs font-bold focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-current/70">Cicilan / Utang (%)</label>
                             <input type="number" step="0.01" wire:model="allocDebtPct"
-                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-1.5 text-xs font-bold focus:border-emerald-500 focus:outline-none" />
+                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-1.5 text-xs font-bold focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-current/70">Tabungan (%)</label>
                             <input type="number" step="0.01" wire:model="allocSavingsPct"
-                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-1.5 text-xs font-bold focus:border-emerald-500 focus:outline-none" />
+                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-1.5 text-xs font-bold focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
                         </div>
                         <div class="col-span-2">
                             <label class="block text-xs font-bold text-current/70">Donasi / Sosial / Zakat (%)</label>
                             <input type="number" step="0.01" wire:model="allocSocialPct"
-                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-1.5 text-xs font-bold focus:border-emerald-500 focus:outline-none" />
+                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-1.5 text-xs font-bold focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
                         </div>
                     </div>
-                    @error('allocLivingPct') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                    @error('allocLivingPct') <span class="text-xs text-[#ad3f45]">{{ $message }}</span> @enderror
 
                     <div class="mt-6 flex items-center justify-end gap-2 pt-2">
                         <button type="button" wire:click="$set('showAllocationModal', false)"
@@ -400,7 +402,7 @@
                             Batal
                         </button>
                         <button type="submit"
-                                class="rounded-xl bg-emerald-600 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-emerald-700">
+                                class="rounded-xl bg-[#28543e] px-5 py-2 text-xs font-bold text-white dark:bg-[#bad6ae] dark:text-[#151f1b] shadow-sm hover:opacity-90">
                             Simpan Alokasi
                         </button>
                     </div>

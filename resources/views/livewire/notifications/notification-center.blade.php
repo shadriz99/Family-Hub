@@ -71,15 +71,17 @@
                         @if ($isUnread)
                             <button type="button"
                                 wire:click="markAsRead('{{ $notification->id }}')"
+                                aria-label="{{ __('Tandai sudah dibaca') }}"
                                 title="{{ __('Tandai sudah dibaca') }}"
-                                class="rounded-xl p-1.5 text-current/60 transition-colors hover:bg-current/10 hover:text-current">
+                                class="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl text-current/60 transition-colors hover:bg-current/10 hover:text-current focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-current">
                                 <x-heroicon-o-check class="size-4" />
                             </button>
                         @endif
                         <button type="button"
                             wire:click="deleteNotification('{{ $notification->id }}')"
+                            aria-label="{{ __('Hapus notifikasi') }}"
                             title="{{ __('Hapus notifikasi') }}"
-                            class="rounded-xl p-1.5 text-current/40 transition-colors hover:bg-red-500/10 hover:text-red-600">
+                            class="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl text-current/40 transition-colors hover:bg-red-500/10 hover:text-red-600 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-current">
                             <x-heroicon-o-trash class="size-4" />
                         </button>
                     </div>

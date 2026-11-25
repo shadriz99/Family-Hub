@@ -14,7 +14,7 @@
             </button>
 
             <button wire:click="openCreate"
-                    class="inline-flex items-center gap-1.5 rounded-2xl bg-emerald-600 px-4 py-2 text-xs sm:text-sm font-bold text-white shadow-sm transition-all hover:bg-emerald-700 active:scale-95">
+                    class="inline-flex items-center gap-1.5 rounded-2xl bg-[#28543e] px-4 py-2 text-xs sm:text-sm font-bold text-white dark:bg-[#bad6ae] dark:text-[#151f1b] shadow-sm transition-all hover:opacity-90 active:scale-95">
                 <x-heroicon-o-plus class="size-4" />
                 <span>Tambah Akun</span>
             </button>
@@ -22,7 +22,7 @@
     </div>
 
     @if (session()->has('message'))
-        <div class="rounded-2xl bg-emerald-500/10 p-4 text-xs sm:text-sm font-semibold text-emerald-700 dark:text-emerald-300">
+        <div class="rounded-2xl bg-[#28543e] dark:bg-[#bad6ae]/10 p-4 text-xs sm:text-sm font-semibold text-[#28543e] dark:text-[#bad6ae]">
             {{ session('message') }}
         </div>
     @endif
@@ -49,7 +49,7 @@
                         </div>
 
                         <h3 class="mt-2 text-base font-bold text-[#263c32] dark:text-[#f3f1e8]">{{ $acc->name }}</h3>
-                        <div class="mt-1 text-2xl font-black tracking-tight {{ $bal < 0 ? 'text-rose-600 dark:text-rose-400' : 'text-current/90' }}">
+                        <div class="mt-1 text-2xl font-black tracking-tight {{ $bal < 0 ? 'text-[#ad3f45] dark:text-[#ffafb1]' : 'text-current/90' }}">
                             <x-money :amount="$bal" />
                         </div>
 
@@ -67,7 +67,7 @@
                         <button wire:click="openEdit('{{ $acc->id }}')" class="rounded-xl px-2.5 py-1 text-xs font-semibold text-current/70 hover:bg-current/10">
                             Edit
                         </button>
-                        <button wire:click="toggleArchive('{{ $acc->id }}')" class="rounded-xl px-2.5 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-500/10 dark:text-rose-400">
+                        <button wire:click="toggleArchive('{{ $acc->id }}')" class="rounded-xl px-2.5 py-1 text-xs font-semibold text-[#ad3f45] hover:bg-rose-500/10 dark:text-[#ffafb1]">
                             Arsipkan
                         </button>
                     </div>
@@ -116,22 +116,22 @@
                     <div>
                         <label class="block text-xs font-bold text-current/70">Nama Akun / Bank</label>
                         <input type="text" wire:model="name" placeholder="mis. BCA Utama, Dompet Tunai"
-                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
-                        @error('name') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
+                        @error('name') <span class="text-xs text-[#ad3f45]">{{ $message }}</span> @enderror
                     </div>
 
                     @if(!$showEditModal)
                         <div>
                             <label class="block text-xs font-bold text-current/70">Tipe Akun</label>
                             <select wire:model.live="type"
-                                    class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none">
+                                    class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none">
                                 <option value="cash">Uang Tunai (Cash)</option>
                                 <option value="bank">Rekening Bank</option>
                                 <option value="ewallet">Dompet Digital (E-Wallet)</option>
                                 <option value="credit_card">Kartu Kredit</option>
                                 <option value="savings">Tabungan / Investasi</option>
                             </select>
-                            @error('type') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                            @error('type') <span class="text-xs text-[#ad3f45]">{{ $message }}</span> @enderror
                         </div>
 
                         <div>
@@ -139,15 +139,15 @@
                                 Saldo Awal {{ $type === 'credit_card' ? '(Tagihan Berjalan, masukkan negatif mis. -1500000)' : '' }}
                             </label>
                             <input type="text" wire:model="opening_balance" placeholder="0"
-                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
-                            @error('opening_balance') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
+                            @error('opening_balance') <span class="text-xs text-[#ad3f45]">{{ $message }}</span> @enderror
                         </div>
 
                         <div>
                             <label class="block text-xs font-bold text-current/70">Tanggal Saldo Awal</label>
                             <input type="date" wire:model="opening_date"
-                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
-                            @error('opening_date') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
+                            @error('opening_date') <span class="text-xs text-[#ad3f45]">{{ $message }}</span> @enderror
                         </div>
                     @endif
 
@@ -155,8 +155,8 @@
                         <div>
                             <label class="block text-xs font-bold text-current/70">Limit Kartu Kredit (Opsional)</label>
                             <input type="text" wire:model="credit_limit" placeholder="mis. 15000000"
-                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
-                            @error('credit_limit') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
+                            @error('credit_limit') <span class="text-xs text-[#ad3f45]">{{ $message }}</span> @enderror
                         </div>
                     @endif
 
@@ -164,18 +164,18 @@
                         <div>
                             <label class="block text-xs font-bold text-current/70">Warna Aksen</label>
                             <input type="color" wire:model="color" class="mt-1 h-9 w-full rounded-xl border border-current/20 bg-transparent cursor-pointer p-1" />
-                            @error('color') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                            @error('color') <span class="text-xs text-[#ad3f45]">{{ $message }}</span> @enderror
                         </div>
 
                         <div>
                             <label class="block text-xs font-bold text-current/70">Ikon Heroicon</label>
                             <input type="text" wire:model="icon" placeholder="wallet, banknotes, etc."
-                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
+                                   class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
                         </div>
                     </div>
 
                     <div class="flex items-center gap-2 pt-1">
-                        <input type="checkbox" id="include_in_total" wire:model="include_in_total" class="size-4 rounded accent-emerald-600" />
+                        <input type="checkbox" id="include_in_total" wire:model="include_in_total" class="size-4 rounded accent-[#28543e] dark:accent-[#bad6ae]" />
                         <label for="include_in_total" class="text-xs font-semibold text-current/80">Hitung dalam total saldo utama</label>
                     </div>
 
@@ -185,7 +185,7 @@
                             Batal
                         </button>
                         <button type="submit"
-                                class="rounded-xl bg-emerald-600 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-emerald-700">
+                                class="rounded-xl bg-[#28543e] px-5 py-2 text-xs font-bold text-white dark:bg-[#bad6ae] dark:text-[#151f1b] shadow-sm hover:opacity-90">
                             Simpan
                         </button>
                     </div>
@@ -207,19 +207,19 @@
                     <div>
                         <label class="block text-xs font-bold text-current/70">Saldo Nyata Saat Ini (Rp)</label>
                         <input type="text" wire:model="adjustTargetBalance" placeholder="mis. 5.250.000 atau 5,25jt"
-                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm font-bold focus:border-emerald-500 focus:outline-none" />
+                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm font-bold focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-current/70">Tanggal Efektif</label>
                         <input type="date" wire:model="adjustDate"
-                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
+                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-current/70">Catatan (Opsional)</label>
                         <input type="text" wire:model="adjustNote" placeholder="mis. Selisih bunga bank / admin"
-                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
+                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
                     </div>
 
                     <div class="mt-6 flex items-center justify-end gap-2 pt-2">
@@ -228,7 +228,7 @@
                             Batal
                         </button>
                         <button type="submit"
-                                class="rounded-xl bg-emerald-600 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-emerald-700">
+                                class="rounded-xl bg-[#28543e] px-5 py-2 text-xs font-bold text-white dark:bg-[#bad6ae] dark:text-[#151f1b] shadow-sm hover:opacity-90">
                             Terapkan Penyesuaian
                         </button>
                     </div>
@@ -250,7 +250,7 @@
                     <div>
                         <label class="block text-xs font-bold text-current/70">Tanggal Rekonsiliasi</label>
                         <input type="date" wire:model="reconcileDate"
-                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
+                               class="mt-1 w-full rounded-xl border border-current/20 bg-transparent px-3 py-2 text-sm focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
                     </div>
 
                     <div class="max-h-60 space-y-3 overflow-y-auto pr-1">
@@ -263,7 +263,7 @@
                                 </div>
                                 <div class="mt-2">
                                     <input type="text" wire:model="reconcileBalances.{{ $acc->id }}" placeholder="Saldo riil"
-                                           class="w-full rounded-xl border border-current/20 bg-transparent px-3 py-1.5 text-xs font-semibold focus:border-emerald-500 focus:outline-none" />
+                                           class="w-full rounded-xl border border-current/20 bg-transparent px-3 py-1.5 text-xs font-semibold focus:border-[#28543e] dark:focus:border-[#bad6ae] focus:outline-none" />
                                 </div>
                             </div>
                         @endforeach
@@ -276,7 +276,7 @@
                                 @foreach($reconcilePreview as $p)
                                     <div class="flex justify-between">
                                         <span>{{ $p['account']->name }}:</span>
-                                        <span class="font-bold {{ $p['diff'] === 0 ? 'text-current/60' : ($p['diff'] > 0 ? 'text-emerald-600' : 'text-rose-600') }}">
+                                        <span class="font-bold {{ $p['diff'] === 0 ? 'text-current/60' : ($p['diff'] > 0 ? 'text-[#28543e]' : 'text-[#ad3f45]') }}">
                                             {{ $p['diff'] > 0 ? '+' : '' }}<x-money :amount="$p['diff']" />
                                         </span>
                                     </div>
@@ -292,12 +292,12 @@
                         </button>
                         @if(!$reconcilePreviewReady)
                             <button type="button" wire:click="generateReconcilePreview"
-                                    class="rounded-xl bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-blue-700">
+                                    class="rounded-xl bg-[#386578] dark:bg-[#a7cad6] dark:text-[#151f1b] px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-blue-700">
                                 Pratinjau Selisih
                             </button>
                         @else
                             <button type="button" wire:click="confirmReconcile"
-                                    class="rounded-xl bg-emerald-600 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-emerald-700">
+                                    class="rounded-xl bg-[#28543e] px-5 py-2 text-xs font-bold text-white dark:bg-[#bad6ae] dark:text-[#151f1b] shadow-sm hover:opacity-90">
                                 Konfirmasi & Terapkan
                             </button>
                         @endif
